@@ -405,7 +405,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 */
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
-$config['cookie_path']		= '/cilm44';
+$config['cookie_path']		= '/iiht-student-management';
 $config['cookie_secure']	= FALSE;
 $config['cookie_httponly'] 	= FALSE;
 
