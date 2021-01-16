@@ -11,17 +11,17 @@ $uninstalled_themes = $this->crud_model->get_uninstalled_themes();
   </div>
 <?php endforeach; ?>
 
-<div class="row ">
+<!-- <div class="row ">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
                 <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i> <?php echo get_phrase('theme_settings'); ?>
                   <a href="<?php echo site_url('/admin/available_addons'); ?>" class="btn btn-outline-primary btn-rounded alignToTitle"><i class="mdi mdi-plus"></i><?php echo get_phrase('get_new_themes'); ?></a>
                 </h4>
-            </div> <!-- end card body-->
-        </div> <!-- end card -->
-    </div><!-- end col-->
-</div>
+            </div> 
+        </div> 
+    </div>
+</div> -->
 
 
 <div class="row">
