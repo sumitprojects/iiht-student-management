@@ -99,6 +99,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group row mb-3">
+                                                    <label class="col-md-2 col-form-label" for="course_expiry"><?php echo get_phrase('course_expiry'); ?><span class="required">*</span></label>
+                                                    <div class="col-md-10">
+                                                        <input name="course_expiry" id = "course_expiry" type="number" min="0" value="30" class="form-control" required/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-3">
                                                     <label class="col-md-2 col-form-label" for="short_description"><?php echo get_phrase('short_description'); ?></label>
                                                     <div class="col-md-10">
                                                         <textarea name="short_description" id = "short_description" class="form-control"></textarea>

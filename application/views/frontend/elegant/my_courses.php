@@ -17,6 +17,7 @@ $my_courses_banner = $banners['my_courses_banner'];
 	<div class="row justify-content-center">
 		<?php foreach ($my_courses as $key => $my_course):
 			$course_details = $this->crud_model->get_course_by_id($my_course['course_id'])->row_array();
+			$expiry_detail = $this->crud_model->get_course_expiry($my_course['course_id'])->row_array();
 			$instructor_details = $this->user_model->get_all_user($course_details['user_id'])->row_array(); ?>
 			<!-- Single course starts -->
 			<div class="col-xl-4 col-lg-6 col-md-6">
@@ -44,6 +45,7 @@ $my_courses_banner = $banners['my_courses_banner'];
 								?>
 							</small>
 							<h3><?php echo ellipsis($course_details['title'], 100); ?></h3>
+							<p class="alert alert-danger"><?=get_phrase('expire_on') . date('D, d-M-Y',$expiry_detail['expiry_time'])?></p>
 							<p class="mb-2"><?php echo ellipsis($course_details['short_description'], 100); ?>.</p>
 							<div class="progress" style="height: 5px;">
 								<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: <?php echo course_progress($my_course['course_id']); ?>%" aria-valuenow="<?php echo course_progress($my_course['course_id']); ?>" aria-valuemin="0" aria-valuemax="100"></div>

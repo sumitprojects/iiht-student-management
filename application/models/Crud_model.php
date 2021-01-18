@@ -1599,13 +1599,29 @@ class Crud_model extends CI_Model
         return $this->db->get('course')->result_array();
     }
 
-    public function enrol_student($user_id)
+
+    public function get_course_expiry_days($purchased_course = ""){
+        return $this->db->select('course_expiry')->from('course')->where('id', $purchased_course)->get();
+    }
+
+    public function check_course_enrol_expiry_for_course($user_id = "", $course_id = ""){
+        return $this->db->select('*')
+        ->from('enrol')
+        ->where('user_id',$user_id)
+        ->where('course_id',$course_id)
+        ->where('expiry_time>=',strtotime(date('D, d-M-Y')))
+        ->get();
+    }
+
+    public function enrol_student($user_id = "")
     {
         $purchased_courses = $this->session->userdata('cart_items');
         foreach ($purchased_courses as $purchased_course) {
             $data['user_id'] = $user_id;
             $data['course_id'] = $purchased_course;
             $data['date_added'] = strtotime(date('D, d-M-Y'));
+            $exp_days = $this->get_course_expiry_days($purchased_course);
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
         }
     }
@@ -1613,10 +1629,13 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
-        if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
+        $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
+        if ($check_enrol->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
         } else {
             $data['date_added'] = strtotime(date('D, d-M-Y'));
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
         }
@@ -1626,12 +1645,16 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
-        if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
+        $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
+       
+        if ($check_enrol->num_rows() > 0) {
             $response['status'] = 0;
             $response['message'] = get_phrase('student_has_already_been_enrolled_to_this_course');
             return json_encode($response);
         } else {
             $data['date_added'] = strtotime(date('D, d-M-Y'));
+            $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
 
@@ -1646,10 +1669,13 @@ class Crud_model extends CI_Model
         if ($course_details['is_free_course'] == 1) {
             $data['course_id'] = $course_id;
             $data['user_id']   = $user_id;
-            if ($this->db->get_where('enrol', $data)->num_rows() > 0) {
+            $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
+            if ($check_enrol->num_rows() > 0) {
                 $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
             } else {
                 $data['date_added'] = strtotime(date('D, d-M-Y'));
+                $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
+                $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));    
                 $this->db->insert('enrol', $data);
                 $this->session->set_flashdata('flash_message', get_phrase('successfully_enrolled'));
             }

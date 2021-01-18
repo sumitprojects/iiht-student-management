@@ -1011,5 +1011,9 @@
     "recaptcha_status": "Recaptcha status",
     "update_recaptcha_settings": "Update recaptcha settings",
     "home_marquee_setting": "Set Heading Lines",
-    "heading_line": "Heading line"
+    "heading_line": "Heading line",
+    "limited_access": "Limited Access",
+    "course_slider_thumbnail": "Course slider thumbnail",
+    "course_slider_banner": "Course slider banner",
+    "course_expiry": "Course expiry"
 }

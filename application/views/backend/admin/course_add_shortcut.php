@@ -17,7 +17,10 @@
 				<label><?php echo get_phrase('course_title'); ?> <span class="required">*</span></label>
 				<input type="text" name="title" class="form-control" placeholder="<?php echo get_phrase('enter_course_title'); ?>">
 			</div>
-
+      <div class="form-group">
+          <label for="course_expiry"><?php echo get_phrase('course_expiry'); ?><span class="required">*</span></label>
+          <input name="course_expiry" id = "course_expiry" type="number" min="0" value="30" class="form-control" required/>
+      </div>
 			<div class="form-group">
 				<label><?php echo get_phrase('category'); ?> <span class="required">*</span></label>
 				<select class="form-control select2" data-toggle="select2" name="sub_category_id" id="sub_category_id" required>

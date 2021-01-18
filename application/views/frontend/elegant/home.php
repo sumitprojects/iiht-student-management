@@ -19,7 +19,7 @@
 				<span><?php echo get_phrase('find_the_right_course_for_you'); ?></span>
 			</li>
 			<li><i class="pe-7s-target"></i>
-				<h4><?php echo get_phrase('lifetime_access'); ?></h4>
+				<h4><?php echo get_phrase('limited_access'); ?></h4>
 				<span><?php echo get_phrase('learn_on_your_schedule'); ?></span>
 			</li>
 		</ul>
