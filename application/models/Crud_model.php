@@ -1604,7 +1604,8 @@ class Crud_model extends CI_Model
         return $this->db->select('course_expiry')->from('course')->where('id', $purchased_course)->get();
     }
 
-    public function check_course_enrol_expiry_for_course($user_id = "", $course_id = ""){
+    public function check_course_enrol_expiry_for_course($course_id = ""){
+        $user_id = $this->session->userdata('user_id');
         return $this->db->select('*')
         ->from('enrol')
         ->where('user_id',$user_id)

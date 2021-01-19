@@ -1015,5 +1015,7 @@
     "limited_access": "Limited Access",
     "course_slider_thumbnail": "Course slider thumbnail",
     "course_slider_banner": "Course slider banner",
-    "course_expiry": "Course expiry"
+    "course_expiry": "Course expiry",
+    "manage_account": "Manage account",
+    "expire_on": "Expire on"
 }
