@@ -54,6 +54,7 @@ foreach ($my_courses as $my_course) {
         <div class="row no-gutters" id = "my_courses_area">
             <?php foreach ($my_courses as $my_course):
                 $course_details = $this->crud_model->get_course_by_id($my_course['course_id'])->row_array();
+                $expiry_detail = $this->crud_model->check_course_enrol_expiry_for_course($my_course['course_id'])->row_array();
                 $instructor_details = $this->user_model->get_all_user($course_details['user_id'])->row_array();?>
 
                 <div class="col-lg-3">
@@ -72,6 +73,7 @@ foreach ($my_courses as $my_course) {
                                       <div class="progress" style="height: 5px;">
                                         <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: <?php echo course_progress($my_course['course_id']); ?>%" aria-valuenow="<?php echo course_progress($my_course['course_id']); ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                       </div>
+                                      <p class="alert alert-danger"><?=get_phrase('expire_on') . ' ' .date('D, d-M-Y',$expiry_detail['expiry_time'])?></p>
                                       <small><?php echo ceil(course_progress($my_course['course_id'])); ?>% <?php echo site_phrase('completed'); ?></small>
                                       <div class="rating your-rating-box" style="position: unset; margin-top: -18px;">
 

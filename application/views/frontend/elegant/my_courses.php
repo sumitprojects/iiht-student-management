@@ -12,7 +12,6 @@ $my_courses_banner = $banners['my_courses_banner'];
 	</div>
 </section>
 <!--/hero_in-->
-
 <div class="container margin_60_35">
 	<div class="row justify-content-center">
 		<?php foreach ($my_courses as $key => $my_course):
