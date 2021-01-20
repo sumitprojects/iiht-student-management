@@ -1017,5 +1017,7 @@
     "course_slider_banner": "Course slider banner",
     "course_expiry": "Course expiry",
     "manage_account": "Manage account",
-    "expire_on": "Expire on"
+    "expire_on": "Expire on",
+    "certificate": "Certificate",
+    "get_certificate": "Get certificate"
 }

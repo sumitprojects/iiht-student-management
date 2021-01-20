@@ -15,6 +15,8 @@
 <script src="<?php echo base_url().'assets/frontend/default/js/bootstrap-tagsinput.min.js'; ?>"></script>
 <script src="<?php echo base_url().'assets/frontend/default/js/custom.js'; ?>"></script>
 <script src="<?php echo base_url().'assets/lessons/js/custom.js'; ?>"></script>
+<script src="<?php echo base_url().'assets/lessons/js/pdf.min.js'; ?>"></script>
+<script src="<?php echo base_url().'assets/lessons/js/jquery.ipages.min.js'; ?>"></script>
 <script>
 function toggle_lesson_view() {
     $('#lesson-container').toggleClass('justify-content-center');
