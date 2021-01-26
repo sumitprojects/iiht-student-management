@@ -93,6 +93,92 @@ class Admin extends CI_Controller {
         $this->load->view('backend/index', $page_data);
     }
 
+
+    /*********
+     * Branch Crud
+     */
+    public function branch($param1 = "", $param2 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if ($param1 == 'add') {
+            $response = $this->crud_model->add_branch();
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('branch_name_already_exists'));
+            }
+            redirect(site_url('admin/branch'), 'refresh');
+        }
+        elseif ($param1 == "edit") {
+            $response = $this->crud_model->edit_branch($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('branch_name_already_exists'));
+            }
+            redirect(site_url('admin/branch'), 'refresh');
+        }
+        elseif ($param1 == "delete") {
+            $this->crud_model->delete_branch($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/branch'), 'refresh');
+        }else if($param1 == 'activate'){
+            $this->crud_model->activate_branch($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
+            redirect(site_url('admin/branch'), 'refresh');
+        }
+        $page_data['page_name'] = 'branch';
+        $page_data['page_title'] = get_phrase('branch');
+        $page_data['branch'] = $this->crud_model->get_branch($param2)->result_array();
+        $this->load->view('backend/index', $page_data);
+    }
+    /****Branch End */
+
+    /*********
+     * Source Crud
+     */
+    public function source($param1 = "", $param2 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if ($param1 == 'add') {
+            $response = $this->crud_model->add_source();
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('source_name_already_exists'));
+            }
+            redirect(site_url('admin/source'), 'refresh');
+        }
+        elseif ($param1 == "edit") {
+            $response = $this->crud_model->edit_source($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('source_name_already_exists'));
+            }
+            redirect(site_url('admin/source'), 'refresh');
+        }
+        elseif ($param1 == "delete") {
+            $this->crud_model->delete_source($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/source'), 'refresh');
+        }else if($param1 == 'activate'){
+            $this->crud_model->activate_source($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
+            redirect(site_url('admin/source'), 'refresh');
+        }
+        $page_data['page_name'] = 'source';
+        $page_data['page_title'] = get_phrase('source');
+        $page_data['source'] = $this->crud_model->get_source($param2)->result_array();
+        $this->load->view('backend/index', $page_data);
+    }
+    /****Source End */
+
+
     public function sub_categories_by_category_id($category_id = 0) {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');

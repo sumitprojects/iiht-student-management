@@ -25,6 +25,135 @@ class Crud_model extends CI_Model
         return $this->db->get('category');
     }
 
+    /*****
+     * Branch Crud Model
+     */
+    public function get_branch($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('branch_id', $param1);
+        }
+        return $this->db->get('branch');
+    }
+
+    public function add_branch()
+    {
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $data['branch_code']   = strtoupper(html_escape($this->input->post('branch_code')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('branch_name', $data['branch_name']);
+        $this->db->or_where('branch_code', $data['branch_code']);
+        $previous_data = $this->db->get('branch')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('branch', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_branch($param1 = "")
+    {
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $branch_code   = html_escape($this->input->post('branch_code'));
+        $branch_id   = html_escape($this->input->post('branch_id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('branch_name', $data['branch_name']);
+        $this->db->where('branch_code !=', $branch_code);
+        $this->db->where('branch_id !=', $branch_id);
+        $previous_data = $this->db->get('branch')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('branch_id', $branch_id);
+            $this->db->update('branch', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_branch($param1 = "")
+    {
+        $data['branch_status']   = 0;
+        $this->db->where('branch_id', $param1);
+        $this->db->where('branch_status', 1);
+        $this->db->update('branch', $data);
+        return true;
+    }
+
+    public function activate_branch($param1 = "")
+    {
+        $data['branch_status']   = 1;
+        $this->db->where('branch_id', $param1);
+        $this->db->where('branch_status', 0);
+        $this->db->update('branch', $data);
+        return true;
+    }
+
+    /**
+     * Branch Crud End
+     */
+
+         /*****
+     * Source Crud Model
+     */
+    public function get_source($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('source_id', $param1);
+        }
+        return $this->db->get('sources');
+    }
+
+    public function add_source()
+    {
+        $data['source_name']   = strtoupper(html_escape($this->input->post('source_name')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('source_name', $data['source_name']);
+        $previous_data = $this->db->get('sources')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('sources', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_source($param1 = "")
+    {
+        $data['source_name']   = strtoupper(html_escape($this->input->post('source_name')));
+        $source_id   = html_escape($this->input->post('source_id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('source_name', $data['source_name']);
+        $this->db->where('source_id !=', $source_id);
+        $previous_data = $this->db->get('sources')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('source_id', $source_id);
+            $this->db->update('sources', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_source($param1 = "")
+    {
+        $data['source_status']   = 0;
+        $this->db->where('source_id', $param1);
+        $this->db->where('source_status', 1);
+        $this->db->update('sources', $data);
+        return true;
+    }
+
+    public function activate_source($param1 = "")
+    {
+        $data['source_status']   = 1;
+        $this->db->where('source_id', $param1);
+        $this->db->where('source_status', 0);
+        $this->db->update('sources', $data);
+        return true;
+    }
+
+    /**
+     * Source Crud End
+     */
+
+
     public function get_category_details_by_id($id)
     {
         return $this->db->get_where('category', array('id' => $id));
