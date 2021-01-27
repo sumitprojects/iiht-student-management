@@ -16,20 +16,7 @@ function initDataTable(tableIds, length) {
     }
 }
 
-$("#course-datatable").DataTable({
-    keys: !0,
-    language: {
-        paginate: {
-            previous: "<i class='mdi mdi-chevron-left'>",
-            next: "<i class='mdi mdi-chevron-right'>"
-        }
-    },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-    }
-});
-
-$("#branch-datatable").DataTable({
+$("#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable").DataTable({
     keys: !0,
     language: {
         paginate: {

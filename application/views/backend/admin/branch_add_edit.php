@@ -13,7 +13,6 @@ if(!empty($param2)){
                 <h4 class="mb-3 header-title"><?php echo get_phrase(($branch)?'branch_edit_form':'branch_add_form'); ?></h4>
                 <form class="required-form" action="<?php echo site_url('admin/branch/'.(!empty($branch)?'edit':'add')); ?>" method="post">
                 <?php if(!empty($branch)):?>
-                    <input type="hidden" class="form-control" id="branch_code" name = "branch_code" value="<?php echo $branch['branch_code']; ?>" readonly>
                     <input type="hidden" class="form-control" id="branch_id" name = "branch_id" value="<?php echo $branch['branch_id']; ?>" readonly>
                 <?php endif;?>
 

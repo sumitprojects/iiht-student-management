@@ -55,6 +55,13 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				<span><?php echo get_phrase('source'); ?></span>
 			</a>
 		</li>
+		<li class = "side-nav-item">
+			<a class="side-nav-link <?php if ($page_name == 'inquiry' || $page_name == 'inquiry_add' || $page_name == 'inquiry_edit')echo 'active';?>" 
+				href="<?php echo site_url('admin/inquiry'); ?>">
+				<i class="dripicons-to-do"></i>
+				<span><?php echo get_phrase('inquiry'); ?></span>
+			</a>
+		</li>
 		<li class="side-nav-item">
 			<a href="<?php echo site_url('admin/courses'); ?>" class="side-nav-link <?php if ($page_name == 'courses' || $page_name == 'course_add' || $page_name == 'course_edit')echo 'active';?>">
 				<i class="dripicons-archive"></i>

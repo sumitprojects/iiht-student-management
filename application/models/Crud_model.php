@@ -91,7 +91,105 @@ class Crud_model extends CI_Model
      * Branch Crud End
      */
 
-         /*****
+     /*****
+     * inquiry Crud Model
+     */
+    public function get_inquiry($param1 = ""){
+        $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
+                 ->from('enquiry as en')
+                 ->join('course as c','c.id = en.course_id')
+                 ->join('sources as s','s.source_id = en.source_id')
+                 ->join('branch as b','b.branch_id = en.branch_id')
+                 ->join('users as u','u.id = en.user_id');
+        if ($param1 != "") {
+            $this->db->where('en.en_id', $param1);
+        }
+        return $this->db->get();
+    }
+
+    public function add_inquiry()
+    {
+        $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
+        $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
+        $data['en_gender']   = (html_escape($this->input->post('en_gender')));
+        $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
+        $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
+        $data['course_id']   = (html_escape($this->input->post('course_id')));
+        $data['branch_id']   = (html_escape($this->input->post('branch_id')));
+        $data['mob_no']   = (html_escape($this->input->post('mob_no')));
+        $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
+
+        $data['en_date']   = (html_escape($this->input->post('en_date')));
+        $data['user_id'] = $this->session->userdata('user_id');
+        $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
+
+        $data['en_status']   = (html_escape($this->input->post('en_status')));
+
+        $data['date_added'] = strtotime(date('D, d-M-Y'));
+        $data['last_modified'] = strtotime(date('D, d-M-Y'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('en_code', $data['en_code']);
+        $previous_data = $this->db->get('enquiry')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('enquiry', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_inquiry($param1 = "")
+    {
+        $en_id   = html_escape($this->input->post('en_id'));
+
+        $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
+        $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
+        $data['en_gender']   = (html_escape($this->input->post('en_gender')));
+        $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
+        $data['en_email']   = strtoupper(html_escape($this->input->post('en_email')));
+        $data['course_id']   = (html_escape($this->input->post('course_id')));
+        $data['branch_id']   = (html_escape($this->input->post('branch_id')));
+        $data['en_date']   = (html_escape($this->input->post('en_date')));
+        $data['user_id'] = $this->session->userdata('user_id');
+        $data['mob_no']   = (html_escape($this->input->post('mob_no')));
+        $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
+        $data['en_status']   = (html_escape($this->input->post('en_status')));
+      
+        $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
+        $data['last_modified'] = strtotime(date('D, d-M-Y'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('en_code', $data['en_code']);
+        $this->db->where('en_id !=', $en_id);
+        $previous_data = $this->db->get('enquiry')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('en_id', $en_id);
+            $this->db->update('enquiry', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_inquiry($param1 = "")
+    {
+        $data['is_delete']   = 1;
+        $this->db->where('en_id', $param1);
+        $this->db->where('is_delete', 0);
+        $this->db->update('enquiry', $data);
+        return true;
+    }
+
+    public function activate_inquiry($param1 = "")
+    {
+        $data['is_delete']   = 0;
+        $this->db->where('en_id', $param1);
+        $this->db->where('is_delete', 1);
+        $this->db->update('enquiry', $data);
+        return true;
+    }
+
+    /**
+     * inquiry Crud End
+     */
+    /*****
      * Source Crud Model
      */
     public function get_source($param1 = ""){
@@ -153,6 +251,66 @@ class Crud_model extends CI_Model
      * Source Crud End
      */
 
+    /*****
+     * followup Crud Model
+     */
+    public function get_followup_by_enquiry($param1 = ""){
+        $this->db->select('fp.*,concat(u.first_name," ",u.last_name) as username')
+                 ->from('followup as fp')
+                 ->join('enquiry as en','fp.en_id = en.en_id')
+                 ->join('users as u','u.id = fp.user_id')
+                 ->where('en.en_id',$param1);
+        return $this->db->get();
+    }
+
+    public function get_followup($param1 = ""){
+        $this->db->select('fp.*,en.en_id,u.id')
+                 ->from('followup as fp')
+                 ->join('enquiry as en','fp.en_id = en.en_id')
+                 ->join('users as u','u.id = fp.user_id');
+        if ($param1 != "") {
+            $this->db->where('fp.id', $param1);
+        }
+        return $this->db->get();
+    }
+
+    public function add_followup()
+    {
+        $data['description']   = strtoupper(html_escape($this->input->post('description')));
+        $data['en_id']   = (html_escape($this->input->post('en_id')));
+        $data['user_id']   = $this->session->userdata('user_id');
+        $data['status'] = strtoupper(html_escape($this->input->post('status')));
+        $data['date_added']   = $this->input->post('date_added');
+        $data['next_date']   = $this->input->post('next_date');
+        $data['modified_date']   = date('Y-m-d');
+        $this->db->insert('followup', $data);
+        return true;
+    }
+
+    public function edit_followup($param1 = "")
+    {
+        $data['description']   = strtoupper(html_escape($this->input->post('description')));
+        $data['en_id']   = (html_escape($this->input->post('en_id')));
+        $data['user_id']   = $this->session->userdata('user_id');
+        $data['status'] = strtoupper(html_escape($this->input->post('status')));
+        $data['date_added']   = $this->input->post('date_added');
+        $data['next_date']   = $this->input->post('next_date');
+        $data['modified_date']   = date('Y-m-d');
+
+        $followup_id   = html_escape($this->input->post('id'));
+        $this->db->where('id', $followup_id);
+        $this->db->update('followup', $data);
+        return true;
+    }
+
+    public function delete_followup($param1 = ""){
+        $this->db->where('id', $param1);
+        $this->db->delete('followup');
+    }
+
+    /**
+     * followup Crud End
+     */
 
     public function get_category_details_by_id($id)
     {
@@ -1181,7 +1339,7 @@ class Crud_model extends CI_Model
             $result = $s3->putObject([
                 'Bucket' => $bucket,
                 'Key'    => $key,
-                'SourceFile' => $tmpfile['tmp_name'],
+                'followupFile' => $tmpfile['tmp_name'],
                 'ACL'   => 'public-read'
             ]);
 
@@ -1261,11 +1419,11 @@ class Crud_model extends CI_Model
             $data['video_url_for_mobile_application'] = site_url($video_file_path);
         } else {
             if ($attachment_type == 'iframe') {
-                if (empty($this->input->post('iframe_source'))) {
-                    $this->session->set_flashdata('error_message', get_phrase('invalid_source'));
+                if (empty($this->input->post('iframe_followup'))) {
+                    $this->session->set_flashdata('error_message', get_phrase('invalid_followup'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
-                $data['attachment'] = $this->input->post('iframe_source');
+                $data['attachment'] = $this->input->post('iframe_followup');
             }else{
                 if ($_FILES['attachment']['name'] == "") {
                     $this->session->set_flashdata('error_message', get_phrase('invalid_attachment'));
@@ -1411,7 +1569,7 @@ class Crud_model extends CI_Model
                 $result = $s3->putObject([
                     'Bucket' => $bucket,
                     'Key'    => $key,
-                    'SourceFile' => $tmpfile['tmp_name'],
+                    'followupFile' => $tmpfile['tmp_name'],
                     'ACL'   => 'public-read'
                 ]);
 
@@ -1509,11 +1667,11 @@ class Crud_model extends CI_Model
 
         } else {
             if ($attachment_type == 'iframe') {
-                if (empty($this->input->post('iframe_source'))) {
-                    $this->session->set_flashdata('error_message', get_phrase('invalid_source'));
+                if (empty($this->input->post('iframe_followup'))) {
+                    $this->session->set_flashdata('error_message', get_phrase('invalid_followup'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
-                $data['attachment'] = $this->input->post('iframe_source');
+                $data['attachment'] = $this->input->post('iframe_followup');
             }else{
                 if ($_FILES['attachment']['name'] != "") {
                     // unlinking previous attachments
