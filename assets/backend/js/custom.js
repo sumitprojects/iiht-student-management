@@ -15,8 +15,11 @@ function initDataTable(tableIds, length) {
         });
     }
 }
-
-$("#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable").DataTable({
+if ($("table").attr('data-filter') != undefined) {
+    var targetColomns = $.map($("table").data('filter').split(','), Number);
+    var targetColomns2 = $.map($("table").data('nofilter').split(','), Number);
+}
+var datatables = $("#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable").DataTable({
     keys: !0,
     language: {
         paginate: {
@@ -24,6 +27,28 @@ $("#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable").Da
             next: "<i class='mdi mdi-chevron-right'>"
         }
     },
+    searchPanes: {
+        dtOpts: {
+            select: {
+                style: 'multi'
+            },
+            layout: 'columns-6'
+        },
+    },
+    columnDefs: [{
+            searchPanes: {
+                show: true
+            },
+            targets: targetColomns !== undefined ? targetColomns : null,
+        },
+        {
+            searchPanes: {
+                show: false
+            },
+            targets: targetColomns2 !== undefined ? targetColomns2 : null,
+        }
+    ],
+    dom: 'Plfrtip',
     drawCallback: function() {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
     }

@@ -4,8 +4,7 @@
             <div class="card-body">
                 <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i> <?php echo get_phrase('branch'); ?>
                     <!-- href="<?php //echo site_url('admin/branch_form/add_branch'); ?>" -->
-                    <a href="javascript:void(0)"
-                     onclick="showAjaxModal('<?php echo base_url();?>modal/popup/branch_add_edit', '<?php echo get_phrase('add_new_branch'); ?>');"
+                    <a href="<?php echo site_url('admin/branch/branch_add_edit/'); ?>"
                      class="btn btn-outline-primary btn-rounded alignToTitle"><i class="mdi mdi-plus"></i><?php echo get_phrase('add_new_branch'); ?></a>
                 </h4>
             </div> <!-- end card body-->
@@ -16,7 +15,8 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title"><?php echo get_phrase('branch_list'); ?></h4>
+                <h4 class="mb-3 header-title"><?php echo get_phrase('branch_list'); ?>
+                </h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($branch) > 0): ?>
                     <table id="branch-datatable" class="table table-striped dt-responsive nowrap" width="100%" data-page-length='25'>
@@ -53,7 +53,7 @@
                                           </button>
                                           <ul class="dropdown-menu">
                                                 <?php if ($br['branch_status'] == 1): ?>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="showAjaxModal('<?php echo base_url('modal/popup/branch_add_edit/'.$br['branch_id']); ?>','<?php echo get_phrase('edit_this_branch');?>')"><?php echo get_phrase('edit_this_branch');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/branch/branch_add_edit/'.$br['branch_id']); ?>"><?php echo get_phrase('edit_this_branch');?></a></li>
                                                 <?php endif; ?>
                                               <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/branch/'.(($br['branch_status'] == 1)?'delete':'activate').'/'.$br['branch_id']); ?>');"><?php echo get_phrase(($br['branch_status'] == 1)?'delete':'activate'); ?></a></li>
                                           </ul>

@@ -10,7 +10,9 @@ if(!empty($param2)){
         <div class="card">
             <div class="card-body">
               <div class="col-lg-12">
-                <h4 class="mb-3 header-title"><?php echo get_phrase(($branch)?'branch_edit_form':'branch_add_form'); ?></h4>
+                <h4 class="mb-3 header-title"><?php echo get_phrase(($branch)?'branch_edit_form':'branch_add_form'); ?>
+                    <a href="<?php echo site_url('admin/branch'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_branch_list'); ?></a>
+                </h4>
                 <form class="required-form" action="<?php echo site_url('admin/branch/'.(!empty($branch)?'edit':'add')); ?>" method="post">
                 <?php if(!empty($branch)):?>
                     <input type="hidden" class="form-control" id="branch_id" name = "branch_id" value="<?php echo $branch['branch_id']; ?>" readonly>

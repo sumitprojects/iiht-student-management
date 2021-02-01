@@ -19,6 +19,8 @@ if(!empty($param3)){
                     <form class="required-form"
                         action="<?php echo site_url('admin/followup/'.(!empty($followup)?'edit':'add')); ?>"
                         method="post">
+                        <input type="hidden" class="form-control" id="date_added" name="date_added"
+                                value="<?php echo !empty($followup)?$followup['date_added']:date('Y-m-d')?>" required>
                         <?php if(!empty($followup)):?>
                         <input type="hidden" class="form-control" id="id" name="id"
                             value="<?php echo $followup['id']; ?>">
@@ -32,15 +34,9 @@ if(!empty($param3)){
                                 value="<?php echo !empty($followup)?$followup['description']:''; ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="date_added"><?php echo get_phrase('followup_date'); ?><span
-                                    class="required">*</span></label>
-                            <input type="date" class="form-control" id="date_added" name="date_added"
-                                value="<?php echo !empty($followup)?$followup['date_added']:date('Y-m-d')?>" required>
-                        </div>
-                        <div class="form-group">
                             <label for="next_date"><?php echo get_phrase('next_followup_date'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control" id="next_date" name="next_date"
+                            <input type="date" class="form-control" id="next_date" name="next_date" min="<?=date('Y-m-d')?>"
                                 value="<?php echo !empty($followup)?$followup['next_date']:date('Y-m-d')?>" required>
                         </div>
                         <div class="form-group">
@@ -57,9 +53,6 @@ if(!empty($param3)){
                                 <option value="completed"
                                     <?=strtolower($followup['status'])=='completed'?'selected':''?>>
                                     <?php echo get_phrase('completed') ?></option>
-                                <option value="hold"
-                                    <?=strtolower($followup['status'])=='hold'?'selected':''?>>
-                                    <?php echo get_phrase('hold') ?></option>
                             </select>
                         </div>
                         <button type="button" class="btn btn-primary"

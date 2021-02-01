@@ -9,10 +9,12 @@ if(!empty($param2)){
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title"><?php echo get_phrase('followup_list'); ?></h4>
+                <h4 class="mb-3 header-title"><?php echo get_phrase('followup_list'); ?>
+                    <a href="<?php echo site_url('admin/inquiry'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_inquiry_list'); ?></a>
+                </h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($followup) > 0): ?>
-                    <table id="branch-datatable" class="table table-striped dt-responsive nowrap" width="100%" data-page-length='25'>
+                    <table id="followup-datatable" class="table table-striped dt-responsive nowrap" data-filter="1,2,3" width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -38,7 +40,7 @@ if(!empty($param2)){
                                         <strong><?php echo ($br['next_date']); ?></strong><br>
                                     </td>
                                     <td>
-                                        <strong><?php echo ($br['username']); ?></strong><br>
+                                        <strong><?php echo ellipsis($br['username']); ?></strong><br>
                                     </td>
                                     <td>
                                         <?php if (strtolower($br['status']) == 'closed'): ?>
@@ -47,20 +49,22 @@ if(!empty($param2)){
                                             <span class="badge badge-info-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['status']); ?>"><?php echo get_phrase($br['status']); ?></span>
                                         <?php elseif (strtolower($br['status']) == 'completed'):?>
                                             <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['status']); ?>"><?php echo get_phrase($br['status']); ?></span>
-                                        <?php elseif (strtolower($br['status']) == 'hold'):?>
-                                            <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['status']); ?>"><?php echo get_phrase($br['status']); ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
+                                        <?php if($br['is_delete'] == 1):?>
+                                            <span class="badge badge-danger-lighten"><?=get_phrase('inquiry_deleted')?></span>
+                                        <?php else: ?>
                                         <div class="dropright dropright">
                                           <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="mdi mdi-dots-vertical"></i>
                                           </button>
                                           <ul class="dropdown-menu">
-                                              <li><a class="dropdown-item" href="javascript:void(0)" onclick="showLargeModal('<?php echo base_url('modal/popup/followup_add_edit/'.$br['en_id'].'/'.$br['id']); ?>','<?php echo get_phrase('edit_this_followup');?>')"><?php echo get_phrase('edit_this_inquiry');?></a></li>
+                                              <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'].'/'.$br['id'])?>"><?php echo get_phrase('edit_this_followup');?></a></li>
                                               <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/followup/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a></li>
                                           </ul>
                                       </div>
+                                      <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

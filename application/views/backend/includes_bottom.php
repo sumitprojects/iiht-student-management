@@ -31,6 +31,8 @@
 <script src="<?php echo base_url('assets/backend/js/vendor/dragula.min.js'); ?>"></script>
 <!-- component js -->
 <script src="<?php echo base_url('assets/backend/js/ui/component.dragula.js'); ?>"></script>
+<script src="https://cdn.datatables.net/searchpanes/1.2.1/js/dataTables.searchPanes.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
 
 <script src="<?php echo site_url('assets/backend/js/custom.js');?>"></script>
 

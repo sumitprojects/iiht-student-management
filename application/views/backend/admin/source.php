@@ -4,8 +4,7 @@
             <div class="card-body">
                 <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i> <?php echo get_phrase('source'); ?>
                     <!-- href="<?php //echo site_url('admin/source_form/add_source'); ?>" -->
-                    <a href="javascript:void(0)"
-                     onclick="showAjaxModal('<?php echo base_url();?>modal/popup/source_add_edit', '<?php echo get_phrase('add_new_source'); ?>');"
+                    <a href="<?php echo site_url('admin/source/source_add_edit');?>"
                      class="btn btn-outline-primary btn-rounded alignToTitle"><i class="mdi mdi-plus"></i><?php echo get_phrase('add_new_source'); ?></a>
                 </h4>
             </div> <!-- end card body-->
@@ -49,7 +48,7 @@
                                           </button>
                                           <ul class="dropdown-menu">
                                                 <?php if ($br['source_status'] == 1): ?>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="showAjaxModal('<?php echo base_url('modal/popup/source_add_edit/'.$br['source_id']); ?>','<?php echo get_phrase('edit_this_source');?>')"><?php echo get_phrase('edit_this_source');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/source/source_add_edit/'.$br['source_id']);?>"><?php echo get_phrase('edit_this_source');?></a></li>
                                                 <?php endif; ?>
                                               <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/source/'.(($br['source_status'] == 1)?'delete':'activate').'/'.$br['source_id']); ?>');"><?php echo get_phrase(($br['source_status'] == 1)?'delete':'activate'); ?></a></li>
                                           </ul>

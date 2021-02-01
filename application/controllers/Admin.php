@@ -102,7 +102,14 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if ($param1 == 'add') {
+        if($param1 == 'branch_add_edit'){
+            $page_data['page_name'] = 'branch_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_branch');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
             $response = $this->crud_model->add_branch();
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -128,11 +135,12 @@ class Admin extends CI_Controller {
             $this->crud_model->activate_branch($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
             redirect(site_url('admin/branch'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'branch';
+            $page_data['page_title'] = get_phrase('branch');
+            $page_data['branch'] = $this->crud_model->get_branch($param2)->result_array();
+            $this->load->view('backend/index', $page_data);    
         }
-        $page_data['page_name'] = 'branch';
-        $page_data['page_title'] = get_phrase('branch');
-        $page_data['branch'] = $this->crud_model->get_branch($param2)->result_array();
-        $this->load->view('backend/index', $page_data);
     }
     /****Branch End */
 
@@ -144,7 +152,14 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if ($param1 == 'add') {
+        if($param1 == 'source_add_edit'){
+            $page_data['page_name'] = 'source_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_source');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
             $response = $this->crud_model->add_source();
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -186,7 +201,14 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if ($param1 == 'add') {
+        if($param1 == 'inquiry_add_edit'){
+            $page_data['page_name'] = 'inquiry_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_inquiry');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
             $response = $this->crud_model->add_inquiry();
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -213,9 +235,11 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
             redirect(site_url('admin/inquiry'), 'refresh');
         }
+        
         $page_data['page_name'] = 'inquiry';
         $page_data['page_title'] = get_phrase('inquiry');
         $page_data['inquiry'] = $this->crud_model->get_inquiry($param2)->result_array();
+
         $this->load->view('backend/index', $page_data);
     }
     /****inquiry End */
@@ -224,18 +248,43 @@ class Admin extends CI_Controller {
     /*********
      * Followup Crud
      */
-    public function followup($param1 = "", $param2 = "") {
+    public function followup($param1 = "", $param2 = "",$param3 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if ($param1 == 'add') {
+        
+        if($param1 == 'followup_add_edit'){
+            $page_data['page_name'] = 'followup_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_followup');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+                $inquiry = $this->crud_model->get_inquiry($param2)->row_array();
+
+                if($inquiry['is_delete']==1){
+                    
+                    redirect('admin/inquiry','refresh');
+                    
+                }
+            }
+            if($param3 != ""){
+                $page_data['param3'] = $param3;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if($param1 == 'view_followup'){
+            $page_data['page_name'] = 'followup';
+            $page_data['page_title'] = get_phrase('view_followup');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
             $response = $this->crud_model->add_followup();
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
             }else{
                 $this->session->set_flashdata('error_message', get_phrase('followup_error'));
             }
-            redirect(site_url('admin/followup'), 'refresh');
+            redirect(site_url('admin/followup/view_followup/'.(html_escape($this->input->post('en_id')))), 'refresh');
         }
         elseif ($param1 == "edit") {
             $response = $this->crud_model->edit_followup($param2);
@@ -244,18 +293,29 @@ class Admin extends CI_Controller {
             }else{
                 $this->session->set_flashdata('error_message', get_phrase('followup_error'));
             }
-            redirect(site_url('admin/followup'), 'refresh');
+            redirect(site_url('admin/followup/view_followup/'.(html_escape($this->input->post('en_id')))), 'refresh');
         }
         elseif ($param1 == "delete") {
+            $inquiry = $this->crud_model->get_inquiry($param2)->row_array();
+
+            if($inquiry['is_delete']==1){                
+                redirect('admin/inquiry','refresh');
+            }
             $this->crud_model->delete_followup($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
-            redirect(site_url('admin/followup'), 'refresh');
+            redirect(site_url('admin/followup/view_followup/'.(html_escape($this->input->post('en_id')))), 'refresh');
         }else if($param1 == 'activate'){
+            $inquiry = $this->crud_model->get_inquiry($param2)->row_array();
+
+            if($inquiry['is_delete']==1){                
+                redirect('admin/inquiry','refresh');
+            }
             $this->crud_model->activate_followup($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
-            redirect(site_url('admin/followup'), 'refresh');
+            redirect(site_url('admin/followup/view_followup/'.(html_escape($this->input->post('en_id')))), 'refresh');
+        }else{
+            $this->inquiry();
         }
-        $this->inquiry();
     }
     /****Followup End */
 

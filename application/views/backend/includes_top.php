@@ -8,6 +8,8 @@
 <link href="<?php echo base_url('assets/backend/css/vendor/summernote-bs4.css') ?>" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url('assets/backend/css/vendor/fullcalendar.min.css'); ?>" rel="stylesheet" type="text/css" />
 <link href="<?php echo base_url('assets/backend/css/vendor/dropzone.css'); ?>" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/1.2.1/css/searchPanes.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
 <!-- third party css end -->
 <!-- App css -->
 <link href="<?php echo base_url('assets/backend/css/app.min.css') ?>" rel="stylesheet" type="text/css" />
@@ -23,3 +25,14 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 <script src="<?php echo base_url('assets/backend/js/jquery-3.3.1.min.js'); ?>" charset="utf-8"></script>
 <script src="<?php echo site_url('assets/backend/js/onDomChange.js');?>"></script>
+<style>
+.left-side-menu-detached{
+    background: #343a40;
+    border-radius: 15px;
+}
+.left-side-menu-detached  li:not(.active),.left-side-menu-detached  li a:not(.active){
+    color:white !important;
+}
+
+
+</style>

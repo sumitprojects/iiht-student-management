@@ -115,6 +115,7 @@ class Crud_model extends CI_Model
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
+        $data['source_id']   = (html_escape($this->input->post('source_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
@@ -124,7 +125,7 @@ class Crud_model extends CI_Model
         $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
 
         $data['en_status']   = (html_escape($this->input->post('en_status')));
-
+        $data['is_delete'] = 0;
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
@@ -132,7 +133,9 @@ class Crud_model extends CI_Model
         $previous_data = $this->db->get('enquiry')->num_rows();
         if ($previous_data == 0){
             $this->db->insert('enquiry', $data);
-            return true;
+            echo $this->db->last_query();
+            die;
+                return true;
         }
         return false;
     }
@@ -148,12 +151,13 @@ class Crud_model extends CI_Model
         $data['en_email']   = strtoupper(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
+        $data['source_id']   = (html_escape($this->input->post('source_id')));
         $data['en_date']   = (html_escape($this->input->post('en_date')));
         $data['user_id'] = $this->session->userdata('user_id');
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
         $data['en_status']   = (html_escape($this->input->post('en_status')));
-      
+        $data['is_delete'] = 0;
         $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
@@ -255,7 +259,7 @@ class Crud_model extends CI_Model
      * followup Crud Model
      */
     public function get_followup_by_enquiry($param1 = ""){
-        $this->db->select('fp.*,concat(u.first_name," ",u.last_name) as username')
+        $this->db->select('fp.*,en.en_id,en_status, concat(u.first_name," ",u.last_name) as username')
                  ->from('followup as fp')
                  ->join('enquiry as en','fp.en_id = en.en_id')
                  ->join('users as u','u.id = fp.user_id')
@@ -264,7 +268,7 @@ class Crud_model extends CI_Model
     }
 
     public function get_followup($param1 = ""){
-        $this->db->select('fp.*,en.en_id,u.id')
+        $this->db->select('fp.*,en.en_id,en_status')
                  ->from('followup as fp')
                  ->join('enquiry as en','fp.en_id = en.en_id')
                  ->join('users as u','u.id = fp.user_id');
@@ -283,6 +287,7 @@ class Crud_model extends CI_Model
         $data['date_added']   = $this->input->post('date_added');
         $data['next_date']   = $this->input->post('next_date');
         $data['modified_date']   = date('Y-m-d');
+
         $this->db->insert('followup', $data);
         return true;
     }
