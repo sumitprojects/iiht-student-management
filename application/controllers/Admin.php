@@ -93,7 +93,6 @@ class Admin extends CI_Controller {
         $this->load->view('backend/index', $page_data);
     }
 
-
     /*********
      * Branch Crud
      */
@@ -346,6 +345,75 @@ class Admin extends CI_Controller {
         $page_data['categories'] = $this->crud_model->get_categories();
         $this->load->view('backend/index', $page_data);
     }
+
+    /**
+     * Admission Process Crud
+     */
+
+    public function admissions() {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+
+        // $page_data['selected_category_id']   = isset($_GET['category_id']) ? $_GET['category_id'] : "all";
+        // $page_data['selected_instructor_id'] = isset($_GET['instructor_id']) ? $_GET['instructor_id'] : "all";
+        // $page_data['selected_price']         = isset($_GET['price']) ? $_GET['price'] : "all";
+        // $page_data['selected_status']        = isset($_GET['status']) ? $_GET['status'] : "all";
+        // Courses query is used for deciding if there is any course or not. Check the view you will get it
+        // $page_data['courses']                = $this->crud_model->filter_course_for_backend($page_data['selected_category_id'], $page_data['selected_instructor_id'], $page_data['selected_price'], $page_data['selected_status']);
+        // $page_data['status_wise_courses']    = $this->crud_model->get_status_wise_courses();
+        // $page_data['instructors']            = $this->user_model->get_instructor()->result_array();
+        $page_data['page_name']              = 'admissions-server-side';
+        $page_data['categories']             = $this->crud_model->get_categories();
+        $page_data['page_title']             = get_phrase('admissions');
+        $this->load->view('backend/index', $page_data);
+    }
+
+    public function admission_actions($param1 = "", $param2 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if ($param1 == "add") {
+            $admission_id = $this->crud_model->add_admission();
+            redirect(site_url('admin/admission_form/admission_edit/'.$admission_id), 'refresh');
+
+        }elseif ($param1 == "edit") {
+            $this->crud_model->update_admission($param2);
+            redirect(site_url('admin/admissions'), 'refresh');
+        }
+        elseif ($param1 == 'delete') {
+            $this->is_drafted_admission($param2);
+            $this->crud_model->delete_admission($param2);
+            redirect(site_url('admin/admissions'), 'refresh');
+        }
+    }
+
+    public function admission_form($param1 = "", $param2 = "") {
+
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if ($param1 == 'add_admission') {
+            $page_data['inquiry'] = $this->crud_model->get_inquiry($param2)->result_array();
+            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+            $page_data['page_name'] = 'admission_add_edit';
+            $page_data['page_title'] = get_phrase('add_course');
+            $this->load->view('backend/index', $page_data);
+
+        }elseif ($param1 == 'admission_edit') {
+            $this->is_drafted_course($param2);
+            $page_data['page_name'] = 'admission_add_edit';
+            $page_data['admission_id'] =  $param2;
+            $page_data['page_title'] = get_phrase('edit_admission');
+            $page_data['courses'] = $this->crud_model->get_courses();
+            $this->load->view('backend/index', $page_data);
+        }
+    }
+
+     /*** Admission Process End */
 
     public function instructors($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {

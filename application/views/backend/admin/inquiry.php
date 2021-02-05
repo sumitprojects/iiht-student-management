@@ -71,6 +71,7 @@
                                                     <li><a class="dropdown-item" href="javascript:void(0)" onclick="showLargeModal('<?php echo base_url('modal/popup/inquiry_add_edit/'.$br['en_id']); ?>','<?php echo get_phrase('edit_this_inquiry');?>')"><?php echo get_phrase('edit_this_inquiry');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/admission_form/add_admission/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
                                                 <?php endif; ?>
                                                   <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>
                                           </ul>

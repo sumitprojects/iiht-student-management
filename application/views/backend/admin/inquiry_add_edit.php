@@ -65,15 +65,15 @@ if(!empty($param2)){
                             <label for="mob_no"><?php echo get_phrase('mob_no'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="mob_no" name="mob_no"
-                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="999-999-9999"
-                                pattern="[6-9]{1}[0-9]{2}-[0-9]{3}-[0-9]{4}" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="9999999999"
+                                pattern="[6-9]{1}[0-9]{9}" required>
                         </div>
                         <div class="form-group">
                             <label for="alt_mob"><?php echo get_phrase('alt_mob'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="alt_mob" name="alt_mob"
-                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="999-999-9999"
-                                pattern="[6-9]{1}[0-9]{2}-[0-9]{3}-[0-9]{4}" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="9999999999"
+                                pattern="[6-9]{1}[0-9]{9}" required>
                         </div>
                         <div class="form-group">
                             <label for="en_date"><?php echo get_phrase('inquiry_date'); ?><span

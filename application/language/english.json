@@ -1088,5 +1088,10 @@
     "inquiry_already_exists": "Inquiry already exists",
     "back_to_branch_list": "Back to branch list",
     "back_to_inquiry_list": "Back to inquiry list",
-    "back_to_source_list": "Back to source list"
+    "back_to_source_list": "Back to source list",
+    "add_new_admission": "Add new admission",
+    "admission_form": "Admission form",
+    "education": "Education",
+    "documents": "Documents",
+    "back_to_admission_list": "Back to admission list"
 }
