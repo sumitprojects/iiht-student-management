@@ -10,6 +10,9 @@ if(!empty($param2)){
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title"><?php echo get_phrase('followup_list'); ?>
+                    <?php if(!empty($followup)):?>
+                        <a class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm" href="<?=site_url('admin/admission_form/add_admission/'.$param2)?>"><?php echo get_phrase('add_admission');?></a>
+                    <?php endif;?>
                     <a href="<?php echo site_url('admin/inquiry'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_inquiry_list'); ?></a>
                 </h4>
                  <div class="table-responsive-sm mt-4">
