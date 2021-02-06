@@ -28,6 +28,7 @@ var datatables = $("#course-datatable,#branch-datatable,#source-datatable,#inqui
         }
     },
     searchPanes: {
+        cascadePanes: true,
         dtOpts: {
             select: {
                 style: 'multi'
