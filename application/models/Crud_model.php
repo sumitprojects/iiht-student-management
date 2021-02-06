@@ -259,7 +259,7 @@ class Crud_model extends CI_Model
      * followup Crud Model
      */
     public function get_followup_by_enquiry($param1 = ""){
-        $this->db->select('fp.*,en.en_id,en_status, concat(u.first_name," ",u.last_name) as username')
+        $this->db->select('fp.*,en.en_id,en.is_delete,en_status, concat(u.first_name," ",u.last_name) as username')
                  ->from('followup as fp')
                  ->join('enquiry as en','fp.en_id = en.en_id')
                  ->join('users as u','u.id = fp.user_id')

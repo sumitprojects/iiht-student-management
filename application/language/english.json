@@ -1093,5 +1093,7 @@
     "admission_form": "Admission form",
     "education": "Education",
     "documents": "Documents",
-    "back_to_admission_list": "Back to admission list"
+    "back_to_admission_list": "Back to admission list",
+    "add_admission": "Add admission",
+    "admissions": "Admissions"
 }
