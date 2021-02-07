@@ -65,15 +65,13 @@ if(!empty($param2)){
                             <label for="mob_no"><?php echo get_phrase('mob_no'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="mob_no" name="mob_no"
-                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="9999999999"
-                                pattern="[6-9]{1}[0-9]{9}" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="" pattern=""
+                                required>
                         </div>
                         <div class="form-group">
-                            <label for="alt_mob"><?php echo get_phrase('alt_mob'); ?><span
-                                    class="required">*</span></label>
+                            <label for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
                             <input type="text" class="form-control" id="alt_mob" name="alt_mob"
-                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="9999999999"
-                                pattern="[6-9]{1}[0-9]{9}" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="" pattern="">
                         </div>
                         <div class="form-group">
                             <label for="en_date"><?php echo get_phrase('inquiry_date'); ?><span
@@ -117,29 +115,30 @@ if(!empty($param2)){
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="source_other"><?php echo get_phrase('reference_or_other'); ?><span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control" id="source_other" name="source_other"
+                                value="<?php echo !empty($inquiry)?$inquiry['source_other']:''?>">
+                        </div>
+                        <div class="form-group">
                             <label for="status"><?php echo get_phrase('inquiry_status'); ?><span
                                     class="required">*</span></label>
                             <select class="form-control select2" data-toggle="select2" name="en_status"
                                 data-init-plugin="select2" id="en_status">
-                                <option value="open"
-                                    <?=$inquiry['en_status']=='open'?'selected':''?>>
+                                <option value="open" <?=$inquiry['en_status']=='open'?'selected':''?>>
                                     <?php echo get_phrase('open') ?></option>
-                                <option value="closed"
-                                    <?=$inquiry['en_status']=='closed'?'selected':''?>>
+                                <option value="closed" <?=$inquiry['en_status']=='closed'?'selected':''?>>
                                     <?php echo get_phrase('closed') ?></option>
-                                <option value="completed"
-                                    <?=$inquiry['en_status']=='completed'?'selected':''?>>
+                                <option value="completed" <?=$inquiry['en_status']=='completed'?'selected':''?>>
                                     <?php echo get_phrase('completed') ?></option>
-                                <option value="hold"
-                                    <?=$inquiry['en_status']=='hold'?'selected':''?>>
+                                <option value="hold" <?=$inquiry['en_status']=='hold'?'selected':''?>>
                                     <?php echo get_phrase('hold') ?></option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="en_remark"><?php echo get_phrase('remark'); ?><span
-                                    class="required">*</span></label>
+                            <label for="en_remark"><?php echo get_phrase('remark'); ?></label>
                             <input type="text" class="form-control" id="en_remark" name="en_remark"
-                                value="<?php echo !empty($inquiry)?$inquiry['en_remark']:''?>" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['en_remark']:''?>">
                         </div>
 
                         <button type="button" class="btn btn-primary"
@@ -151,17 +150,34 @@ if(!empty($param2)){
     </div><!-- end col-->
 </div>
 <script type="text/javascript">
-$(document).ready(function() {
-    initSelect2(['#course_id', '#branch_id', '#source_id','#en_status']);
+jQuery(document).ready(function() {
+    initSelect2(['#course_id', '#branch_id', '#source_id', '#en_status']);
     <?php if($inquiry):?>
-    $('#course_id').val(<?=$inquiry['course_id']?>);
-    $('#course_id').trigger('change');
-    $('#branch_id').val(<?=$inquiry['branch_id']?>);
-    $('#branch_id').trigger('change');
-    $('#source_id').val(<?=$inquiry['source_id']?>);
-    $('#source_id').trigger('change');
-    $('#en_status').val('<?=$inquiry['en_status']?>');
-    $('#en_status').trigger('change');
-    <?php endif;?> 
+    jQuery('#course_id').val(<?=$inquiry['course_id']?>);
+    jQuery('#course_id').trigger('change');
+    jQuery('#branch_id').val(<?=$inquiry['branch_id']?>);
+    jQuery('#branch_id').trigger('change');
+    jQuery('#source_id').val(<?=$inquiry['source_id']?>);
+
+    jQuery('#source_id').trigger('change');
+    if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
+        jQuery('#source_other').removeAttr('disabled');
+        jQuery('#source_other').attr('required');
+    } else {
+        jQuery('#source_other').attr('disabled','true');
+    }
+
+    jQuery('#source_id').on('change', function() {
+        console.log($(this).val());
+        if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
+            jQuery('#source_other').removeAttr('disabled');
+            jQuery('#source_other').attr('required');
+        } else {
+            jQuery('#source_other').attr('disabled','true');
+        }
+    });
+    jQuery('#en_status').val('<?=$inquiry['en_status']?>');
+    jQuery('#en_status').trigger('change');
+    <?php endif;?>
 });
 </script>

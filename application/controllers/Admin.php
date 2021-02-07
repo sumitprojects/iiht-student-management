@@ -233,13 +233,13 @@ class Admin extends CI_Controller {
             $this->crud_model->activate_inquiry($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
             redirect(site_url('admin/inquiry'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'inquiry';
+            $page_data['page_title'] = get_phrase('inquiry');
+            $page_data['inquiry'] = $this->crud_model->get_inquiry($param2)->result_array();
+    
+            $this->load->view('backend/index', $page_data);    
         }
-        
-        $page_data['page_name'] = 'inquiry';
-        $page_data['page_title'] = get_phrase('inquiry');
-        $page_data['inquiry'] = $this->crud_model->get_inquiry($param2)->result_array();
-
-        $this->load->view('backend/index', $page_data);
     }
     /****inquiry End */
 

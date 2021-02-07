@@ -3,8 +3,7 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i> <?php echo get_phrase('inquiry'); ?>
-                    <a href="javascript:void(0)"
-                     onclick="showLargeModal('<?php echo base_url();?>modal/popup/inquiry_add_edit', '<?php echo get_phrase('add_new_inquiry'); ?>');"
+                    <a href="<?=site_url('admin/inquiry/inquiry_add_edit/'); ?>"
                      class="btn btn-outline-primary btn-rounded alignToTitle"><i class="mdi mdi-plus"></i><?php echo get_phrase('add_new_inquiry'); ?></a>
                 </h4>
             </div> <!-- end card body-->
@@ -68,7 +67,7 @@
                                           </button>
                                           <ul class="dropdown-menu">
                                                 <?php if ($br['is_delete'] == 0): ?>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="showLargeModal('<?php echo base_url('modal/popup/inquiry_add_edit/'.$br['en_id']); ?>','<?php echo get_phrase('edit_this_inquiry');?>')"><?php echo get_phrase('edit_this_inquiry');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/inquiry_add_edit/'.$br['en_id']); ?>"><?php echo get_phrase('edit_this_inquiry');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/admission_form/add_admission/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>

@@ -116,6 +116,7 @@ class Crud_model extends CI_Model
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
+        $data['source_other']   = (html_escape($this->input->post('source_other')))??NULL;
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
@@ -152,6 +153,7 @@ class Crud_model extends CI_Model
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
+        $data['source_other']   = (html_escape($this->input->post('source_other')))??NULL;
         $data['en_date']   = (html_escape($this->input->post('en_date')));
         $data['user_id'] = $this->session->userdata('user_id');
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
