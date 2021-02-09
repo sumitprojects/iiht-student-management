@@ -496,7 +496,18 @@ class Admin extends CI_Controller {
             $page_data['page_title'] = get_phrase('student_add');
             $this->load->view('backend/index', $page_data);
         }
-        elseif ($param1 == 'edit_user_form') {
+        else if ($param1 == 'add_edit_from_inquiry') {
+            $page_data['page_name'] = 'user_add';
+            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+            $page_data['page_title'] = get_phrase('student_add');
+            $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            $this->load->view('backend/index', $page_data);
+        }else if($param1 == 'add_edit_from_inquiry_non'){
+            $page_data['page_name'] = 'user_add';
+            $page_data['page_title'] = get_phrase('student_add');
+            $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            $this->load->view('backend/index', $page_data);
+        }elseif ($param1 == 'edit_user_form') {
             $page_data['page_name'] = 'user_edit';
             $page_data['user_id'] = $param2;
             $page_data['page_title'] = get_phrase('student_edit');

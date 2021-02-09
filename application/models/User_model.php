@@ -37,6 +37,8 @@ class User_model extends CI_Model {
         }else {
             $data['first_name'] = html_escape($this->input->post('first_name'));
             $data['last_name'] = html_escape($this->input->post('last_name'));
+            $data['dob'] = html_escape($this->input->post('dob'));
+            $data['branch_id'] = html_escape($this->input->post('branch_id'));
             $data['email'] = html_escape($this->input->post('email'));
             $data['password'] = sha1(html_escape($this->input->post('password')));
             $social_link['facebook'] = html_escape($this->input->post('facebook_link'));

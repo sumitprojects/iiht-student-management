@@ -17,7 +17,7 @@
                 <h4 class="mb-3 header-title"><?php echo get_phrase('inquiry_list'); ?></h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($inquiry) > 0): ?>
-                    <table id="inquiry-datatable" class="table table-striped dt-responsive nowrap" data-filter="3,4,5" data-nofilter="6," width="100%" data-page-length='25'>
+                    <table id="inquiry-datatable" class="table table-striped dt-responsive nowrap" data-filter="3,4,5" data-nofilter="6,7," width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -70,7 +70,8 @@
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/inquiry_add_edit/'.$br['en_id']); ?>"><?php echo get_phrase('edit_this_inquiry');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
-                                                    <li><a class="dropdown-item" href="<?=site_url('admin/admission_form/add_admission/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>
                                                 <?php endif; ?>
                                                   <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>
                                           </ul>
