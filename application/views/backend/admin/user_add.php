@@ -262,6 +262,26 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="marital_status"><?php echo get_phrase('marital_status'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" data-toggle="select2"
+                                                    name="marital_status" data-init-plugin="select2"
+                                                    id="marital_status">
+                                                    <option value="single">
+                                                        <?php echo get_phrase('single') ?></option>
+                                                    <option value="married">
+                                                        <?php echo get_phrase('married') ?></option>
+                                                    <option value="widowed">
+                                                        <?php echo get_phrase('widowed') ?></option>
+                                                    <option value="divorced">
+                                                        <?php echo get_phrase('divorced') ?></option>
+                                                </select>
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
                                         <?php endif;?>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
@@ -419,11 +439,12 @@ if ($('select').hasClass('select2') == true) {
 }
 
 function priceChecked(elem) {
-    if (jQuery('#discountCheckbox').is(':checked')) {
-        jQuery('#discountCheckbox').prop("checked", false);
+    if (jQuery('#discount_flag').is(':checked')) {
+        // jQuery('#discount_flag').prop("checked", false);
         jQuery('#discounted_price').removeAttr('disabled');
     } else {
-        jQuery('#discountCheckbox').prop("checked", true);
+        // jQuery('#discount_flag').prop("checked", true);
+        jQuery('#discounted_price').attr('disabled',true);        
     }
 }
 
@@ -449,7 +470,12 @@ jQuery(document).ready(function() {
     jQuery('#course_id').on('change', function() {
         jQuery('[name=price]').val(jQuery(this).select2('data')[0].element.dataset.price);
     });
-    jQuery('#discounted_price').attr('disabled',true);
+
+    jQuery('#discount_flag').on('change',function(){
+        // jQuery('#discounted_price').attr('disabled',true);
+        priceChecked($(this));
+    })
+    
     jQuery('#same_as_perm').on('change',function(){
         if($(this).is(':checked')){
             $('[name="permanent_address"]').val($('[name="present_address"]').val());
@@ -457,6 +483,10 @@ jQuery(document).ready(function() {
             $('[name="permanent_address"]').val();
         }
     });
+    <?php if(!empty($enquiry)):?>
+    jQuery('#course_id').val(<?=$enquiry['course_id']?>);
+    jQuery('#course_id').trigger('change');
+    <?php endif;?>
 });
 
 $(".ajaxForm").submit(function(e) {

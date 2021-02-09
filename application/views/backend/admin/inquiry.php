@@ -22,7 +22,7 @@
                             <tr>
                                 <th>#</th>
                                 <th><?php echo get_phrase('inquiry_name'); ?></th>
-                                <th><?php echo get_phrase('inquiry_code'); ?></th>
+                                <th><?php echo get_phrase('inquiry_date'); ?></th>
                                 <th><?php echo get_phrase('inquiry_course'); ?></th>
                                 <th><?php echo get_phrase('inquiry_source'); ?></th>
                                 <th><?php echo get_phrase('inquiry_branch'); ?></th>
@@ -38,7 +38,7 @@
                                         <a data-toggle="tooltip" data-title="<?php echo get_phrase('view_followup');?>" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><strong><?php echo ellipsis($br['en_name']); ?></strong><br></a>
                                     </td>
                                     <td>
-                                        <strong><?php echo ellipsis($br['en_code']); ?></strong><br>
+                                        <strong><?php echo ellipsis($br['en_date']); ?></strong><br>
                                     </td>
                                     <td>
                                         <strong><?php echo ellipsis($br['title']); ?></strong><br>

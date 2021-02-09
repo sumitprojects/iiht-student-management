@@ -1456,7 +1456,7 @@ class Crud_model extends CI_Model
         $this->db->insert('lesson', $data);
         $inserted_id = $this->db->insert_id();
 
-        if ($_FILES['thumbnail']['name'] != "") {
+        if (!empty($_FILES['thumbnail']['name'])) {
             if (!file_exists('uploads/thumbnails/lesson_thumbnails')) {
                 mkdir('uploads/thumbnails/lesson_thumbnails', 0777, true);
             }
