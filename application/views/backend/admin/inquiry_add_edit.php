@@ -152,13 +152,6 @@ if(!empty($param2)){
 <script type="text/javascript">
 jQuery(document).ready(function() {
     initSelect2(['#course_id', '#branch_id', '#source_id', '#en_status']);
-    <?php if($inquiry):?>
-    jQuery('#course_id').val(<?=$inquiry['course_id']?>);
-    jQuery('#course_id').trigger('change');
-    jQuery('#branch_id').val(<?=$inquiry['branch_id']?>);
-    jQuery('#branch_id').trigger('change');
-    jQuery('#source_id').val(<?=$inquiry['source_id']?>);
-
     jQuery('#source_id').trigger('change');
     if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
         jQuery('#source_other').removeAttr('disabled');
@@ -166,7 +159,6 @@ jQuery(document).ready(function() {
     } else {
         jQuery('#source_other').attr('disabled','true');
     }
-
     jQuery('#source_id').on('change', function() {
         console.log($(this).val());
         if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
@@ -176,6 +168,13 @@ jQuery(document).ready(function() {
             jQuery('#source_other').attr('disabled','true');
         }
     });
+
+    <?php if($inquiry):?>
+    jQuery('#course_id').val(<?=$inquiry['course_id']?>);
+    jQuery('#course_id').trigger('change');
+    jQuery('#branch_id').val(<?=$inquiry['branch_id']?>);
+    jQuery('#branch_id').trigger('change');
+    jQuery('#source_id').val(<?=$inquiry['source_id']?>);
     jQuery('#en_status').val('<?=$inquiry['en_status']?>');
     jQuery('#en_status').trigger('change');
     <?php endif;?>
