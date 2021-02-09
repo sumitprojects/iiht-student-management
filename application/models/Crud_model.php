@@ -134,8 +134,8 @@ class Crud_model extends CI_Model
         $previous_data = $this->db->get('enquiry')->num_rows();
         if ($previous_data == 0){
             $this->db->insert('enquiry', $data);
-            echo $this->db->last_query();
-            die;
+            // echo $this->db->last_query();
+            // die;
                 return true;
         }
         return false;
