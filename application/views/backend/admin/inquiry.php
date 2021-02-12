@@ -66,14 +66,17 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                           </button>
                                           <ul class="dropdown-menu">
-                                                <?php if ($br['is_delete'] == 0): ?>
+                                                <?php if($br['is_delete'] == 0 && $br['en_status'] != 'completed'): ?>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/inquiry_add_edit/'.$br['en_id']); ?>"><?php echo get_phrase('edit_this_inquiry');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>
-                                                <?php endif; ?>
+                                                <?php elseif($br['is_delete'] == 1): ?>
                                                   <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>
+                                                <?php elseif($br['en_status'] == 'completed'): ?>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
+                                                <?php endif; ?>
                                           </ul>
                                       </div>
                                     </td>

@@ -2,6 +2,7 @@
 $followup = "";
 if(!empty($param2)){
     $followup = $this->crud_model->get_followup_by_enquiry($param2)->result_array();
+    $enquiry_status = $this->crud_model->get_inquiry($param2)->row_array();
 }
 
 ?>
@@ -10,7 +11,8 @@ if(!empty($param2)){
         <div class="card">
             <div class="card-body">
                 <h4 class="mb-3 header-title"><?php echo get_phrase('followup_list'); ?>
-                    <?php if(!empty($followup)):?>
+                    <?php 
+                    if(!empty($followup) &&  !empty($enquiry_status) && $enquiry_status['en_status']!= 'completed'):?>
                         <a class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm" href="<?=site_url('admin/followup/followup_add_edit/'.$param2)?>"><?php echo get_phrase('add_followup');?></a>
                     <?php endif;?>
                     <a href="<?php echo site_url('admin/inquiry'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_inquiry_list'); ?></a>
@@ -57,7 +59,7 @@ if(!empty($param2)){
                                     <td>
                                         <?php if($br['is_delete'] == 1):?>
                                             <span class="badge badge-danger-lighten"><?=get_phrase('inquiry_deleted')?></span>
-                                        <?php else: ?>
+                                        <?php elseif($br['is_delete'] == 0 && !empty($enquiry_status) && $enquiry_status['en_status'] != 'completed'): ?>
                                         <div class="dropright dropright">
                                           <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="mdi mdi-dots-vertical"></i>
@@ -66,8 +68,9 @@ if(!empty($param2)){
                                               <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'].'/'.$br['id'])?>"><?php echo get_phrase('edit_this_followup');?></a></li>
                                               <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/followup/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a></li>
                                           </ul>
+                                          <?php endif;?>
                                       </div>
-                                      <?php endif; ?>
+                                    
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

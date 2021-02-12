@@ -57,8 +57,8 @@
     "instructor_settings": "Instructor settings",
     "instructor_application": "Instructor application",
     "students": "Students",
-    "enrolment": "Enrolment",
-    "enrol_history": "Enrol history",
+    "enrolment": "Admission",
+    "enrol_history": "Admission history",
     "enrol_a_student": "Enrol a student",
     "report": "Report",
     "admin_revenue": "Admin revenue",
@@ -1128,5 +1128,6 @@
     "correct": "Correct",
     "submitted_answers": "Submitted answers",
     "take_again": "Take again",
-    "user_deleted_successfully": "User deleted successfully"
+    "user_deleted_successfully": "User deleted successfully",
+    "admission_history": "Admission history"
 }
