@@ -64,7 +64,7 @@
     </div>
 
     <div class="mt-3">
-        <a href="javascript::void(0)"
+        <a href="javascript:void(0)void(0)"
         type="button"
         class="btn btn-primary"
         data-toggle="modal"

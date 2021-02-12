@@ -15,7 +15,7 @@
         </div>
         <div class="col-lg-7">
           <div class="wrapper">
-            <a href="javascript::" class="wishlist-btn wishlist-btn-<?php echo $course['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($course['id'])):?> active <?php endif; ?> tooltip" onclick="handleWishList(this)" id = "<?php echo $course['id']; ?>">
+            <a href="javascript:void(0)" class="wishlist-btn wishlist-btn-<?php echo $course['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($course['id'])):?> active <?php endif; ?> tooltip" onclick="handleWishList(this)" id = "<?php echo $course['id']; ?>">
               <i class="fas fa-heart"></i>
               <?php if($this->crud_model->is_added_to_wishlist($course['id'])):?>
                 <span class="tooltiptext" id = "tooltiptext-<?php echo $course['id']; ?>"><?php echo get_phrase('remove_from_wishlist'); ?></span>
@@ -86,13 +86,13 @@
             <?php else: ?>
               <?php if ($course['is_free_course'] == 1):
                 if($this->session->userdata('user_login') != 1) {
-                  $url = "javascript::";
+                  $url = "javascript:void(0)";
                 }else {
                   $url = site_url('home/get_enrolled_to_free_course/'.$course['id']);
                 }?>
                 <a href="<?php echo $url; ?>" class="" onclick="handleEnrolledButton()"><?php echo get_phrase('enrol'); ?></a>
               <?php else: ?>
-                <a href="javascript::" class="big-cart-button-<?php echo $course['id'];?> <?php if(in_array($course['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course['id']; ?>" onclick="handleCartItems(this)">
+                <a href="javascript:void(0)" class="big-cart-button-<?php echo $course['id'];?> <?php if(in_array($course['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course['id']; ?>" onclick="handleCartItems(this)">
                   <?php
                   if(in_array($course['id'], $cart_items))
                   echo get_phrase('added_to_cart');

@@ -33,7 +33,7 @@
           <?php endforeach; ?>
         <?php endforeach; ?>
       </ul>
-      <a href="javascript::" id = "city-toggle-btn" onclick="showToggle(this, 'hidden-categories')" class="show-more-less"><?php echo $total_number_of_categories > $number_of_visible_categories ? get_phrase('show_more') : ""; ?></a>
+      <a href="javascript:void(0)" id = "city-toggle-btn" onclick="showToggle(this, 'hidden-categories')" class="show-more-less"><?php echo $total_number_of_categories > $number_of_visible_categories ? get_phrase('show_more') : ""; ?></a>
     </div>
 
     <div class="filter_type">

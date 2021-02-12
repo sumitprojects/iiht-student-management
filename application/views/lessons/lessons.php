@@ -2,10 +2,10 @@
 $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
 
 if(isset($bundle_id) && $bundle_id > 0):
-    $my_course_url = strtolower($this->session->userdata('role')) == 'user' ? site_url('home/my_bundles') : 'javascript::';
+    $my_course_url = strtolower($this->session->userdata('role')) == 'user' ? site_url('home/my_bundles') : 'javascript:void(0)';
     $btn_title = 'my_bundles';
 else:
-    $my_course_url = strtolower($this->session->userdata('role')) == 'user' ? site_url('home/my_courses') : 'javascript::';
+    $my_course_url = strtolower($this->session->userdata('role')) == 'user' ? site_url('home/my_courses') : 'javascript:void(0)';
     $btn_title = 'my_courses';
 endif;
 $course_details_url = site_url("home/course/".slugify($course_details['title'])."/".$course_id);
@@ -20,7 +20,7 @@ $course_details_url = site_url("home/course/".slugify($course_details['title']).
             </h5>
         </div>
         <div class="col-lg-3 course_header_col">
-            <a href="javascript::" class="course_btn" onclick="toggle_lesson_view()"><i class="fa fa-arrows-alt-h"></i></a>
+            <a href="javascript:void(0)" class="course_btn" onclick="toggle_lesson_view()"><i class="fa fa-arrows-alt-h"></i></a>
             <a href="<?php echo $my_course_url; ?>" class="course_btn"> <i class="fa fa-chevron-left"></i> <?php echo get_phrase($btn_title); ?></a>
             <a href="<?php echo $course_details_url; ?>" class="course_btn"><?php echo get_phrase('course_details'); ?> <i class="fa fa-chevron-right"></i></a>
         </div>

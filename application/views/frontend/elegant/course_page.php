@@ -265,14 +265,14 @@ $cart_items = $this->session->userdata('cart_items');
 			<?php else: ?>
 				<?php if ($course_details['is_free_course'] == 1):
 					if($this->session->userdata('user_login') != 1) {
-						$url = "javascript::";
+						$url = "javascript:void(0)";
 					}else {
 						$url = site_url('home/get_enrolled_to_free_course/'.$course_details['id']);
 					}?>
 					<a href="<?php echo $url; ?>" class="btn_1 full-width" onclick="handleEnrolledButton()"><?php echo get_phrase('enrol'); ?></a>
 				<?php else: ?>
-					<a href="javascript::" class="btn_1 full-width" onclick="handleBuyNow('<?php echo $course_details['id'];?>')" ><?php echo get_phrase('buy_now'); ?></a>
-					<a href="javascript::" class="btn_1 full-width outline big-cart-button-<?php echo $course_details['id'];?> <?php if(in_array($course_details['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course_details['id']; ?>" onclick="handleCartItems(this)">
+					<a href="javascript:void(0)" class="btn_1 full-width" onclick="handleBuyNow('<?php echo $course_details['id'];?>')" ><?php echo get_phrase('buy_now'); ?></a>
+					<a href="javascript:void(0)" class="btn_1 full-width outline big-cart-button-<?php echo $course_details['id'];?> <?php if(in_array($course_details['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course_details['id']; ?>" onclick="handleCartItems(this)">
 						<?php
 						if(in_array($course_details['id'], $cart_items))
 						echo get_phrase('added_to_cart');

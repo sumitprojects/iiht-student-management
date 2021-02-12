@@ -49,14 +49,14 @@ if (isset($sub_category_id)) {
     <div class="container">
         <div class="category-filter-box filter-box clearfix">
             <span><?php echo site_phrase('showing_on_this_page'); ?> : <?php echo count($courses); ?></span>
-            <a href="javascript::" onclick="toggleLayout('grid')" style="float: right; font-size: 19px; margin-left: 5px;"><i class="fas fa-th"></i></a>
-            <a href="javascript::" onclick="toggleLayout('list')" style="float: right; font-size: 19px;"><i class="fas fa-th-list"></i></a>
+            <a href="javascript:void(0)" onclick="toggleLayout('grid')" style="float: right; font-size: 19px; margin-left: 5px;"><i class="fas fa-th"></i></a>
+            <a href="javascript:void(0)" onclick="toggleLayout('list')" style="float: right; font-size: 19px;"><i class="fas fa-th-list"></i></a>
             <a href="<?php echo site_url('home/courses'); ?>" style="float: right; font-size: 19px; margin-right: 5px;"><i class="fas fa-sync-alt"></i></a>
         </div>
         <div class="row">
             <div class="col-lg-3 filter-area">
                 <div class="card">
-                    <a href="javascript::"  style="color: unset;">
+                    <a href="javascript:void(0)"  style="color: unset;">
                         <div class="card-header filter-card-header" id="headingOne" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="true" aria-controls="collapseFilter">
                             <h6 class="mb-0">
                                 <?php echo site_phrase('filter'); ?>
@@ -97,7 +97,7 @@ if (isset($sub_category_id)) {
                                         <?php endforeach; ?>
                                     <?php endforeach; ?>
                                 </ul>
-                                <a href="javascript::" id = "city-toggle-btn" onclick="showToggle(this, 'hidden-categories')" style="font-size: 12px;"><?php echo $total_number_of_categories > $number_of_visible_categories ? site_phrase('show_more') : ""; ?></a>
+                                <a href="javascript:void(0)" id = "city-toggle-btn" onclick="showToggle(this, 'hidden-categories')" style="font-size: 12px;"><?php echo $total_number_of_categories > $number_of_visible_categories ? site_phrase('show_more') : ""; ?></a>
                             </div>
                             <hr>
                             <div class="filter_type">

@@ -424,7 +424,7 @@ $instructor_details = $this->user_model->get_all_user($course_details['user_id']
           </div>
         <?php else: ?>
           <div class="buy-btns">
-            <a href = "javascript::" class="btn btn-buy-now" id = "course_<?php echo $course_details['id']; ?>" onclick="handleBuyNow(this)"><?php echo site_phrase('buy_now'); ?></a>
+            <a href = "javascript:void(0)" class="btn btn-buy-now" id = "course_<?php echo $course_details['id']; ?>" onclick="handleBuyNow(this)"><?php echo site_phrase('buy_now'); ?></a>
             <?php if (in_array($course_details['id'], $this->session->userdata('cart_items'))): ?>
               <button class="btn btn-add-cart addedToCart" type="button" id = "<?php echo $course_details['id']; ?>" onclick="handleCartItems(this)"><?php echo site_phrase('added_to_cart'); ?></button>
             <?php else: ?>

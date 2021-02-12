@@ -81,7 +81,7 @@
                     <?php endif; ?>
                   <?php endif; ?>
                   <td class="options" style="width:5%; text-align:center;">
-                    <a href="javascript::" id = "<?php echo $course_details['id']; ?>" onclick="removeFromCartList(this)"><i class="icon-trash"></i></a>
+                    <a href="javascript:void(0)" id = "<?php echo $course_details['id']; ?>" onclick="removeFromCartList(this)"><i class="icon-trash"></i></a>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -100,7 +100,7 @@
           </div>
           <div class="add_bottom_30"></div>
           <?php if ($amount_to_pay > 0): ?>
-            <a href="javascript::" onclick="handleCheckOut()" class="btn_1 full-width"><?php echo get_phrase('checkout'); ?></a>
+            <a href="javascript:void(0)" onclick="handleCheckOut()" class="btn_1 full-width"><?php echo get_phrase('checkout'); ?></a>
             <a href="<?php echo site_url('home/courses'); ?>" class="btn_1 full-width outline"><i class="icon-right"></i> <?php echo get_phrase('continue_shopping'); ?></a>
           <?php endif; ?>
         </div>

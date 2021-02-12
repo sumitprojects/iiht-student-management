@@ -22,7 +22,7 @@ $my_wishlist_banner = $banners['my_wishlist_banner'];
 						<div class="box_grid wow">
 							<figure class="block-reveal">
 								<div class="block-horizzontal"></div>
-								<a href="javascript::" class="wishlist-btn wishlist-btn-<?php echo $course_details['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($course_details['id'])):?> active <?php endif; ?> tooltip" onclick="handleWishList(this)" id = "<?php echo $course_details['id']; ?>">
+								<a href="javascript:void(0)" class="wishlist-btn wishlist-btn-<?php echo $course_details['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($course_details['id'])):?> active <?php endif; ?> tooltip" onclick="handleWishList(this)" id = "<?php echo $course_details['id']; ?>">
 			            <i class="fas fa-heart"></i>
 									<?php if($this->crud_model->is_added_to_wishlist($course_details['id'])):?>
 		                <span class="tooltiptext" id = "tooltiptext-<?php echo $course_details['id']; ?>"><?php echo get_phrase('remove_from_wishlist'); ?></span>
@@ -83,13 +83,13 @@ $my_wishlist_banner = $banners['my_wishlist_banner'];
 		              <?php else: ?>
 		                <?php if ($course_details['is_free_course'] == 1):
 		                  if($this->session->userdata('user_login') != 1) {
-		                    $url = "javascript::";
+		                    $url = "javascript:void(0)";
 		                  }else {
 		                    $url = site_url('home/get_enrolled_to_free_course/'.$course_details['id']);
 		                  }?>
 		                  <a href="<?php echo $url; ?>" class="" onclick="handleEnrolledButton()"><?php echo get_phrase('enrol'); ?></a>
 		                <?php else: ?>
-		                  <a href="javascript::" class="big-cart-button-<?php echo $course_details['id'];?> <?php if(in_array($course_details['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course_details['id']; ?>" onclick="handleCartItems(this)">
+		                  <a href="javascript:void(0)" class="big-cart-button-<?php echo $course_details['id'];?> <?php if(in_array($course_details['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $course_details['id']; ?>" onclick="handleCartItems(this)">
 		                    <?php
 		                    if(in_array($course_details['id'], $cart_items))
 		                    echo get_phrase('added_to_cart');

@@ -43,7 +43,7 @@
                         <i class="mdi mdi-dots-vertical"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="javascript::" onclick="showAjaxModal('<?php echo site_url('modal/popup/about_this_addon/'.$addon['id']); ?>', '<?php echo get_phrase('about_this_addon'); ?>')"><?php echo get_phrase('about_this_addon'); ?></a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="showAjaxModal('<?php echo site_url('modal/popup/about_this_addon/'.$addon['id']); ?>', '<?php echo get_phrase('about_this_addon'); ?>')"><?php echo get_phrase('about_this_addon'); ?></a></li>
                         <?php if($addon['status'] == 1): ?>
                           <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/addon/deactivate/'.$addon['id']); ?>');"><?php echo get_phrase('deactive'); ?></a></li>
                         <?php else: ?>

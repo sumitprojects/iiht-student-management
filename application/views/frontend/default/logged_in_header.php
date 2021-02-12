@@ -55,7 +55,7 @@ $user_details = $this->user_model->get_user($this->session->userdata('user_id'))
 
                     <div class="user-box menu-icon-box">
                         <div class="icon">
-                            <a href="javascript::">
+                            <a href="javascript:void(0)">
                             <img src="<?php echo $this->user_model->get_user_image_url($this->session->userdata('user_id')); ?>" alt="" class="img-fluid">
                         </a>
                     </div>

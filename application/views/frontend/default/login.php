@@ -56,10 +56,10 @@
                           </div>
                           <div class="forgot-pass text-center">
                               <span><?php echo site_phrase('or'); ?></span>
-                              <a href="javascript::" onclick="toggoleForm('forgot_password')"><?php echo site_phrase('forgot_password'); ?></a>
+                              <a href="javascript:void(0)" onclick="toggoleForm('forgot_password')"><?php echo site_phrase('forgot_password'); ?></a>
                           </div>
                           <div class="account-have text-center">
-                              <?php echo site_phrase('do_not_have_an_account'); ?>? <a href="javascript::" onclick="toggoleForm('registration')"><?php echo site_phrase('sign_up'); ?></a>
+                              <?php echo site_phrase('do_not_have_an_account'); ?>? <a href="javascript:void(0)" onclick="toggoleForm('registration')"><?php echo site_phrase('sign_up'); ?></a>
                           </div>
                       </form>
                   </div>
@@ -98,7 +98,7 @@
                                 <button class="btn" type="submit"><?php echo site_phrase('sign_up'); ?></button>
                           </div>
                           <div class="account-have text-center">
-                              <?php echo site_phrase('already_have_an_account'); ?>? <a href="javascript::" onclick="toggoleForm('login')"><?php echo site_phrase('login'); ?></a>
+                              <?php echo site_phrase('already_have_an_account'); ?>? <a href="javascript:void(0)" onclick="toggoleForm('login')"><?php echo site_phrase('login'); ?></a>
                           </div>
                       </form>
                   </div>
@@ -128,7 +128,7 @@
                               <button class="btn" type="submit"><?php echo site_phrase('reset_password'); ?></button>
                           </div>
                           <div class="forgot-pass text-center">
-                              <?php echo site_phrase('want_to_go_back'); ?>? <a href="javascript::" onclick="toggoleForm('login')"><?php echo site_phrase('login'); ?></a>
+                              <?php echo site_phrase('want_to_go_back'); ?>? <a href="javascript:void(0)" onclick="toggoleForm('login')"><?php echo site_phrase('login'); ?></a>
                           </div>
                       </form>
                   </div>

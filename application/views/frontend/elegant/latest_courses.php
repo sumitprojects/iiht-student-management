@@ -11,7 +11,7 @@
     <div class="item">
       <div class="box_grid">
         <figure>
-          <a href="javascript::" class="wishlist-btn wishlist-btn-<?php echo $latest_course['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($latest_course['id'])):?> active <?php endif; ?>" onclick="handleWishList(this)" id = "<?php echo $latest_course['id']; ?>">
+          <a href="javascript:void(0)" class="wishlist-btn wishlist-btn-<?php echo $latest_course['id']; ?> <?php if($this->crud_model->is_added_to_wishlist($latest_course['id'])):?> active <?php endif; ?>" onclick="handleWishList(this)" id = "<?php echo $latest_course['id']; ?>">
             <i class="fas fa-heart"></i>
           </a>
           <a href="<?php echo site_url('home/course/'.slugify($latest_course['title']).'/'.$latest_course['id']); ?>">
@@ -81,13 +81,13 @@
             <?php else: ?>
               <?php if ($latest_course['is_free_course'] == 1):
                 if($this->session->userdata('user_login') != 1) {
-                  $url = "javascript::";
+                  $url = "javascript:void(0)";
                 }else {
                   $url = site_url('home/get_enrolled_to_free_course/'.$latest_course['id']);
                 }?>
                 <a href="<?php echo $url; ?>" class="" onclick="handleEnrolledButton()"><?php echo get_phrase('enrol'); ?></a>
               <?php else: ?>
-                <a href="javascript::" class="big-cart-button-<?php echo $latest_course['id'];?> <?php if(in_array($latest_course['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $latest_course['id']; ?>" onclick="handleCartItems(this)">
+                <a href="javascript:void(0)" class="big-cart-button-<?php echo $latest_course['id'];?> <?php if(in_array($latest_course['id'], $cart_items)) echo 'addedToCart'; ?>" id = "<?php echo $latest_course['id']; ?>" onclick="handleCartItems(this)">
                   <?php
                   if(in_array($latest_course['id'], $cart_items))
                   echo get_phrase('added_to_cart');

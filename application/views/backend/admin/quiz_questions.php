@@ -24,8 +24,8 @@ $questions = $this->crud_model->get_quiz_questions($param2)->result_array();
                                                     <div class="media-body">
                                                         <h5 class="mb-1 mt-0"><?php echo $question['title']; ?>
                                                             <span id = "<?php echo 'widgets-of-'.$question['id']; ?>" class="widgets-of-quiz-question">
-                                                                <a href="javascript::" class="alignToTitle float-right ml-1 text-secondary" onclick="deleteQuizQuestionAndReloadModal('<?php echo $param2; ?>', '<?php echo $question['id']; ?>')" data-dismiss="modal"><i class="dripicons-cross"></i></a>
-                                                                <a href="javascript::" class="alignToTitle float-right text-secondary" onclick="showAjaxModal('<?php echo site_url('modal/popup/question_edit/'.$question['id'].'/'.$param2); ?>', '<?php echo get_phrase('update_quiz_question'); ?>')" data-dismiss="modal"><i class="dripicons-document-edit"></i></a>
+                                                                <a href="javascript:void(0)" class="alignToTitle float-right ml-1 text-secondary" onclick="deleteQuizQuestionAndReloadModal('<?php echo $param2; ?>', '<?php echo $question['id']; ?>')" data-dismiss="modal"><i class="dripicons-cross"></i></a>
+                                                                <a href="javascript:void(0)" class="alignToTitle float-right text-secondary" onclick="showAjaxModal('<?php echo site_url('modal/popup/question_edit/'.$question['id'].'/'.$param2); ?>', '<?php echo get_phrase('update_quiz_question'); ?>')" data-dismiss="modal"><i class="dripicons-document-edit"></i></a>
                                                             </span>
                                                         </h5>
                                                     </div> <!-- end media-body -->

@@ -864,8 +864,8 @@ class Admin extends CI_Controller {
                 <li><a class="dropdown-item" href="'.$view_course_on_frontend_url.'" target="_blank">'.get_phrase("view_course_on_frontend").'</a></li>
                 <li><a class="dropdown-item" href="'.$edit_this_course_url.'">'.get_phrase("edit_this_course").'</a></li>
                 '.$section_and_lesson_menu.'
-                <li><a class="dropdown-item" href="javascript::" onclick="'.$course_status_changing_action.'">'.$course_status_changing_message.'</a></li>
-                <li><a class="dropdown-item" href="javascript::" onclick="'.$delete_course_url.'">'.get_phrase("delete").'</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="'.$course_status_changing_action.'">'.$course_status_changing_message.'</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="'.$delete_course_url.'">'.get_phrase("delete").'</a></li>
                 </ul>
                 </div>
                 ';

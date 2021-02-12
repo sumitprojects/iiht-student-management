@@ -180,7 +180,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="password" name="password" class="form-control"
-                                                    tabindex="0" value="<?=(uniqid())?>" required>
+                                                    tabindex="0" value="<?=substr(uniqid(),0,4)?>" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -398,11 +398,11 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
 
                             <ul class="list-inline mb-0 wizard text-center">
                                 <li class="previous list-inline-item">
-                                    <a href="javascript::" class="btn btn-info"> <i class="mdi mdi-arrow-left-bold"></i>
+                                    <a href="javascript:void(0)" class="btn btn-info"> <i class="mdi mdi-arrow-left-bold"></i>
                                     </a>
                                 </li>
                                 <li class="next list-inline-item">
-                                    <a href="javascript::" class="btn btn-info"> <i
+                                    <a href="javascript:void(0)" class="btn btn-info"> <i
                                             class="mdi mdi-arrow-right-bold"></i>
                                     </a>
                                 </li>

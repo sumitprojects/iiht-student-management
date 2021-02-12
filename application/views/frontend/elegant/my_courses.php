@@ -97,8 +97,8 @@ $my_courses_banner = $banners['my_courses_banner'];
 							</div>
 						</div>
 						<div class="col-6 text-right">
-							<a href="javascript::" id = "edit_rating_btn_<?php echo $course_details['id']; ?>" onclick="toggleRatingView('<?php echo $course_details['id']; ?>')"><?php echo get_phrase('edit_rating'); ?></a>
-							<a href="javascript::" class="hidden" id = "cancel_rating_btn_<?php echo $course_details['id']; ?>" onclick="toggleRatingView('<?php echo $course_details['id']; ?>')"><?php echo get_phrase('cancel_rating'); ?></a>
+							<a href="javascript:void(0)" id = "edit_rating_btn_<?php echo $course_details['id']; ?>" onclick="toggleRatingView('<?php echo $course_details['id']; ?>')"><?php echo get_phrase('edit_rating'); ?></a>
+							<a href="javascript:void(0)" class="hidden" id = "cancel_rating_btn_<?php echo $course_details['id']; ?>" onclick="toggleRatingView('<?php echo $course_details['id']; ?>')"><?php echo get_phrase('cancel_rating'); ?></a>
 						</div>
 					</div>
 				</div>

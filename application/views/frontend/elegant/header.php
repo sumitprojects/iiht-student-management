@@ -30,7 +30,7 @@
         <ul>
             <li><span><a href="<?php echo site_url('home'); ?>"><?php echo get_phrase('home'); ?></a></span></li>
             <li>
-                <span><a href="javascript::"><?php echo get_phrase('courses'); ?></a></span>
+                <span><a href="javascript:void(0)"><?php echo get_phrase('courses'); ?></a></span>
                 <ul>
                     <?php
             $parent_categories = $this->crud_model->get_categories()->result_array();
@@ -55,7 +55,7 @@
             <!-- Show an onrdinary students options -->
             <?php if ($this->session->userdata('user_login') == 1): ?>
             <li>
-                <span><a href="javascript::"><?php echo get_phrase('manage_account'); ?></a></span>
+                <span><a href="javascript:void(0)"><?php echo get_phrase('manage_account'); ?></a></span>
                 <ul>
                     <li><a href="<?php echo site_url('home/my_courses'); ?>"><?php echo get_phrase('my_courses'); ?></a>
                     </li>

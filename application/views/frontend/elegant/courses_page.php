@@ -36,8 +36,8 @@ if (isset($sub_category_id)) {
 			</li>
 			<li>
 				<div class="layout_view">
-					<a href="javascript::" <?php if($layout == 'grid'): ?> class="active" <?php endif;?> onclick="toggleLayout('grid')"><i class="icon-th"></i></a>
-					<a href="javascript::" <?php if($layout == 'list'): ?> class="active" <?php endif;?> onclick="toggleLayout('list')"><i class="icon-th-list"></i></a>
+					<a href="javascript:void(0)" <?php if($layout == 'grid'): ?> class="active" <?php endif;?> onclick="toggleLayout('grid')"><i class="icon-th"></i></a>
+					<a href="javascript:void(0)" <?php if($layout == 'list'): ?> class="active" <?php endif;?> onclick="toggleLayout('list')"><i class="icon-th-list"></i></a>
 					<a href="<?php echo site_url('home/courses'); ?>"><i class="icon-arrows-cw"></i></a>
 				</div>
 			</li>
