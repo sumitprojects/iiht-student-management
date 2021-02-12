@@ -38,20 +38,20 @@ if(!empty($param2)){
                             <label for="en_email"><?php echo get_phrase('inquiry_email'); ?><span
                                     class="required">*</span></label>
                             <input type="email" class="form-control" id="en_email" name="en_email"
-                                value="<?php echo !empty($inquiry)?$inquiry['en_email']:''?>" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['en_email']:''?>">
                         </div>
                         <div class="form-group">
                             <label for="en_gender"><?php echo get_phrase('inquiry_gender'); ?><span
                                     class="required">*</span></label><br>
-                            <input type="radio" value="male" name="en_gender"
+                            <input type="radio" value="male" name="en_gender" required
                                 <?php  echo !empty($inquiry) && $inquiry['en_gender'] == 'male'?'checked':''; ?>>
                             <?php echo get_phrase('male'); ?>
                             &nbsp;&nbsp;
-                            <input type="radio" value="female" name="en_gender"
+                            <input type="radio" value="female" name="en_gender" required
                                 <?php echo !empty($inquiry) && $inquiry['en_gender'] == 'female'?'checked':''; ?>>
                             <?php echo get_phrase('female'); ?>
                             &nbsp;&nbsp;
-                            <input type="radio" value="other" name="en_gender"
+                            <input type="radio" value="other" name="en_gender" required
                                 <?php echo !empty($inquiry) && $inquiry['en_gender'] == 'other'?'checked':''; ?>>
                             <?php echo get_phrase('other'); ?>
                         </div>
@@ -59,7 +59,7 @@ if(!empty($param2)){
                             <label for="en_address"><?php echo get_phrase('inquiry_address'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="en_address" name="en_address"
-                                value="<?php echo !empty($inquiry)?$inquiry['en_address']:''?>" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['en_address']:''?>">
                         </div>
                         <div class="form-group">
                             <label for="mob_no"><?php echo get_phrase('mob_no'); ?><span
@@ -83,7 +83,7 @@ if(!empty($param2)){
                             <label for="course_id"><?php echo get_phrase('inquiry_course'); ?><span
                                     class="required">*</span></label>
                             <select class="form-control select2" data-toggle="select2" name="course_id"
-                                data-init-plugin="select2" id="course_id">
+                                data-init-plugin="select2" id="course_id" required> 
                                 <?php foreach($courses as $key => $val):?>
                                 <option value="<?=$val['id']?>">
                                     <?php echo $val['title']; ?></option>
@@ -93,7 +93,7 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="branch_id"><?php echo get_phrase('inquiry_branch'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="branch_id"
+                            <select class="form-control select2" required data-toggle="select2" name="branch_id"
                                 data-init-plugin="select2" id="branch_id">
                                 <?php foreach($branch as $key => $val):?>
                                 <option value="<?=$val['branch_id']?>"
@@ -105,7 +105,7 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="source_id"><?php echo get_phrase('inquiry_source'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="source_id"
+                            <select class="form-control select2" required data-toggle="select2" name="source_id"
                                 data-init-plugin="select2" id="source_id">
                                 <?php foreach($sources as $key => $val):?>
                                 <option value="<?=$val['source_id']?>"
@@ -123,7 +123,7 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="status"><?php echo get_phrase('inquiry_status'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="en_status"
+                            <select class="form-control select2" required data-toggle="select2" name="en_status"
                                 data-init-plugin="select2" id="en_status">
                                 <option value="open" <?=$inquiry['en_status']=='open'?'selected':''?>>
                                     <?php echo get_phrase('open') ?></option>

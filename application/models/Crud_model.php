@@ -129,6 +129,8 @@ class Crud_model extends CI_Model
         $data['is_delete'] = 0;
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
+
+        
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('en_code', $data['en_code']);
         $previous_data = $this->db->get('enquiry')->num_rows();
@@ -149,7 +151,7 @@ class Crud_model extends CI_Model
         $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
         $data['en_gender']   = (html_escape($this->input->post('en_gender')));
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
-        $data['en_email']   = strtoupper(html_escape($this->input->post('en_email')));
+        $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
@@ -369,6 +371,16 @@ class Crud_model extends CI_Model
 
         return false;
     }
+
+
+    /***
+     * Eduction
+     */
+    public function get_edu_list(){
+        return $this->db->get('education_list');
+    }
+
+
 
     public function edit_category($param1)
     {
@@ -747,6 +759,7 @@ class Crud_model extends CI_Model
 
         $data['course_type'] = html_escape($this->input->post('course_type'));
         $data['title'] = html_escape($this->input->post('title'));
+        $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
         $data['short_description'] = html_escape($this->input->post('short_description'));
         $data['description'] = $this->input->post('description');
         $data['outcomes'] = $outcomes;
@@ -825,7 +838,7 @@ class Crud_model extends CI_Model
         $data['sub_category_id'] = $this->input->post('sub_category_id');
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
         $data['category_id'] = $category_details['parent'];
-
+        $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
         $data['requirements'] = '[]';
         $data['price'] = $this->input->post('price');
         $data['discount_flag'] = $this->input->post('discount_flag');
@@ -883,13 +896,15 @@ class Crud_model extends CI_Model
     public function update_course($course_id, $type = "")
     {
         $course_details = $this->get_course_by_id($course_id)->row_array();
-
+        $course_details['course_expiry'] = html_escape($this->input->post('course_expiry'));
         $outcomes = $this->trim_and_return_json($this->input->post('outcomes'));
         $requirements = $this->trim_and_return_json($this->input->post('requirements'));
         $data['title'] = $this->input->post('title');
         $data['short_description'] = html_escape($this->input->post('short_description'));
         $data['description'] = $this->input->post('description');
         $data['outcomes'] = $outcomes;
+        $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
+        
         $data['language'] = $this->input->post('language_made_in');
         $data['sub_category_id'] = $this->input->post('sub_category_id');
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
@@ -930,7 +945,6 @@ class Crud_model extends CI_Model
         }
         $this->db->where('id', $course_id);
         $this->db->update('course', $data);
-
         // Upload different number of images according to activated theme. Data is taking from the config.json file
         $course_media_files = themeConfiguration(get_frontend_settings('theme'), 'course_media_files');
         foreach ($course_media_files as $course_media => $size) {
@@ -1924,6 +1938,24 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
+        $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
+        if ($check_enrol->num_rows() > 0) {
+            $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
+        } else {
+            $data['date_added'] = strtotime(date('D, d-M-Y'));
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
+            $this->db->insert('enrol', $data);
+            $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
+        }
+    }
+
+    public function enrol_a_student_offline($user_id = 0, $course_id = 0,$price = 0,$status = 'pending')
+    {
+        $data['course_id'] = $course_id;
+        $data['user_id']   = $user_id;
+        $data['final_price'] = $price;
+        $data['enrol_status'] = $status;
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
         if ($check_enrol->num_rows() > 0) {

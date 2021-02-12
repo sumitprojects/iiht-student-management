@@ -9,19 +9,13 @@
     </div><!-- end col-->
 </div>
 <div>
-    <?php 
-var_dump($enquiry);
-$enquiry['first_name'] = explode(' ',$enquiry['en_name'])[0] ?? '' ;
-$enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
-
-?>
 </div>
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title mb-3"><?php echo get_phrase('student_add_form'); ?></h4>
-                <form class="required-form" action="<?php echo site_url('admin/users/add'); ?>"
+                <form class="required-form needs-validation" novalidate action="<?php echo site_url('admin/users/add'); ?>"
                     enctype="multipart/form-data" method="post">
                     <input type="hidden" name="en_id" value="<?=$enquiry['en_id']?>">
                     <div id="progressbarwizard">
@@ -74,8 +68,9 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="first_name"><?php echo get_phrase('first_name'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" id="first_name"
-                                                    name="first_name" value="<?=$enquiry['first_name']?>" required>
+                                                <input type="text" class="form-control" tabindex="0" id="first_name"
+                                                    name="first_name" value="<?=$enquiry['first_name']?>" autofocus
+                                                    required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -84,8 +79,8 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="last_name"><?php echo get_phrase('last_name'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" id="last_name" name="last_name"
-                                                    value="<?=$enquiry['last_name']?>" required>
+                                                <input type="text" class="form-control" tabindex="0" id="last_name"
+                                                    name="last_name" value="<?=$enquiry['last_name']?>" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -94,8 +89,8 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                             <label class="col-md-3 col-form-label"
                                                 for="linkedin_link"><?php echo get_phrase('biography'); ?></label>
                                             <div class="col-md-9">
-                                                <textarea name="biography" id="summernote-basic"
-                                                    class="form-control"></textarea>
+                                                <textarea name="biography" id="summernote-basic" class="form-control"
+                                                    tabindex="0"></textarea>
                                             </div>
                                         </div>
                                         <?php else:?>
@@ -105,7 +100,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="date" max="<?=date('Y-m-d')?>" class="form-control"
-                                                    id="dob" name="dob" required>
+                                                    tabindex="0" id="dob" name="dob" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -114,8 +109,8 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="mob_no"><?php echo get_phrase('mob_no'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" value="<?=$enquiry['mob_no']?>"
-                                                    id="mob_no" name="mob_no" required>
+                                                <input type="text" class="form-control" tabindex="0"
+                                                    value="<?=$enquiry['mob_no']?>" id="mob_no" name="mob_no" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -123,8 +118,23 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                             <label class="col-md-3 col-form-label"
                                                 for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
                                             <div class="col-md-9">
-                                                <input type="text" class="form-control" value="<?=$enquiry['alt_mob']?>"
-                                                    id="alt_mob" name="alt_mob">
+                                                <input type="text" class="form-control" tabindex="0"
+                                                    value="<?=$enquiry['alt_mob']?>" id="alt_mob" name="alt_mob">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="branch_id"><?php echo get_phrase('admission_branch'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" data-toggle="select2" required
+                                                    name="branch_id" data-init-plugin="select2" id="branch_id">
+                                                    <?php foreach($branch as $key => $val):?>
+                                                    <option value="<?=$val['branch_id']?>"
+                                                        <?=$enquiry['branch_id']==$val['branch_id']?'selected':''?>>
+                                                        <?php echo $val['branch_name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
                                         </div>
                                         <?php endif;?>
@@ -135,7 +145,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 <div class="input-group">
                                                     <div class="custom-file">
                                                         <input type="file" class="custom-file-input" id="user_image"
-                                                            name="user_image" accept="image/*"
+                                                            name="user_image" tabindex="0" accept="image/*"
                                                             onchange="changeTitleOfImageUploader(this)">
                                                         <label class="custom-file-label"
                                                             for="user_image"><?php echo get_phrase('choose_user_image'); ?></label>
@@ -155,7 +165,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" id="email" name="email" class="form-control"
-                                                    value="<?=$enquiry['en_email']?>" required>
+                                                    tabindex="0" value="<?=$enquiry['en_email']?>">
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -165,7 +175,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="password" name="password" class="form-control"
-                                                    value="<?=(uniqid())?>" required>
+                                                    tabindex="0" value="<?=(uniqid())?>" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -182,7 +192,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 <?php echo get_phrase('facebook'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="facebook_link" name="facebook_link"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -190,7 +200,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="twitter_link"><?php echo get_phrase('twitter'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="twitter_link" name="twitter_link"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -198,7 +208,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="linkedin_link"><?php echo get_phrase('linkedin'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="linkedin_link" name="linkedin_link"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                             </div>
                                         </div>
                                         <?php else: ?>
@@ -208,7 +218,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <select class="form-control select2" data-toggle="select2"
-                                                    name="marital_status" data-init-plugin="select2"
+                                                    name="marital_status" data-init-plugin="select2" tabindex="0"
                                                     id="marital_status">
                                                     <option value="single">
                                                         <?php echo get_phrase('single') ?></option>
@@ -227,8 +237,8 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="uid_or_adhaar"><?php echo get_phrase('uid_or_adhaar'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <input type="text" id="uid_or_adhaar" name="uid_or_adhaar"
-                                                    class="form-control">
+                                                <input type="text" id="uid_or_adhaar" name="uid_or_adhaar" required
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -238,14 +248,15 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="present_address" name="present_address"
-                                                    class="form-control">
+                                                    value="<?=$enquiry['en_address']?>" class="form-control" required
+                                                    tabindex="0">
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
                                             <div class="offset-md-3 col-md-9">
                                                 <div class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input"
+                                                    <input type="checkbox" class="custom-control-input" tabindex="0"
                                                         name="same_as_perm" id="same_as_perm" value="1">
                                                     <label class="custom-control-label"
                                                         for="same_as_perm"><?php echo get_phrase('check_if_this_address_is_same_as_permanent'); ?></label>
@@ -257,27 +268,23 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="permanent_address"><?php echo get_phrase('permanent_address'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <input type="text" id="permanent_address" name="permanent_address"
-                                                    class="form-control">
+                                                <input type="text" id="permanent_address" name="permanent_address" required
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
-                                                for="marital_status"><?php echo get_phrase('marital_status'); ?><span
+                                                for="education_detail"><?php echo get_phrase('education_detail'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <select class="form-control select2" data-toggle="select2"
-                                                    name="marital_status" data-init-plugin="select2"
-                                                    id="marital_status">
-                                                    <option value="single">
-                                                        <?php echo get_phrase('single') ?></option>
-                                                    <option value="married">
-                                                        <?php echo get_phrase('married') ?></option>
-                                                    <option value="widowed">
-                                                        <?php echo get_phrase('widowed') ?></option>
-                                                    <option value="divorced">
-                                                        <?php echo get_phrase('divorced') ?></option>
+                                                <select class="form-control select2" data-toggle="select2" required
+                                                    name="education_detail" data-init-plugin="select2" tabindex="0"
+                                                    id="education_detail">
+                                                    <?php foreach($edu_list as $key=>$edu):?>
+                                                    <option value="<?=$edu['ename']?>">
+                                                        <?php echo $edu['ename'] ?></option>
+                                                    <?php endforeach;?>
                                                 </select>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
@@ -291,11 +298,11 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                     <div class="col-12">
                                         <?php if(empty($enquiry)):?>
                                         <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label" for="facebook_link">
+                                            <label class="col-md-3 col-form-label" for="paypal_client_id">
                                                 <?php echo get_phrase('paypal_client_id'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="paypal_client_id" name="paypal_client_id"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -304,7 +311,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 <?php echo get_phrase('paypal_secret_key'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="paypal_secret_key" name="paypal_secret_key"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -313,7 +320,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="stripe_public_key"><?php echo get_phrase('stripe_public_key'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="stripe_public_key" name="stripe_public_key"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -322,7 +329,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 for="stripe_secret_key"><?php echo get_phrase('stripe_secret_key'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="stripe_secret_key" name="stripe_secret_key"
-                                                    class="form-control">
+                                                    class="form-control" tabindex="0">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -331,7 +338,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
                                                     for="course_id"><?php echo get_phrase('course_to_enrol'); ?><span
-                                                        class="required">*</span> </label>
+                                                        class="required">*</span></label>
                                                 <div class="col-md-10">
                                                     <select class="form-control select2" data-toggle="select2"
                                                         name="course_id" id="course_id" required>
@@ -343,7 +350,7 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                                 if ($course['status'] != 'active')
                                                                     continue;?>
                                                         <option value="<?php echo $course['id'] ?>"
-                                                            data-price="<?=$course['discount_flag'] ==1 ?$course['price']:$course['discounted_price']?>">
+                                                            data-price="<?=$course['discount_flag'] ==1 ?$course['discounted_price']:$course['price']?>">
                                                             <?php echo trim($course['title']); ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
@@ -353,37 +360,12 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                                 <label class="col-md-2 col-form-label"
                                                     for="price"><?php echo get_phrase('course_price').' ('.currency_code_and_symbol().')'; ?></label>
                                                 <div class="col-md-10">
-                                                    <input type="number" class="form-control" id="price" readonly
-                                                        name="price"
+                                                    <input type="number" class="form-control" tabindex="0" id="price"
+                                                        readonly name="price" 
                                                         placeholder="<?php echo get_phrase('enter_course_course_price'); ?>"
                                                         min="0">
                                                 </div>
                                             </div>
-
-                                            <div class="form-group row mb-3">
-                                                <div class="offset-md-2 col-md-10">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            name="discount_flag" id="discount_flag" value="1">
-                                                        <label class="custom-control-label"
-                                                            for="discount_flag"><?php echo get_phrase('check_if_this_course_has_discount'); ?></label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row mb-3">
-                                                <label class="col-md-2 col-form-label"
-                                                    for="discounted_price"><?php echo get_phrase('discounted_price').' ('.currency_code_and_symbol().')'; ?></label>
-                                                <div class="col-md-10">
-                                                    <input type="number" class="form-control" name="discounted_price"
-                                                        id="discounted_price"
-                                                        onkeyup="calculateDiscountPercentage(this.value)" min="0">
-                                                    <small
-                                                        class="text-muted"><?php echo get_phrase('this_course_has'); ?>
-                                                        <span id="discounted_percentage" class="text-danger">0%</span>
-                                                        <?php echo get_phrase('discount'); ?></small>
-                                                </div>
-                                            </div> <!-- end col -->
                                         </div> <!-- end row -->
                                         <?php endif;?>
                                     </div> <!-- end col -->
@@ -444,7 +426,7 @@ function priceChecked(elem) {
         jQuery('#discounted_price').removeAttr('disabled');
     } else {
         // jQuery('#discount_flag').prop("checked", true);
-        jQuery('#discounted_price').attr('disabled',true);        
+        jQuery('#discounted_price').attr('disabled', true);
     }
 }
 
@@ -471,21 +453,23 @@ jQuery(document).ready(function() {
         jQuery('[name=price]').val(jQuery(this).select2('data')[0].element.dataset.price);
     });
 
-    jQuery('#discount_flag').on('change',function(){
+    jQuery('#discount_flag').on('change', function() {
         // jQuery('#discounted_price').attr('disabled',true);
         priceChecked($(this));
     })
-    
-    jQuery('#same_as_perm').on('change',function(){
-        if($(this).is(':checked')){
+
+    jQuery('#same_as_perm').on('change', function() {
+        if ($(this).is(':checked')) {
             $('[name="permanent_address"]').val($('[name="present_address"]').val());
-        }else{
+        } else {
             $('[name="permanent_address"]').val();
         }
     });
     <?php if(!empty($enquiry)):?>
     jQuery('#course_id').val(<?=$enquiry['course_id']?>);
     jQuery('#course_id').trigger('change');
+    jQuery('#branch_id').val(<?=$enquiry['branch_id']?>);
+    jQuery('#branch_id').trigger('change');
     <?php endif;?>
 });
 

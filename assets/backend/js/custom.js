@@ -17,6 +17,9 @@ function initDataTable(tableIds, length) {
 }
 if ($("table").attr('data-filter') != undefined) {
     var targetColomns = $.map($("table").data('filter').split(','), Number);
+}
+
+if ($("table").attr('data-nofilter') != undefined) {
     var targetColomns2 = $.map($("table").data('nofilter').split(','), Number);
 }
 var datatables = $("#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable").DataTable({
@@ -241,6 +244,15 @@ function checkRequiredFields() {
             }
         }
     });
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.required-form')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function(form) {
+            form.classList.add('was-validated')
+        });
 
     if (pass === 1) {
         $('form.required-form').submit();

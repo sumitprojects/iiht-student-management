@@ -3,8 +3,8 @@
         <div data-loader="circle-side"></div>
     </div><!-- /Preload -->
     <div id="logo">
-        <a href="<?php echo site_url('home'); ?>"><img src="<?php echo base_url().'uploads/system/logo-light.png'; ?>"
-                height="42" data-retina="true" alt=""></a>
+        <a href="<?php echo site_url('home'); ?>"><img src="<?php echo base_url('uploads/system/'.get_frontend_settings('light_logo')); ?>"
+                height="50" data-retina="true" alt=""></a>
     </div>
     <ul id="top_menu">
             <li><a href="<?php echo site_url('home/shopping_cart'); ?>"

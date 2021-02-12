@@ -17,7 +17,7 @@ if(!empty($param2)){
                 </h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($followup) > 0): ?>
-                    <table id="followup-datatable" class="table table-striped dt-responsive nowrap" data-filter="1,2,3" width="100%" data-page-length='25'>
+                    <table id="followup-datatable" class="table table-striped dt-responsive nowrap" data-filter="1,2,3" data-nofilter=""  width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>

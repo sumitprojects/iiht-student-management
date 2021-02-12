@@ -141,7 +141,7 @@
                                                 <div class="form-group row mb-3">
                                                     <label class="col-md-2 col-form-label" for="course_expiry"><?php echo get_phrase('course_expiry'); ?><span class="required">*</span></label>
                                                     <div class="col-md-10">
-                                                        <input name="course_expiry" id = "course_expiry" type="number" min="0" value="30" class="form-control" value="<?php echo $course_details['course_expiry']; ?>" required/>
+                                                        <input name="course_expiry" id = "course_expiry" type="number" min="0" class="form-control" value="<?php echo $course_details['course_expiry']; ?>" required/>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row mb-3">

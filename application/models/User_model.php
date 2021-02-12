@@ -9,6 +9,7 @@ class User_model extends CI_Model {
         /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
+        $this->load->model('crud_model');
     }
 
     public function get_admin_details() {
@@ -50,6 +51,23 @@ class User_model extends CI_Model {
             $data['date_added'] = strtotime(date("Y-m-d H:i:s"));
             $data['wishlist'] = json_encode(array());
             $data['watch_history'] = json_encode(array());
+            
+            /***
+            * Address Detail
+            */
+            $data['en_id'] = html_escape($this->input->post('en_id'));
+            if(!empty($data['en_id'])){
+                $address['present_address'] = html_escape($this->input->post('present_address'));
+                $address['permanent_address'] = html_escape($this->input->post('permanent_address'));
+                $data['address_detail'] = json_encode($address);
+                $data['marital_status'] = html_escape($this->input->post('marital_status'));
+                $data['uid_or_adhaar'] = html_escape($this->input->post('uid_or_adhaar'));
+                $data['education_detail'] = html_escape($this->input->post('education_detail'));
+                $data['process_mode'] = 'offline';
+                $data['branch_id'] = html_escape($this->input->post('branch_id'));
+                $data['education_detail'] = html_escape($this->input->post('education_detail'));
+                $data['added_by'] = $this->session->userdata('user_id');
+            }
             $data['status'] = 1;
             $data['image'] = md5(rand(10000, 10000000));
 
@@ -75,6 +93,11 @@ class User_model extends CI_Model {
 
             $this->db->insert('users', $data);
             $user_id = $this->db->insert_id();
+            $enrol['user_id'] = $user_id; 
+            $enrol['course_id'] = html_escape($this->input->post('course_id'));
+            $enrol['price'] = $this->input->post('price');
+
+            $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price']);
             $this->upload_user_image($data['image']);
             $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
         }
