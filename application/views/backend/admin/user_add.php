@@ -10,8 +10,13 @@
 </div>
 <div>
     <?php 
-$enquiry['first_name'] = explode(' ',$enquiry['en_name'])[0] ?? '' ;
-$enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
+
+if(isset($enquiry)){
+    $enquiry['first_name'] = explode(' ',$enquiry['en_name'])[0] ?? '' ;
+    $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;    
+}else{
+    $enquiry = null;
+}
 
 ?>
 </div>
@@ -396,15 +401,12 @@ $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
                                 </div> <!-- end row -->
                             </div>
 
-                            <ul class="list-inline mb-0 wizard text-center">
+                            <ul class="list-inline mb-0 wizard">
                                 <li class="previous list-inline-item">
-                                    <a href="javascript:void(0)" class="btn btn-info"> <i class="mdi mdi-arrow-left-bold"></i>
-                                    </a>
+                                    <a href="javascript:void(0)" class="btn btn-info">Previous</a>
                                 </li>
-                                <li class="next list-inline-item">
-                                    <a href="javascript:void(0)" class="btn btn-info"> <i
-                                            class="mdi mdi-arrow-right-bold"></i>
-                                    </a>
+                                <li class="next list-inline-item float-right">
+                                    <a href="javascript:void(0)" class="btn btn-info">Next</a>
                                 </li>
                             </ul>
 

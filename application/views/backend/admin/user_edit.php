@@ -1,6 +1,7 @@
 <?php
     $user_data = $this->db->get_where('users', array('id' => $user_id))->row_array();
     $social_links = json_decode($user_data['social_links'], true);
+    $address_details = json_decode($user_data['address_detail'], true);
 ?>
 <div class="row ">
     <div class="col-xl-12">
@@ -19,6 +20,7 @@
                 <h4 class="header-title mb-3"><?php echo get_phrase('student_edit_form'); ?></h4>
 
                 <form class="required-form" action="<?php echo site_url('admin/users/edit/'.$user_id); ?>" enctype="multipart/form-data" method="post">
+                <input type="hidden" name="en_id" value="<?=$user_data['en_id']?>">
                     <div id="progressbarwizard">
                         <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                             <li class="nav-item">
@@ -39,12 +41,14 @@
                                     <span class="d-none d-sm-inline"><?php echo get_phrase('social_information'); ?></span>
                                 </a>
                             </li>
+                            <?php if(empty($user_data['en_id'])):?>
                             <li class="nav-item">
                                 <a href="#payment_info" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
-                                    <i class="mdi mdi-currency-eur mr-1"></i>
+                                    <i class="mdi mdi-currency-inr mr-1"></i>
                                     <span class="d-none d-sm-inline"><?php echo get_phrase('payment_info'); ?></span>
                                 </a>
                             </li>
+                            <?php endif; ?>
                             <li class="nav-item">
                                 <a href="#finish" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
                                     <i class="mdi mdi-checkbox-marked-circle-outline mr-1"></i>
@@ -73,12 +77,58 @@
                                                 <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo $user_data['last_name']; ?>" required>
                                             </div>
                                         </div>
+                                        <?php if(empty($user_data['en_id'])):?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="linkedin_link"><?php echo get_phrase('biography'); ?></label>
                                             <div class="col-md-9">
                                                 <textarea name="biography" id = "summernote-basic" class="form-control"><?php echo $user_data['biography']; ?></textarea>
                                             </div>
                                         </div>
+                                        <?php else:?>
+                                            <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="dob"><?php echo get_phrase('date_of_birth'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input type="date" max="<?=date('Y-m-d')?>" value="<?=$user_data['dob']?>" class="form-control"
+                                                    tabindex="0" id="dob" name="dob" required>
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="mob_no"><?php echo get_phrase('mob_no'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" tabindex="0"
+                                                    value="<?=$user_data['mob_no']?>" id="mob_no" name="mob_no" required>
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" tabindex="0"
+                                                    value="<?=$user_data['alt_mob']?>" id="alt_mob" name="alt_mob">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="branch_id"><?php echo get_phrase('admission_branch'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" data-toggle="select2" required
+                                                    name="branch_id" data-init-plugin="select2" id="branch_id">
+                                                    <?php foreach($branch as $key => $val):?>
+                                                    <option value="<?=$val['branch_id']?>"
+                                                        <?=$user_data['branch_id']==$val['branch_id']?'selected':''?>>
+                                                        <?php echo $val['branch_name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <?php endif;?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="user_image"><?php echo get_phrase('user_image'); ?></label>
                                             <div class="col-md-9">
@@ -117,6 +167,7 @@
                             <div class="tab-pane" id="social_information">
                                 <div class="row">
                                     <div class="col-12">
+                                    <?php if(empty($user_data['en_id'])):?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="facebook_link"> <?php echo get_phrase('facebook'); ?></label>
                                             <div class="col-md-9">
@@ -135,10 +186,91 @@
                                                 <input type="text" id="linkedin_link" name="linkedin_link" class="form-control" value="<?php echo $social_links['linkedin']; ?>">
                                             </div>
                                         </div>
+                                        <?php else: ?>
+                                            <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="marital_status"><?php echo get_phrase('marital_status'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" data-toggle="select2"
+                                                    name="marital_status" data-init-plugin="select2" tabindex="0"
+                                                    id="marital_status">
+                                                    <option value="single">
+                                                        <?php echo get_phrase('single') ?></option>
+                                                    <option value="married">
+                                                        <?php echo get_phrase('married') ?></option>
+                                                    <option value="widowed">
+                                                        <?php echo get_phrase('widowed') ?></option>
+                                                    <option value="divorced">
+                                                        <?php echo get_phrase('divorced') ?></option>
+                                                </select>
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="uid_or_adhaar"><?php echo get_phrase('uid_or_adhaar'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input type="text" id="uid_or_adhaar" name="uid_or_adhaar" required
+                                                value="<?=$user_data['uid_or_adhaar']?>"    
+                                                class="form-control" tabindex="0">
+                                                <small><?php echo get_phrase("required_for_instructor"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="present_address"><?php echo get_phrase('present_address'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input type="text" id="present_address" name="present_address"
+                                                    value="<?=$address_details['present_address']?>" class="form-control" required
+                                                    tabindex="0">
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="offset-md-3 col-md-9">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" tabindex="0"
+                                                        name="same_as_perm" id="same_as_perm" value="1">
+                                                    <label class="custom-control-label"
+                                                        for="same_as_perm"><?php echo get_phrase('check_if_this_address_is_same_as_permanent'); ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="permanent_address"><?php echo get_phrase('permanent_address'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <input type="text" id="permanent_address" value="<?=$address_details['permanent_address']?>" name="permanent_address" required
+                                                    class="form-control" tabindex="0">
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="education_detail"><?php echo get_phrase('education_detail'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" data-toggle="select2" required
+                                                    name="education_detail" data-init-plugin="select2" tabindex="0"
+                                                    id="education_detail">
+                                                    <?php foreach($edu_list as $key=>$edu):?>
+                                                    <option value="<?=$edu['ename']?>">
+                                                        <?php echo $edu['ename'] ?></option>
+                                                    <?php endforeach;?>
+                                                </select>
+                                                <small><?php echo get_phrase("required_for_admission"); ?></small>
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
                             <?php
+                                if(empty($user_data['en_id'])):
                                 $paypal_keys = json_decode($user_data['paypal_keys'], true);
                                 $stripe_keys = json_decode($user_data['stripe_keys'], true);
                              ?>
@@ -180,6 +312,7 @@
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
+                            <?php endif; ?>
                             <div class="tab-pane" id="finish">
                                 <div class="row">
                                     <div class="col-12">
@@ -214,3 +347,29 @@
         </div> <!-- end card-->
     </div>
 </div>
+<script type="text/javascript">
+if ($('select').hasClass('select2') == true) {
+    $('div').attr('tabindex', "");
+    $(function() {
+        $(".select2").select2()
+    });
+}
+jQuery(document).ready(function() {
+    jQuery('#same_as_perm').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('[name="permanent_address"]').val($('[name="present_address"]').val());
+        } else {
+            $('[name="permanent_address"]').val();
+        }
+    });
+    <?php if(!empty($enquiry)):?>
+    jQuery('#branch_id').val(<?=$user_data['branch_id']?>);
+    jQuery('#branch_id').trigger('change');
+    jQuery('#marital_status').val(<?=$user_data['marital_status']?>);
+    jQuery('#marital_status').trigger('change');
+    jQuery('#education_detail').val(<?=$user_data['education_detail']?>);
+    jQuery('#education_detail').trigger('change');
+    <?php endif;?>
+});
+
+</script>

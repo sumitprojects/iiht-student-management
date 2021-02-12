@@ -442,7 +442,10 @@ class Admin extends CI_Controller {
         }elseif ($param1 == 'edit_user_form') {
             $page_data['page_name'] = 'user_edit';
             $page_data['user_id'] = $param2;
+            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['page_title'] = get_phrase('student_edit');
+            $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
+            $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $this->load->view('backend/index', $page_data);
         }
     }

@@ -38,8 +38,7 @@ class User_model extends CI_Model {
         }else {
             $data['first_name'] = html_escape($this->input->post('first_name'));
             $data['last_name'] = html_escape($this->input->post('last_name'));
-            $data['dob'] = html_escape($this->input->post('dob'));
-            $data['branch_id'] = html_escape($this->input->post('branch_id'));
+          
             $data['email'] = html_escape($this->input->post('email'));
             $data['password'] = sha1(html_escape($this->input->post('password')));
             $social_link['facebook'] = html_escape($this->input->post('facebook_link'));
@@ -56,6 +55,8 @@ class User_model extends CI_Model {
             * Address Detail
             */
             $data['en_id'] = html_escape($this->input->post('en_id'));
+            $data['dob'] = html_escape($this->input->post('dob'));
+            $data['branch_id'] = html_escape($this->input->post('branch_id'));
             if(!empty($data['en_id'])){
                 $address['present_address'] = html_escape($this->input->post('present_address'));
                 $address['permanent_address'] = html_escape($this->input->post('permanent_address'));
@@ -200,6 +201,24 @@ class User_model extends CI_Model {
                 $data['image'] = md5(rand(10000, 10000000));
             }
 
+             /***
+            * Address Detail
+            */
+            $data['en_id'] = html_escape($this->input->post('en_id'));
+            $data['dob'] = html_escape($this->input->post('dob'));
+            $data['branch_id'] = html_escape($this->input->post('branch_id'));
+            if(!empty($data['en_id'])){
+                $address['present_address'] = html_escape($this->input->post('present_address'));
+                $address['permanent_address'] = html_escape($this->input->post('permanent_address'));
+                $data['address_detail'] = json_encode($address);
+                $data['marital_status'] = html_escape($this->input->post('marital_status'));
+                $data['uid_or_adhaar'] = html_escape($this->input->post('uid_or_adhaar'));
+                $data['education_detail'] = html_escape($this->input->post('education_detail'));
+                $data['process_mode'] = 'offline';
+                $data['branch_id'] = html_escape($this->input->post('branch_id'));
+                $data['education_detail'] = html_escape($this->input->post('education_detail'));
+                $data['added_by'] = $this->session->userdata('user_id');
+            }
             // Update paypal keys
             $paypal_info = array();
             $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
