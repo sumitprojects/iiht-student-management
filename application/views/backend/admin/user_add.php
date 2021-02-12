@@ -9,6 +9,11 @@
     </div><!-- end col-->
 </div>
 <div>
+    <?php 
+$enquiry['first_name'] = explode(' ',$enquiry['en_name'])[0] ?? '' ;
+$enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;
+
+?>
 </div>
 <div class="row">
     <div class="col-xl-12">
@@ -165,7 +170,7 @@
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" id="email" name="email" class="form-control"
-                                                    tabindex="0" value="<?=$enquiry['en_email']?>">
+                                                    tabindex="0" value="<?=$enquiry['en_email']?>" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
