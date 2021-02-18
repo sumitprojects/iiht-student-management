@@ -481,6 +481,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/enrol_history'), 'refresh');
         }
         $page_data['page_name'] = 'enrol_student';
+        $page_data['courses'] = $this->crud_model->get_courses()->result_array();
         $page_data['page_title'] = get_phrase('enrol_a_student');
         $this->load->view('backend/index', $page_data);
     }
