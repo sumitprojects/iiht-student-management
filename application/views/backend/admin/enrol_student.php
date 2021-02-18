@@ -34,7 +34,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group row mb-3">
+                        <div class="form-group mb-3">
                             <label class="" for="course_id"><?php echo get_phrase('course_to_enrol'); ?><span
                                     class="required">*</span></label>
                             <select class="form-control select2" data-toggle="select2" name="course_id" id="course_id"
@@ -52,7 +52,7 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group row mb-3">
+                        <div class="form-group mb-3">
                             <label class=""
                                 for="price"><?php echo get_phrase('course_price').' ('.currency_code_and_symbol().')'; ?></label>
                             <input type="number" class="form-control" tabindex="0" id="price" readonly name="price"
