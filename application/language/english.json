@@ -1063,7 +1063,7 @@
     "inquiry_source": "Source",
     "mob_no": "Mob no",
     "alt_mob": "Alt mob",
-    "inquiry_date": "Date",
+    "inquiry_date": "Inquiry Date",
     "inquiry_status": "Status",
     "open": "Open",
     "edit_this_inquiry": "Edit this inquiry",
@@ -1129,5 +1129,17 @@
     "submitted_answers": "Submitted answers",
     "take_again": "Take again",
     "user_deleted_successfully": "User deleted successfully",
-    "admission_history": "Admission history"
+    "admission_history": "Admission history",
+    "item": "Item",
+    "continue_shopping": "Continue shopping",
+    "please_provide_a_valid_date_after": "Please provide a valid date after",
+    "please_provide_a_description": "Please provide a description",
+    "please_provide_a_valid_name_firstname_and_lastname": "Please provide a valid name firstname and lastname",
+    "please_provide_a_valid_mobile": "Please provide a valid mobile",
+    "please_provide_a_valid_course": "Please provide a valid course",
+    "please_provide_a_valid_branch": "Please provide a valid branch",
+    "please_provide_a_valid_source": "Please provide a valid source",
+    "gender_must_be_selected": "Gender must be selected",
+    "enrolment_status": "Enrolment status",
+    "data_activated_successfully": "Data activated successfully"
 }

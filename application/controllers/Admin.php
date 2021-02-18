@@ -555,6 +555,15 @@ class Admin extends CI_Controller {
         $this->session->set_flashdata('flash_message', get_phrase('data_deleted_successfully'));
         redirect(site_url('admin/enrol_history'), 'refresh');
     }
+    
+    public function enrol_history_activate($param1 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        $this->crud_model->activate_enrol_history($param1);
+        $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));
+        redirect(site_url('admin/enrol_history'), 'refresh');
+    }
 
     public function purchase_history() {
         if ($this->session->userdata('admin_login') != true) {

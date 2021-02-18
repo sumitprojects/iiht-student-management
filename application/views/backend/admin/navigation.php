@@ -143,9 +143,9 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 					<a href="<?php echo site_url('admin/enrol_history'); ?>"><?php echo get_phrase('enrol_history'); ?></a>
 				</li>
 
-				<!-- <li class = "<?php if($page_name == 'enrol_student') echo 'active'; ?>">
+				<li class = "<?php if($page_name == 'enrol_student') echo 'active'; ?>">
 					<a href="<?php echo site_url('admin/enrol_student'); ?>"><?php echo get_phrase('enrol_a_student'); ?></a>
-				</li> -->
+				</li>
 			</ul>
 		</li>
 

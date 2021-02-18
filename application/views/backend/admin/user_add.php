@@ -175,7 +175,7 @@ if(isset($enquiry)){
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" id="email" name="email" class="form-control"
-                                                    tabindex="0" value="<?=$enquiry['en_email']?>" required>
+                                                    tabindex="0" value="<?=$enquiry['en_email']?>" <?=!empty($enquiry)?'':'required'?>>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -288,7 +288,7 @@ if(isset($enquiry)){
                                                 for="education_detail"><?php echo get_phrase('education_detail'); ?><span
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
-                                                <select class="form-control select2" data-toggle="select2" required
+                                                <select class="form-control select2 custom-select" data-toggle="select2" required
                                                     name="education_detail" data-init-plugin="select2" tabindex="0"
                                                     id="education_detail">
                                                     <?php foreach($edu_list as $key=>$edu):?>

@@ -32,12 +32,14 @@ if(!empty($param3)){
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="description" name="description"
                                 value="<?php echo !empty($followup)?$followup['description']:''; ?>" required>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_description')?></div>
                         </div>
                         <div class="form-group">
                             <label for="next_date"><?php echo get_phrase('next_followup_date'); ?><span
                                     class="required">*</span></label>
                             <input type="date" class="form-control" id="next_date" name="next_date" min="<?=date('Y-m-d')?>"
                                 value="<?php echo !empty($followup)?$followup['next_date']:date('Y-m-d')?>" required>
+                                <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_date_after')?> <?=date('Y-m-d')?>.</div>
                         </div>
                         <div class="form-group">
                             <label for="status"><?php echo get_phrase('followup_status'); ?><span

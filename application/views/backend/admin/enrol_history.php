@@ -40,6 +40,7 @@
                                   <th><?php echo get_phrase('user_name'); ?></th>
                                   <th><?php echo get_phrase('enrolled_course'); ?></th>
                                   <th><?php echo get_phrase('enrolment_date'); ?></th>
+                                  <th><?php echo get_phrase('enrolment_status'); ?></th>
                                   <th><?php echo get_phrase('actions'); ?></th>
                               </tr>
                           </thead>
@@ -57,8 +58,14 @@
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
+                                      <td><span class="badge badge-info"><?=get_phrase($enrol['enrol_status'])?></span></td>
                                       <td>
-                                          <button type="button" class="btn btn-outline-danger btn-icon btn-rounded btn-sm" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"> <i class="dripicons-trash"></i> </button>
+                                          <?php if($enrol['enrol_status'] != 'disable'):?>
+                                            <button type="button" class="btn btn-outline-danger btn-icon btn-rounded btn-sm" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"> <i class="dripicons-trash"></i> </button>
+                                          <?php endif;?>
+                                          <?php if($enrol['enrol_status'] == 'disable'):?>
+                                            <button type="button" class="btn btn-outline-success btn-icon btn-rounded btn-sm" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_activate/'.$enrol['id']); ?>');"> <i class="dripicons-checkmark"></i> </button>
+                                          <?php endif;?>
                                       </td>
                                   </tr>
                               <?php endforeach; ?>

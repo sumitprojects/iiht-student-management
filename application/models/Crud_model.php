@@ -111,7 +111,7 @@ class Crud_model extends CI_Model
     {
         $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
         $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
-        $data['en_gender']   = (html_escape($this->input->post('en_gender')));
+        $data['en_gender']   = (html_escape($this->input->post('en_gender')))??'male';
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
@@ -121,7 +121,7 @@ class Crud_model extends CI_Model
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
 
-        $data['en_date']   = (html_escape($this->input->post('en_date')));
+        $data['en_date']   = (html_escape($this->input->post('en_date')))?? date('Y-m-d');
         $data['user_id'] = $this->session->userdata('user_id');
         $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
 
@@ -149,14 +149,14 @@ class Crud_model extends CI_Model
 
         $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
         $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
-        $data['en_gender']   = (html_escape($this->input->post('en_gender')));
+        $data['en_gender']   = (html_escape($this->input->post('en_gender')))?? 'male';
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
         $data['source_other']   = (html_escape($this->input->post('source_other')))??NULL;
-        $data['en_date']   = (html_escape($this->input->post('en_date')));
+        $data['en_date']   = (html_escape($this->input->post('en_date')))?? date('Y-m-d');
         $data['user_id'] = $this->session->userdata('user_id');
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
@@ -174,6 +174,12 @@ class Crud_model extends CI_Model
             return true;
         }
         return false;
+    }
+
+    public function complete_inquiry($param1 = ""){
+        $this->db->set(['en_status'=>'completed']);
+        $this->db->where('en_id', $param1);
+        return $this->db->update('enquiry');
     }
 
     public function delete_inquiry($param1 = "")
@@ -537,7 +543,15 @@ class Crud_model extends CI_Model
     public function delete_enrol_history($param1)
     {
         $this->db->where('id', $param1);
-        $this->db->delete('enrol');
+        $this->db->update('enrol',['enrol_status'=>'disable']);
+
+        // $this->db->where('id', $param1);
+        // $this->db->delete('enrol');
+    }
+
+    public function activate_enrol_history($param1){
+        $this->db->where('id', $param1);
+        $this->db->update('enrol',['enrol_status'=>'active']);
     }
 
     public function purchase_history($user_id)

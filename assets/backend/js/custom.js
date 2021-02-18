@@ -251,6 +251,9 @@ function checkRequiredFields() {
     // Loop over them and prevent submission
     Array.prototype.slice.call(forms)
         .forEach(function(form) {
+            if (form.checkValidity() === false) {
+                pass = 0;
+            }
             form.classList.add('was-validated')
         });
 

@@ -94,10 +94,11 @@ class User_model extends CI_Model {
 
             $this->db->insert('users', $data);
             $user_id = $this->db->insert_id();
+            if($user_id) $this->crud_model->complete_inquiry($data['en_id']);
             $enrol['user_id'] = $user_id; 
             $enrol['course_id'] = html_escape($this->input->post('course_id'));
             $enrol['price'] = $this->input->post('price');
-
+            
             $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price']);
             $this->upload_user_image($data['image']);
             $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));

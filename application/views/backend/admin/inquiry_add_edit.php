@@ -33,6 +33,7 @@ if(!empty($param2)){
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="en_name" name="en_name"
                                 value="<?php echo !empty($inquiry)?$inquiry['en_name']:''?>" required>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_name_firstname_and_lastname')?></div>
                         </div>
                         <div class="form-group">
                             <label for="en_email"><?php echo get_phrase('inquiry_email'); ?><span
@@ -41,19 +42,23 @@ if(!empty($param2)){
                                 value="<?php echo !empty($inquiry)?$inquiry['en_email']:''?>">
                         </div>
                         <div class="form-group">
-                            <label for="en_gender"><?php echo get_phrase('inquiry_gender'); ?><span
+                            <label for=""><?php echo get_phrase('inquiry_gender'); ?><span
                                     class="required">*</span></label><br>
-                            <input type="radio" value="male" name="en_gender" required
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="male_radio" value="male" name="en_gender" required
                                 <?php  echo !empty($inquiry) && $inquiry['en_gender'] == 'male'?'checked':''; ?>>
-                            <?php echo get_phrase('male'); ?>
-                            &nbsp;&nbsp;
-                            <input type="radio" value="female" name="en_gender" required
-                                <?php echo !empty($inquiry) && $inquiry['en_gender'] == 'female'?'checked':''; ?>>
-                            <?php echo get_phrase('female'); ?>
-                            &nbsp;&nbsp;
-                            <input type="radio" value="other" name="en_gender" required
-                                <?php echo !empty($inquiry) && $inquiry['en_gender'] == 'other'?'checked':''; ?>>
-                            <?php echo get_phrase('other'); ?>
+                                <label class="custom-control-label" for="male_radio"><?php echo get_phrase('male'); ?></label>                            
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="female_radio" value="female" name="en_gender" required
+                                <?php  echo !empty($inquiry) && $inquiry['en_gender'] == 'female'?'checked':''; ?>>
+                                <label class="custom-control-label" for="female_radio"><?php echo get_phrase('female'); ?></label>                            
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="other_radio" value="other" name="en_gender" required
+                                <?php  echo !empty($inquiry) && $inquiry['en_gender'] == 'other'?'checked':''; ?>>
+                                <label class="custom-control-label" for="other_radio"><?php echo get_phrase('other'); ?></label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="en_address"><?php echo get_phrase('inquiry_address'); ?><span
@@ -67,6 +72,7 @@ if(!empty($param2)){
                             <input type="text" class="form-control" id="mob_no" name="mob_no"
                                 value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="" pattern=""
                                 required>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_mobile')?></div>
                         </div>
                         <div class="form-group">
                             <label for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
@@ -77,7 +83,7 @@ if(!empty($param2)){
                             <label for="en_date"><?php echo get_phrase('inquiry_date'); ?><span
                                     class="required">*</span></label>
                             <input type="date" class="form-control" id="en_date" name="en_date"
-                                value="<?php echo !empty($inquiry)?$inquiry['en_date']:''?>" required>
+                                value="<?php echo !empty($inquiry)?$inquiry['en_date']:date('Y-m-d')?>" required>
                         </div>
                         <div class="form-group">
                             <label for="course_id"><?php echo get_phrase('inquiry_course'); ?><span
@@ -89,6 +95,7 @@ if(!empty($param2)){
                                     <?php echo $val['title']; ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_course')?></div>
                         </div>
                         <div class="form-group">
                             <label for="branch_id"><?php echo get_phrase('inquiry_branch'); ?><span
@@ -101,6 +108,7 @@ if(!empty($param2)){
                                     <?php echo $val['branch_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_branch')?></div>
                         </div>
                         <div class="form-group">
                             <label for="source_id"><?php echo get_phrase('inquiry_source'); ?><span
@@ -113,6 +121,7 @@ if(!empty($param2)){
                                     <?php echo $val['source_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_source')?></div>
                         </div>
                         <div class="form-group">
                             <label for="source_other"><?php echo get_phrase('reference_or_other'); ?><span
