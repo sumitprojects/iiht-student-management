@@ -26,7 +26,7 @@ $invoice_banner = $banners['invoice_banner'];
                         <table>
                             <tr>
                                 <td>
-                                    <img src="<?php echo base_url('uploads/system/logo-dark.png');?>" height="40" style="display:inline-block;">
+                                    <img src="<?php echo base_url('uploads/system/'.get_frontend_settings('dark_logo'));?>" height="40" style="display:inline-block;">
                                 </td>
                                 <td style="font-size: 22px;" class="text-right strong"><?php echo strtoupper(get_phrase('invoice')); ?></td>
                             </tr>

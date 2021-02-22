@@ -467,10 +467,28 @@ class Crud_model extends CI_Model
 
     public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "")
     {
-        $this->db->order_by('date_added', 'desc');
-        $this->db->where('date_added >=', $timestamp_start);
-        $this->db->where('date_added <=', $timestamp_end);
-        return $this->db->get('enrol');
+        $this->db->select('en.*,sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
+        $this->db->from('enrol as en');
+        $this->db->join('payment as py','py.enrol_id = en.id','left');
+        
+        $this->db->order_by('en.date_added', 'desc');
+        $this->db->where('en.date_added >=', $timestamp_start);
+        $this->db->where('en.date_added <=', $timestamp_end);
+        $this->db->group_by('en.id,py.enrol_id');
+
+        return $this->db->get();
+    }
+
+    public function get_enrol_payment_info($id = 0){
+        $this->db->select('sum(py.amount) total_payment,py.amount,en.final_price - sum(py.amount) as amount_due');
+        $this->db->from('enrol as en');
+        $this->db->join('payment as py','py.enrol_id = en.id','left');        
+        $this->db->order_by('en.date_added', 'desc');
+        $this->db->where('en.id', $id);
+        $this->db->group_by('en.id,py.enrol_id,py.amount');
+        $this->db->group_by('py.date_added');
+
+        return $this->db->get();
     }
 
     public function get_revenue_by_user_type($timestamp_start = "", $timestamp_end = "", $revenue_type = "")
@@ -550,10 +568,16 @@ class Crud_model extends CI_Model
     }
 
     public function activate_enrol_history($param1){
-        $this->db->where('id', $param1);
-        $this->db->update('enrol',['enrol_status'=>'active']);
+        $payment = $this->db->get_where('payment',array('enrol_id'=>$param1))->row_array();
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($payment['user_id'],$payment['course_id']);
+        if($check_enrol->num_rows() > 0){
+            $this->session->set_flashdata('error_message', get_phrase('student_course_is_already_enroled'));
+        }else{
+            $this->db->where('id', $param1);
+            $this->db->update('enrol',['enrol_status'=>!empty($payment)?'active':'pending']);   
+            $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));     
+        }
     }
-
     public function purchase_history($user_id)
     {
         if ($user_id > 0) {
@@ -1784,6 +1808,10 @@ class Crud_model extends CI_Model
         $data['value'] = $this->input->post('privacy_policy');
         $this->db->where('key', 'privacy_policy');
         $this->db->update('frontend_settings', $data);
+
+        $data['value'] = $this->input->post('invoice_template');
+        $this->db->where('key', 'invoice_template');
+        $this->db->update('frontend_settings', $data);
     }
 
     public function update_recaptcha_settings()
@@ -1933,6 +1961,8 @@ class Crud_model extends CI_Model
         ->where('user_id',$user_id)
         ->where('course_id',$course_id)
         ->where('expiry_time>=',strtotime(date('D, d-M-Y')))
+        ->where('enrol_status','active')
+        ->or_where('enrol_status','pending')
         ->get();
     }
 
@@ -1952,15 +1982,19 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
+        $data['final_price'] = $this->input->post('price');
+        $data['enrol_status'] = 'pending';
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
         if ($check_enrol->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
+            return false;
         } else {
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
+            return true;
         }
     }
 
@@ -2025,6 +2059,45 @@ class Crud_model extends CI_Model
             redirect(site_url('home/course/' . slugify($course_details['title']) . '/' . $course_id), 'refresh');
         }
     }
+    public function get_enrol($enrol_id = 0){
+        $this->db->select('e.id as eid,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
+                        ->from('enrol as e')
+                        ->join('course as c','c.id = e.course_id')
+                        ->join('users as u','u.id = e.user_id')
+                        ->join('enquiry as eq','eq.en_id = u.en_id')
+                        ->join('sources as sc','sc.source_id = eq.source_id')
+                        ->join('branch as b','b.branch_id = u.branch_id')
+                        ->where('e.enrol_status','active')
+                        ->where('u.status',1);
+        if($enrol_id > 0){
+            $this->db->where('e.id',$enrol_id);
+        }
+        return $this->db->get();
+    }
+
+    public function add_offline_payment(){
+        $data['user_id'] = $this->input->post('user_id');
+        $data['course_id'] = $this->input->post('course_id');
+        $data['session_id'] = $this->input->post('session_id');
+        $data['transaction_id'] = html_escape($this->input->post('transaction_id'));
+        $data['date_added'] = strtotime($this->input->post('date_added'));
+        $data['enrol_id'] = $this->input->post('enrol_id');
+        $data['amount'] = $this->input->post('amount');
+        $data['payment_type'] = html_escape($this->input->post('payment_type'));
+        $payment_detail['account_number'] = html_escape($this->input->post('account_number'));
+        $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
+        $payment_detail['bank_name'] = html_escape($this->input->post('bank_name'));
+        $data['payment_detail'] = json_encode($payment_detail);
+        $data['last_modified'] = strtotime(date('Y-m-d'));
+        $enrol_detail = $this->get_enrol($data['enrol_id'])->row_array();
+        if ($enrol_detail['final_price'] < $data['amount']) {
+            return false;
+        } 
+        return $this->db->insert('payment',$data);
+    }
+
+
+
     public function course_purchase($user_id, $method, $amount_paid, $param1 = "", $param2 = "")
     {
         $purchased_courses = $this->session->userdata('cart_items');

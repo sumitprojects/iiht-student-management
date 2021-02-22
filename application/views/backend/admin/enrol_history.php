@@ -40,6 +40,9 @@
                                   <th><?php echo get_phrase('user_name'); ?></th>
                                   <th><?php echo get_phrase('enrolled_course'); ?></th>
                                   <th><?php echo get_phrase('enrolment_date'); ?></th>
+                                  <th><?php echo get_phrase('course_fees')?></th>
+                                  <th><?php echo get_phrase('payment_recieved')?></th>
+                                  <th><?php echo get_phrase('amount_due')?></th>
                                   <th><?php echo get_phrase('enrolment_status'); ?></th>
                                   <th><?php echo get_phrase('actions'); ?></th>
                               </tr>
@@ -58,14 +61,29 @@
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
+                                      <td><?=$enrol['final_price']?></td>
+                                      <td><?=$enrol['total_payment']?></td>
+                                      <td><?=$enrol['amount_due']?></td>
                                       <td><span class="badge badge-info"><?=get_phrase($enrol['enrol_status'])?></span></td>
                                       <td>
-                                          <?php if($enrol['enrol_status'] != 'disable'):?>
-                                            <button type="button" class="btn btn-outline-danger btn-icon btn-rounded btn-sm" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"> <i class="dripicons-trash"></i> </button>
-                                          <?php endif;?>
-                                          <?php if($enrol['enrol_status'] == 'disable'):?>
-                                            <button type="button" class="btn btn-outline-success btn-icon btn-rounded btn-sm" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_activate/'.$enrol['id']); ?>');"> <i class="dripicons-checkmark"></i> </button>
-                                          <?php endif;?>
+                                      <div class="dropright dropright">
+                                          <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="mdi mdi-dots-vertical"></i>
+                                          </button>
+                                          <ul class="dropdown-menu">
+                                                <?php if($enrol['enrol_status'] != 'disable'):?>
+                                                    <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"><?=get_phrase('delete')?></a></li>
+                                                    <?php if($enrol['total_payment'] > 0):?>
+                                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/admission_form/'.$enrol['id']); ?>"><?=get_phrase('view_admission_form')?></a></li>                                                        
+                                                    <?php endif;?>
+                                                    <?php if($enrol['final_price']-$enrol['total_payment'] != 0):?>
+                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/add_payment/'.$enrol['id']); ?>"><?=get_phrase('make_payment')?></a></li>
+                                                <?php endif; endif; ?>
+                                                <?php if($enrol['enrol_status'] == 'disable'):?>
+                                                    <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_activate/'.$enrol['id']); ?>');"><?=get_phrase('activate')?></a></li>
+                                                <?php endif;?>
+                                          </ul>
+                                      </div>
                                       </td>
                                   </tr>
                               <?php endforeach; ?>

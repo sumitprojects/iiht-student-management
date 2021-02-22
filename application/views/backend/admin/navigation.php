@@ -68,7 +68,28 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				<span><?php echo get_phrase('courses'); ?></span>
 			</a>
 		</li>
+		<li class="side-nav-item <?php if ($page_name == 'enrol_history' || $page_name == 'enrol_student'): ?> active <?php endif; ?>">
+			<a href="javascript: void(0);" class="side-nav-link <?php if ($page_name == 'enrol_history' || $page_name == 'enrol_student' || ($page_name == 'users' || $page_name == 'user_add' || $page_name == 'user_edit')) : ?> active <?php endif; ?>">
+				<i class="dripicons-network-3"></i>
+				<span> <?php echo get_phrase('enrolment'); ?> </span>
+				<span class="menu-arrow"></span>
+			</a>
+			<ul class="side-nav-second-level" aria-expanded="false">
+				<li class = "<?php if($page_name == 'enrol_history') echo 'active'; ?>">
+					<a href="<?php echo site_url('admin/enrol_history'); ?>"><?php echo get_phrase('enrol_history'); ?></a>
+				</li>
 
+				<li class = "<?php if($page_name == 'enrol_student') echo 'active'; ?>">
+					<a href="<?php echo site_url('admin/enrol_student'); ?>"><?php echo get_phrase('enrol_a_student'); ?></a>
+				</li>
+				<li class="">
+					<a href="<?php echo site_url('admin/users'); ?>" class="<?php if ($page_name == 'users' || $page_name == 'user_add' || $page_name == 'user_edit')echo 'active';?>">
+						<!-- <i class="dripicons-user-group"></i> -->
+						<span><?php echo get_phrase('students'); ?></span>
+					</a>
+				</li>
+			</ul>
+		</li>
 		<?php if (addon_status('course_bundle')): ?>
 			<li class="side-nav-item <?php if ($page_name == 'add_bundle' || $page_name == 'manage_course_bundle' || $page_name == 'edit_bundle' || $page_name == 'active_bundle_subscription_report' || $page_name == 'expire_bundle_subscription_report' || $page_name == 'bundle_invoice'): ?> active <?php endif; ?>">
 				<a href="javascript: void(0);" class="side-nav-link">
@@ -121,30 +142,6 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 						<?php echo get_phrase('instructor_application'); ?>
 						<span class="badge badge-danger-lighten"><?php echo $this->user_model->get_pending_applications()->num_rows(); ?></span>
 					</a>
-				</li>
-			</ul>
-		</li>
-
-		<li class="side-nav-item">
-			<a href="<?php echo site_url('admin/users'); ?>" class="side-nav-link <?php if ($page_name == 'users' || $page_name == 'user_add' || $page_name == 'user_edit')echo 'active';?>">
-				<i class="dripicons-user-group"></i>
-				<span><?php echo get_phrase('students'); ?></span>
-			</a>
-		</li>
-
-		<li class="side-nav-item <?php if ($page_name == 'enrol_history' || $page_name == 'enrol_student'): ?> active <?php endif; ?>">
-			<a href="javascript: void(0);" class="side-nav-link <?php if ($page_name == 'enrol_history' || $page_name == 'enrol_student'): ?> active <?php endif; ?>">
-				<i class="dripicons-network-3"></i>
-				<span> <?php echo get_phrase('enrolment'); ?> </span>
-				<span class="menu-arrow"></span>
-			</a>
-			<ul class="side-nav-second-level" aria-expanded="false">
-				<li class = "<?php if($page_name == 'enrol_history') echo 'active'; ?>">
-					<a href="<?php echo site_url('admin/enrol_history'); ?>"><?php echo get_phrase('enrol_history'); ?></a>
-				</li>
-
-				<li class = "<?php if($page_name == 'enrol_student') echo 'active'; ?>">
-					<a href="<?php echo site_url('admin/enrol_student'); ?>"><?php echo get_phrase('enrol_a_student'); ?></a>
 				</li>
 			</ul>
 		</li>

@@ -16,6 +16,15 @@ class Admin extends CI_Controller {
         }
     }
 
+    public function admission_form($id = 0){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        $page_data['title'] = 'Admission Form';
+        $page_data['enrol'] = $this->crud_model->get_enrol($id)->row_array();
+        $this->load->view('backend/admin/admission_form', $page_data);
+    }
+
     public function index() {
         if ($this->session->userdata('admin_login') == true) {
             $this->dashboard();
@@ -318,7 +327,6 @@ class Admin extends CI_Controller {
     }
     /****Followup End */
 
-
     public function sub_categories_by_category_id($category_id = 0) {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -345,6 +353,7 @@ class Admin extends CI_Controller {
         $page_data['categories'] = $this->crud_model->get_categories();
         $this->load->view('backend/index', $page_data);
     }
+
     public function instructors($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -477,8 +486,8 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
         if ($param1 == 'enrol') {
-            $this->crud_model->enrol_a_student_manually();
-            redirect(site_url('admin/enrol_history'), 'refresh');
+            $enroled = $this->crud_model->enrol_a_student_manually();
+            ($enroled)?redirect(site_url('admin/enrol_history'), 'refresh'):'';
         }
         $page_data['page_name'] = 'enrol_student';
         $page_data['courses'] = $this->crud_model->get_courses()->result_array();
@@ -562,12 +571,32 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
         $this->crud_model->activate_enrol_history($param1);
-        $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));
         redirect(site_url('admin/enrol_history'), 'refresh');
+    }
+
+    public function add_payment($param1 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == ""){
+            $inserted = $this->crud_model->add_offline_payment();
+            if($inserted){
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                redirect(site_url('admin/enrol_history'), 'refresh');    
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('an_error_occurred'));
+            }
+        }
+        $page_data['page_name'] = 'make_payment';
+        $page_data['page_title'] = get_phrase('make_payment');
+        $page_data['purchase_history'] = $this->crud_model->get_enrol($param1)->row_array();
+        $this->load->view('backend/index', $page_data);
     }
 
     public function purchase_history() {
         if ($this->session->userdata('admin_login') != true) {
+            
             redirect(site_url('login'), 'refresh');
         }
         $page_data['page_name'] = 'purchase_history';
@@ -652,6 +681,7 @@ class Admin extends CI_Controller {
         $page_data['page_title'] = get_phrase('frontend_settings');
         $this->load->view('backend/index', $page_data);
     }
+
     public function payment_settings($param1 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');

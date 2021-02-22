@@ -54,6 +54,10 @@
                         <textarea name="privacy_policy" id = "privacy_policy" class="form-control" rows="5"><?php echo get_frontend_settings('privacy_policy'); ?></textarea>
                     </div>
                     <div class="form-group">
+                        <label for="invoice_template"><?php echo get_phrase('rules_and_regulation'); ?></label>
+                        <textarea name="invoice_template" id = "invoice_template" class="form-control" rows="5"><?php echo get_frontend_settings('invoice_template'); ?></textarea>
+                    </div>
+                    <div class="form-group">
                         <label for="heading_line"><?php echo get_phrase('heading_line'); ?></label>
                         <textarea name="heading_line" id = "heading_line" class="form-control" rows="5"><?php echo get_frontend_settings('heading_line'); ?></textarea>
                     </div>
@@ -241,6 +245,6 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-    initSummerNote(['#about_us', '#terms_and_condition', '#privacy_policy', '#cookie_policy']);
+    initSummerNote(['#about_us', '#terms_and_condition', '#privacy_policy', '#cookie_policy','#invoice_template']);
   });
 </script>
