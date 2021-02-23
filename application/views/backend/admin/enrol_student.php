@@ -5,7 +5,6 @@ $paymenttype = array(
 $invoicetypes = array(
     'registration','downpayment','installments'
 );
-$amount_due = 0;
 
 ?>
 <!-- start page title -->
@@ -119,7 +118,7 @@ $amount_due = 0;
 
                         <div class="form-group mb-3">
                             <label class="amount"><?php echo get_phrase('amount'); ?><span class="required">*</span></label>
-                            <input type="number" class="form-control" id="amount" name="amount" required min="0" max="<?=$amount_due?>">
+                            <input type="number" class="form-control" id="amount" name="amount" required min="0" >
                             <?php if(!empty($amount_due)):?><p class="text-danger"><?=get_phrase('amount_due')?>: <?=$amount_due?></p><?php endif;?>
                             <!-- <input type="number" class="form-control"> -->
                         </div>
