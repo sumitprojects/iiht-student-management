@@ -2,7 +2,12 @@
 $paymenttype = array(
     'cash','cheque','wallet'
 );
+$invoicetypes = array(
+    'registration','downpayment','installments'
+);
+
 $payment_details = $this->crud_model->get_enrol_payment_info($purchase_history['eid'])->row_array();
+
 
 $amount_due = 0;
 if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_history['final_price']){
@@ -67,6 +72,23 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                                 <?php endforeach; ?>
                             </select>
                         </div>
+
+                        <div class="form-group mb-3">
+                            <label class="invoice_type" for="invoice_type"><?php echo get_phrase('invoice_type'); ?><span
+                                    class="required">*</span></label>
+                            <select class="form-control select2" data-toggle="select2" name="invoice_type"
+                                id="invoice_type" required>
+                                <option value="" disabled selected>
+                                    <?php echo get_phrase('invoice_type'); ?>
+                                </option>
+                                <?php 
+                                    foreach ($invoicetypes as $invoice):
+                                ?>
+                                <option value="<?php echo $invoice ?>" >
+                                    <?php echo strtoupper($invoice); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                         <div class="form-group mb-3">
                             <label class="wallet_name"><?php echo get_phrase('wallet_name'); ?><span
                                     class="required">*</span></label>
@@ -86,7 +108,7 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                         <div class="form-group mb-3">
                             <label class="amount"><?php echo get_phrase('amount'); ?><span class="required">*</span></label>
                             <input type="number" class="form-control" id="amount" name="amount" required min="0" max="<?=$amount_due?>">
-                            <p class="text-danger"><?=get_phrase('amount_due')?>: <?=$amount_due?></p>
+                            <?php if(!empty($amount_due)):?><p class="text-danger"><?=get_phrase('amount_due')?>: <?=$amount_due?></p><?php endif;?>
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">

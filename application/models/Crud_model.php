@@ -467,7 +467,7 @@ class Crud_model extends CI_Model
 
     public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "")
     {
-        $this->db->select('en.*,sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
+        $this->db->select('en.*,IFNULL(SUM(py.amount),0) total_payment,en.final_price - sum(py.amount) as amount_due');
         $this->db->from('enrol as en');
         $this->db->join('payment as py','py.enrol_id = en.id','left');
         
@@ -2062,12 +2062,12 @@ class Crud_model extends CI_Model
     public function get_enrol($enrol_id = 0){
         $this->db->select('e.id as eid,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
                         ->from('enrol as e')
-                        ->join('course as c','c.id = e.course_id')
-                        ->join('users as u','u.id = e.user_id')
-                        ->join('enquiry as eq','eq.en_id = u.en_id')
-                        ->join('sources as sc','sc.source_id = eq.source_id')
-                        ->join('branch as b','b.branch_id = u.branch_id')
-                        ->where('e.enrol_status','active')
+                        ->join('course as c','c.id = e.course_id','left')
+                        ->join('users as u','u.id = e.user_id','left')
+                        ->join('enquiry as eq','eq.en_id = u.en_id','left')
+                        ->join('sources as sc','sc.source_id = eq.source_id','left')
+                        ->join('branch as b','b.branch_id = u.branch_id','left')
+                        ->where('e.enrol_status !=','disable')
                         ->where('u.status',1);
         if($enrol_id > 0){
             $this->db->where('e.id',$enrol_id);
@@ -2083,6 +2083,7 @@ class Crud_model extends CI_Model
         $data['date_added'] = strtotime($this->input->post('date_added'));
         $data['enrol_id'] = $this->input->post('enrol_id');
         $data['amount'] = $this->input->post('amount');
+        $data['admin_revenue'] = $this->input->post('amount');
         $data['payment_type'] = html_escape($this->input->post('payment_type'));
         $payment_detail['account_number'] = html_escape($this->input->post('account_number'));
         $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
@@ -2093,6 +2094,8 @@ class Crud_model extends CI_Model
         if ($enrol_detail['final_price'] < $data['amount']) {
             return false;
         } 
+
+        $this->activate_enrol_history($data['enrol_id']);
         return $this->db->insert('payment',$data);
     }
 

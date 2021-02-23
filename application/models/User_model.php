@@ -237,7 +237,9 @@ class User_model extends CI_Model {
 
             $this->db->where('id', $user_id);
             $this->db->update('users', $data);
-            $this->upload_user_image($data['image']);
+            if(!empty($data['image'])){
+                $this->upload_user_image($data['image']);
+            }
             $this->session->set_flashdata('flash_message', get_phrase('user_update_successfully'));
         }else {
             $this->session->set_flashdata('error_message', get_phrase('email_duplication'));

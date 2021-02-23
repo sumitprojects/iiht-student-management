@@ -7,7 +7,6 @@
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
-
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
@@ -62,8 +61,14 @@
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
                                       <td><?=$enrol['final_price']?></td>
-                                      <td><?=$enrol['total_payment']?></td>
-                                      <td><?=$enrol['amount_due']?></td>
+                                      <td><?=$enrol['total_payment']??'N/A'?></td>
+                                      <?php if($enrol['amount_due']>0 && $enrol['total_payment']>0):?>
+                                        <td><?=$enrol['amount_due']?></td>
+                                      <?php elseif($enrol['amount_due'] == 0 && $enrol['total_payment']==$enrol['final_price']):?>
+                                        <td><span class="badge badge-info"><?=get_phrase('payment_completed')?></span></td>
+                                      <?php else:?>
+                                        <td><span class="badge badge-danger"><?=get_phrase('payment_pending')?></span></td>
+                                      <?php endif;?>
                                       <td><span class="badge badge-info"><?=get_phrase($enrol['enrol_status'])?></span></td>
                                       <td>
                                       <div class="dropright dropright">
@@ -73,12 +78,12 @@
                                           <ul class="dropdown-menu">
                                                 <?php if($enrol['enrol_status'] != 'disable'):?>
                                                     <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"><?=get_phrase('delete')?></a></li>
-                                                    <?php if($enrol['total_payment'] > 0):?>
+                                                    <?php if($enrol['amount_due'] >= 0):?>
                                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/admission_form/'.$enrol['id']); ?>"><?=get_phrase('view_admission_form')?></a></li>                                                        
                                                     <?php endif;?>
-                                                    <?php if($enrol['final_price']-$enrol['total_payment'] != 0):?>
-                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/add_payment/'.$enrol['id']); ?>"><?=get_phrase('make_payment')?></a></li>
-                                                <?php endif; endif; ?>
+                                                    <?php if(!empty($enrol['amount_due']) || $enrol['amount_due'] == NULL ):?>
+                                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/add_payment/'.$enrol['id']); ?>"><?=get_phrase('make_payment')?></a></li>
+                                                    <?php endif; endif; ?>
                                                 <?php if($enrol['enrol_status'] == 'disable'):?>
                                                     <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_activate/'.$enrol['id']); ?>');"><?=get_phrase('activate')?></a></li>
                                                 <?php endif;?>

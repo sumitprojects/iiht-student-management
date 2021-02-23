@@ -225,7 +225,7 @@ $payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row
                         <p><b>Present Address</b></p>
                     </div>
                     <div class="col-xs-9" style="border-bottom: 1px dotted black">
-                        <p><?=$present_add?></p>
+                        <p><?=$present_add??'N/A'?></p>
                     </div>
                 </div>
                 <div class="row" style="margin-top:5px;">
@@ -233,7 +233,7 @@ $payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row
                         <p><b>Permanent Address</b></p>
                     </div>
                     <div class="col-xs-9" style="border-bottom: 1px dotted black">
-                        <p><?=$pemanent_add?></p>
+                        <p><?=$pemanent_add??'N/A'?></p>
                     </div>
                 </div>
                 <div class="row" style="margin-top:5px;">
@@ -276,8 +276,7 @@ $payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row
                 <!-- /.col -->
                 <div class="row" style="margin-top:5px;">
                     <div class="col-md-12">
-                        <p><b>How did you come to know about the Institue and the Program: <span
-                                    style="border-bottom: 2px solid #333"><?=$enrol['source_name']?></span></b></p>
+                        <p><b>How did you come to know about the Institue and the Program: <span style="border-bottom: 2px solid #333"><?=$enrol['source_name']?> <?=!empty($enrol['source_other'])?' ,'.$enrol['source_other']:''?></span></b></p>
                     </div>
                 </div>
                 <div class="row" style="margin-top:5px;">
@@ -292,9 +291,16 @@ $payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row
                         <p>Date : <?=date('Y-m-d',$enrol['date_added'])?></p>
                     </div>
                     <div class="col-xs-4">
-                        <p>Course Fees : <?=$enrol['final_price']?></p>
-                        <p>Amount Due : <?=$payment_details['amount_due']?></p>
-                        <p>Payment Recieved : <?=$payment_details['amount']?></p>
+                        <p class="badge badge-success">Course Fees : <?=$enrol['final_price']?></p>
+                        <?php if(!empty($payment_details['amount_due'])):?>
+                            <p class="badge badge-danger">Amount Due : <?=$payment_details['amount_due']?></p>
+                        <?php endif;
+                        if($payment_details['amount']):?>
+                            <p class="badge badge-dark">Payment Recieved : <?=$payment_details['amount']?></p>
+                        <?php endif;
+                        if($payment_details['amount_due'] == 0):?>
+                            <p class="badge badge-dark">Payment Completed</p>
+                        <?php endif;?>
                     </div>
                     <div class="col-xs-4" style="">
                         <p class="d-block"></p>
