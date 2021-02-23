@@ -5,7 +5,12 @@ $paymenttype = array(
 $invoicetypes = array(
     'registration','downpayment','installments'
 );
-
+$amount_due = 0;
+if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_history['final_price']){
+    $amount_due = $payment_details['amount_due'];
+}else{
+    $amount_due = $purchase_history['final_price']/2;
+}
 
 ?>
 <!-- start page title -->
