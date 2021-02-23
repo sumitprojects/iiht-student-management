@@ -94,7 +94,7 @@ $amount_due = 0;
                                     <?php echo get_phrase('invoice_type'); ?>
                                 </option>
                                 <?php 
-                                    foreach ($invoicetype as $invoice):
+                                    foreach ($invoicetypes as $invoice):
                                 ?>
                                 <option value="<?php echo $invoice ?>" >
                                     <?php echo strtoupper($invoice); ?></option>
