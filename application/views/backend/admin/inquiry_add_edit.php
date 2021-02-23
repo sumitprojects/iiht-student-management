@@ -70,14 +70,14 @@ if(!empty($param2)){
                             <label for="mob_no"><?php echo get_phrase('mob_no'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="mob_no" name="mob_no"
-                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder="" pattern=""
+                                value="<?php echo !empty($inquiry)?$inquiry['mob_no']:''?>" placeholder=""
                                 required>
                             <div class="invalid-feedback"><?=get_phrase('please_provide_a_valid_mobile')?></div>
                         </div>
                         <div class="form-group">
                             <label for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
                             <input type="text" class="form-control" id="alt_mob" name="alt_mob"
-                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="" pattern="">
+                                value="<?php echo !empty($inquiry)?$inquiry['alt_mob']:''?>" placeholder="">
                         </div>
                         <div class="form-group">
                             <label for="en_date"><?php echo get_phrase('inquiry_date'); ?><span

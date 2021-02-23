@@ -133,6 +133,11 @@ $amount_due = 0;
                                     class="required">*</span></label>
                             <input type="date" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
                         </div>
+                        <div class="form-group mb-3">
+                            <label class=""><?php echo get_phrase('next_due'); ?><span
+                                    class="required">*</span></label>
+                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" readonly>
+                        </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase('enrol_student'); ?></button>
                     </form>
@@ -154,7 +159,7 @@ jQuery(document).ready(function() {
     });
     jQuery('#amount').on('blur', function() {
         if(parseFloat(jQuery('[name="price"]').val()) < parseFloat(jQuery(this).val())) {
-            jQuery(this).val(jQuery('[name=final_price]').val()/2);
+            jQuery(this).val(jQuery('[name=price]').val()/2);
         }
     });
     jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
