@@ -481,6 +481,21 @@ class Admin extends CI_Controller {
         $this->load->view('backend/index', $page_data);
     }
 
+    public function payments($param1 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        $page_data['page_name'] = 'student_payments';
+        $page_data['payments'] = $this->crud_model->get_all_payment_by_enrol($param1)->result_array();
+
+        // echo "<pre>";
+        // print_r($page_data['payments']);
+        // echo "</pre>";
+        // die;
+        $page_data['page_title'] = get_phrase('enrol_a_student');
+        $this->load->view('backend/index', $page_data);
+    }
+
     public function enrol_student($param1 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -548,6 +563,8 @@ class Admin extends CI_Controller {
         $this->load->view('backend/index', $page_data);
     }
 
+
+
     public function payment_history_delete($param1 = "", $redirect_to = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -582,7 +599,7 @@ class Admin extends CI_Controller {
         if($param1 == ""){
             $inserted = $this->crud_model->add_offline_payment();
             if($inserted){
-                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
                 redirect(site_url('admin/enrol_history'), 'refresh');    
             }else{
                 $this->session->set_flashdata('error_message', get_phrase('an_error_occurred'));

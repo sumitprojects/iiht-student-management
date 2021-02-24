@@ -33,6 +33,9 @@
 .left-side-menu-detached  li:not(.active),.left-side-menu-detached  li a:not(.active){
     color:white !important;
 }
-
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #727cf5 !important;
+    color: white !important;
+}
 
 </style>

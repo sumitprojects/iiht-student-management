@@ -16,7 +16,7 @@ $my_courses_banner = $banners['my_courses_banner'];
 	<div class="row justify-content-center">
 		<?php foreach ($my_courses as $key => $my_course):
 			$course_details = $this->crud_model->get_course_by_id($my_course['course_id'])->row_array();
-			$expiry_detail = $this->crud_model->check_course_enrol_expiry_for_course($my_course['course_id'])->row_array();
+			$expiry_detail = $this->crud_model->check_course_enrol_expiry_for_course($my_course['user_id'],$my_course['course_id'])->row_array();
 			$instructor_details = $this->user_model->get_all_user($course_details['user_id'])->row_array();
 			?>
 			<!-- Single course starts -->

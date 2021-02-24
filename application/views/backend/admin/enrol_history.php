@@ -77,6 +77,7 @@
                                           </button>
                                           <ul class="dropdown-menu">
                                                 <?php if($enrol['enrol_status'] != 'disable'):?>
+                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/payments/'.$enrol['id']); ?>"><?=get_phrase('view_payments')?></a></li>                                                        
                                                     <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"><?=get_phrase('delete')?></a></li>
                                                     <?php if($enrol['amount_due'] >= 0):?>
                                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/admission_form/'.$enrol['id']); ?>"><?=get_phrase('view_admission_form')?></a></li>                                                        

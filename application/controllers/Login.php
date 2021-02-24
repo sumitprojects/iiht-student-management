@@ -33,10 +33,15 @@ class Login extends CI_Controller {
         
         $email = $this->input->post('email');
         $password = $this->input->post('password');
-        $credential = array('email' => $email, 'password' => sha1($password), 'status' => 1);
+        $credential = array('password' => sha1($password), 'status' => 1);
 
         // Checking login credential for admin
-        $query = $this->db->get_where('users', $credential);
+        $query = $this->db->select('*')->from('users')
+                          ->where('password',sha1($password))
+                          ->group_start()
+                          ->where('email',$email)
+                          ->or_where('mob_no',$email)
+                          ->group_end();
 
         if ($query->num_rows() > 0) {
             $row = $query->row();

@@ -1162,5 +1162,10 @@
     "invoice_type": "Invoice type",
     "payment_pending": "Payment pending",
     "payment_completed": "Payment completed",
-    "student_course_is_already_enroled": "Student course is already enroled"
+    "student_course_is_already_enroled": "Student course is already enroled",
+    "next_due": "Next due",
+    "payments": "Payments",
+    "invoice_list": "Invoice list",
+    "full_name": "Full name",
+    "view_payments": "View payments"
 }

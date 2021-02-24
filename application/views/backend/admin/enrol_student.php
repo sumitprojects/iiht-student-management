@@ -28,13 +28,14 @@ $invoicetypes = array(
 
                     <form class="required-form" action="<?php echo site_url('admin/enrol_student/enrol'); ?>"
                         method="post" enctype="multipart/form-data">
-
+                        <input type="hidden" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
+                        <input type="hidden" name="session_id" value="<?=session_id()?>">
                         <div class="form-group">
                             <label for="user_id"><?php echo get_phrase('user'); ?><span class="required">*</span>
                             </label>
                             <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
                                 required>
-                                <option value=""><?php echo get_phrase('select_a_user'); ?></option>
+                                <option value="" disabled selected><?php echo get_phrase('select_a_user'); ?></option>
                                 <?php $user_list = $this->user_model->get_user()->result_array();
                                 foreach ($user_list as $user): if($user['is_instructor'] == 0):?>
                                 <option value="<?php echo $user['id'] ?>">
@@ -48,7 +49,7 @@ $invoicetypes = array(
                                     class="required">*</span></label>
                             <select class="form-control select2" data-toggle="select2" name="course_id" id="course_id"
                                 required>
-                                <option value="">
+                                <option value="" disabled selected>
                                     <?php echo get_phrase('select_a_course'); ?>
                                 </option>
                                 <?php 
@@ -126,11 +127,6 @@ $invoicetypes = array(
                             <label class=""><?php echo get_phrase('transaction_id'); ?><span class="required">*</span></label>
                             <input type="text" class="form-control" name="transaction_id" placeholder="Please, Enter transaction number" required min="0">
                             <!-- <input type="number" class="form-control"> -->
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class=""><?php echo get_phrase('date_added'); ?><span
-                                    class="required">*</span></label>
-                            <input type="date" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
                         </div>
                         <div class="form-group mb-3">
                             <label class=""><?php echo get_phrase('next_due'); ?><span

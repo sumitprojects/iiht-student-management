@@ -54,7 +54,7 @@ foreach ($my_courses as $my_course) {
         <div class="row no-gutters" id = "my_courses_area">
             <?php foreach ($my_courses as $my_course):
                 $course_details = $this->crud_model->get_course_by_id($my_course['course_id'])->row_array();
-                $expiry_detail = $this->crud_model->check_course_enrol_expiry_for_course($my_course['course_id'])->row_array();
+                $expiry_detail = $this->crud_model->check_course_enrol_expiry_for_course($my_course['user_id'],$my_course['course_id'])->row_array();
                 $instructor_details = $this->user_model->get_all_user($course_details['user_id'])->row_array();?>
 
                 <div class="col-lg-3">

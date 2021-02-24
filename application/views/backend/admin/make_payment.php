@@ -41,6 +41,8 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                         <input type="hidden" name="enrol_id" value="<?=$purchase_history['eid']?>">
                         <input type="hidden" name="course_id" value="<?=$purchase_history['course_id']?>">
                         <input type="hidden" name="session_id" value="<?=session_id()?>">
+                        <input type="hidden" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
+
                         <?php if(!empty($payment_details['amount_due'])):?>
                             <input type="hidden" name="amount_due" value="<?=$payment_details['amount_due']?>">
                         <?php endif;?> 
@@ -117,11 +119,10 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
-                            <label class=""><?php echo get_phrase('date_added'); ?><span
+                            <label class=""><?php echo get_phrase('next_due'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
+                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" readonly>
                         </div>
-                        
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase('enrol_student'); ?></button>
                     </form>
