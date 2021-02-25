@@ -41,7 +41,8 @@ class Login extends CI_Controller {
                           ->group_start()
                           ->where('email',$email)
                           ->or_where('mob_no',$email)
-                          ->group_end();
+                          ->group_end()
+                          ->get();
 
         if ($query->num_rows() > 0) {
             $row = $query->row();
