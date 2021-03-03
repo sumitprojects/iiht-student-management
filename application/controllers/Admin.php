@@ -604,11 +604,14 @@ class Admin extends CI_Controller {
             }else{
                 $this->session->set_flashdata('error_message', get_phrase('an_error_occurred'));
             }
+        }else if($param1 != ""){
+            $page_data['page_name'] = 'make_payment';
+            $page_data['page_title'] = get_phrase('make_payment');
+            $page_data['purchase_history'] = $this->crud_model->get_enrol($param1)->row_array();
+            $this->load->view('backend/index', $page_data);    
+        }else{
+            redirect(site_url('admin/enrol_history'), 'refresh');
         }
-        $page_data['page_name'] = 'make_payment';
-        $page_data['page_title'] = get_phrase('make_payment');
-        $page_data['purchase_history'] = $this->crud_model->get_enrol($param1)->row_array();
-        $this->load->view('backend/index', $page_data);
     }
 
     public function purchase_history() {

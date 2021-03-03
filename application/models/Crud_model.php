@@ -479,15 +479,26 @@ class Crud_model extends CI_Model
         return $this->db->get();
     }
 
-    public function get_enrol_payment_info($id = 0){
-        $this->db->select('sum(py.amount) total_payment,py.amount,en.final_price - sum(py.amount) as amount_due');
-        $this->db->from('enrol as en');
-        $this->db->join('payment as py','py.enrol_id = en.id','left');        
-        $this->db->order_by('en.date_added', 'desc');
-        $this->db->where('en.id', $id);
-        $this->db->group_by('en.id,py.enrol_id,py.amount');
-        $this->db->group_by('py.date_added');
-
+    public function get_purchased_courses_by_user($id = 0){
+        return $this->db->select('en.course_id')
+                ->from('enrol as en')
+                ->where('en.user_id',$id)
+                ->get();
+    }
+    public function get_enrol_payment_info($id = 0,$first = false){
+        if($first){
+            $this->db->select('py.amount total_payment,(en.final_price - py.amount) as amount_due');
+            $this->db->from('enrol as en');
+            $this->db->join('payment as py','py.enrol_id = en.id','left'); 
+            $this->db->where('en.id', $id);
+            $this->db->order_by('en.date_added', 'asc');
+        }else{
+            $this->db->select('sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
+            $this->db->from('enrol as en');
+            $this->db->join('payment as py','py.enrol_id = en.id','left');        
+            $this->db->where('en.id', $id);
+            $this->db->order_by('en.date_added', 'desc');
+        }
         return $this->db->get();
     }
 
@@ -2131,7 +2142,7 @@ class Crud_model extends CI_Model
         $data['amount'] = $this->input->post('amount');
         $data['admin_revenue'] = $this->input->post('amount');
         $data['payment_type'] = html_escape($this->input->post('payment_type'));
-        $payment['invoice_type'] = html_escape($this->input->post('invoice_type'));
+        $data['invoice_type'] = html_escape($this->input->post('invoice_type'));
         $payment_detail['account_number'] = html_escape($this->input->post('account_number'));
         $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
         $payment_detail['bank_name'] = html_escape($this->input->post('bank_name'));

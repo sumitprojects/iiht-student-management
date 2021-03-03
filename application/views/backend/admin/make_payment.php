@@ -3,12 +3,10 @@ $paymenttype = array(
     'cash','cheque','wallet'
 );
 $invoicetypes = array(
-    'registration','downpayment','installments'
+    'token','partial-payment','full-payment'
 );
 
 $payment_details = $this->crud_model->get_enrol_payment_info($purchase_history['eid'])->row_array();
-
-
 $amount_due = 0;
 if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_history['final_price']){
     $amount_due = $payment_details['amount_due'];
@@ -121,7 +119,7 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                         <div class="form-group mb-3">
                             <label class=""><?php echo get_phrase('next_due'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" readonly>
+                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d'); ?>">
                         </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase('enrol_student'); ?></button>
@@ -147,21 +145,29 @@ jQuery(document).ready(function() {
         }
     });
     jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
+    jQuery('#wallet_name,#bank_name, #account_number').parent('.form-group').hide();
     jQuery('#payment_type').on('change',function(){
         if( jQuery(this).val() == 'cash' ){
             jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
             jQuery('#wallet_name, #bank_name, #account_number').removeAttr('required');
+            jQuery('#wallet_name, #bank_name, #account_number').parent('.form-group').hide();
         }else if( jQuery(this).val() == 'cheque' ){
             jQuery('#wallet_name').attr('disabled',true);
+            jQuery('#wallet_name').parent('.form-group').hide();
+            jQuery('#bank_name, #account_number').parent('.form-group').show();
+
             jQuery('#bank_name, #account_number').removeAttr('disabled');
             jQuery('#bank_name, #account_number').attr('required',true);
         }else if( jQuery(this).val() == 'wallet' ){
             jQuery('#bank_name, #account_number').removeAttr('required');
             jQuery('#bank_name, #account_number').attr('disabled',true);
+            jQuery('#bank_name, #account_number').parent('.form-group').hide();
             jQuery('#wallet_name').removeAttr('disabled');
             jQuery('#wallet_name').attr('required',true);
+            jQuery('#wallet_name').parent('.form-group').show();
 
         }
     });
+
 });
 </script>

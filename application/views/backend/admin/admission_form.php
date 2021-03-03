@@ -4,7 +4,7 @@ if(!empty($enrol['address_detail'])){
     $pemanent_add = json_decode($enrol['address_detail'],true)['permanent_address'];    
 }
 
-$payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row_array();
+$payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'],true)->row_array();
 ?>
 
 
@@ -295,8 +295,8 @@ $payment_details = $this->crud_model->get_enrol_payment_info($enrol['eid'])->row
                         <?php if(!empty($payment_details['amount_due'])):?>
                             <p class="badge badge-danger">Amount Due : <?=$payment_details['amount_due']?></p>
                         <?php endif;
-                        if($payment_details['amount']):?>
-                            <p class="badge badge-dark">Payment Recieved : <?=$payment_details['amount']?></p>
+                        if($payment_details['total_payment']):?>
+                            <p class="badge badge-dark">Payment Recieved : <?=$payment_details['total_payment']?></p>
                         <?php endif;
                         if($payment_details['amount_due'] == 0):?>
                             <p class="badge badge-dark">Payment Completed</p>

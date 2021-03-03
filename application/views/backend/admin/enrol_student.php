@@ -3,7 +3,7 @@ $paymenttype = array(
     'cash','cheque','wallet'
 );
 $invoicetypes = array(
-    'registration','downpayment','installments'
+    'token','partial-payment','full-payment'
 );
 
 ?>
@@ -37,8 +37,10 @@ $invoicetypes = array(
                                 required>
                                 <option value="" disabled selected><?php echo get_phrase('select_a_user'); ?></option>
                                 <?php $user_list = $this->user_model->get_user()->result_array();
-                                foreach ($user_list as $user): if($user['is_instructor'] == 0):?>
-                                <option value="<?php echo $user['id'] ?>">
+                                foreach ($user_list as $user): if($user['is_instructor'] == 0): 
+                                $purchased_courses = $this->crud_model->get_purchased_courses_by_user($user['id'])->result_array(); 
+                                $purchased_courses = array_column($purchased_courses,'course_id')?>
+                                <option value="<?php echo $user['id'] ?>" data-courses="<?=implode(',',$purchased_courses)?>">
                                     <?php echo strtolower($user['first_name'].' '.$user['last_name']); ?></option>
                                 <?php endif; endforeach; ?>
                             </select>
@@ -131,7 +133,7 @@ $invoicetypes = array(
                         <div class="form-group mb-3">
                             <label class=""><?php echo get_phrase('next_due'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" readonly>
+                            <input type="date" class="form-control" name="next_due" value="<?php echo date('Y-m-d'); ?>" min="<?php echo date('Y-m-d'); ?>">
                         </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase('enrol_student'); ?></button>
@@ -152,25 +154,49 @@ jQuery(document).ready(function() {
     jQuery('#course_id').on('change', function() {
         jQuery('[name=price]').val(jQuery(this).select2('data')[0].element.dataset.price);
     });
+    jQuery('#course_id option:not(:first-child)').removeAttr('disabled');
+    jQuery('#user_id').on('change', function() {
+        jQuery('#course_id option:not(:first-child)').removeAttr('disabled');
+        let course = (jQuery(this).select2('data')[0].element.dataset.courses);
+        if(course.indexOf(',') > 0){
+               let course_list = course.split(',');
+               console.log(course_list);
+               course_list.forEach(function(element){
+                    jQuery('#course_id option[value="'+element+'"]').attr('disabled',true);
+               });
+               jQuery('#course_id').select2();
+        }else{
+            jQuery('#course_id option[value="'+course+'"]').attr('disabled',true);
+            jQuery('#course_id').select2();
+        }
+    });
+
     jQuery('#amount').on('blur', function() {
         if(parseFloat(jQuery('[name="price"]').val()) < parseFloat(jQuery(this).val())) {
             jQuery(this).val(jQuery('[name=price]').val()/2);
         }
     });
     jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
+    jQuery('#wallet_name,#bank_name, #account_number').parent('.form-group').hide();
     jQuery('#payment_type').on('change',function(){
         if( jQuery(this).val() == 'cash' ){
             jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
             jQuery('#wallet_name, #bank_name, #account_number').removeAttr('required');
+            jQuery('#wallet_name, #bank_name, #account_number').parent('.form-group').hide();
         }else if( jQuery(this).val() == 'cheque' ){
             jQuery('#wallet_name').attr('disabled',true);
+            jQuery('#wallet_name').parent('.form-group').hide();
+            jQuery('#bank_name, #account_number').parent('.form-group').show();
+
             jQuery('#bank_name, #account_number').removeAttr('disabled');
             jQuery('#bank_name, #account_number').attr('required',true);
         }else if( jQuery(this).val() == 'wallet' ){
             jQuery('#bank_name, #account_number').removeAttr('required');
             jQuery('#bank_name, #account_number').attr('disabled',true);
+            jQuery('#bank_name, #account_number').parent('.form-group').hide();
             jQuery('#wallet_name').removeAttr('disabled');
             jQuery('#wallet_name').attr('required',true);
+            jQuery('#wallet_name').parent('.form-group').show();
 
         }
     });
