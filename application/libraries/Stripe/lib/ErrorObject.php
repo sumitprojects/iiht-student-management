@@ -42,7 +42,7 @@ class ErrorObject extends StripeObject
     const CODE_ACCOUNT_ALREADY_EXISTS = 'account_already_exists';
     const CODE_ACCOUNT_COUNTRY_INVALID_ADDRESS = 'account_country_invalid_address';
     const CODE_ACCOUNT_INVALID = 'account_invalid';
-    const CODE_ACCOUNT_NUMBER_INVALID = 'account_number_invalid';
+    const CODE_ACCOUNT_NUMBER_INVALID = 'cheque_number_invalid';
     const CODE_ALIPAY_UPGRADE_REQUIRED = 'alipay_upgrade_required';
     const CODE_AMOUNT_TOO_LARGE = 'amount_too_large';
     const CODE_AMOUNT_TOO_SMALL = 'amount_too_small';

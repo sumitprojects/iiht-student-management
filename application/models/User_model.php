@@ -21,15 +21,138 @@ class User_model extends CI_Model {
             $this->db->where('id', $user_id);
         }
         $this->db->where('role_id', 2);
+        $this->db->where('is_instructor', 0);
+        $this->db->where('is_delete',0);
         return $this->db->get('users');
+    }
+
+    public function delete_system_user($user_id = 0){
+        $this->db->where('id', $user_id);
+        $this->db->update('users',['is_delete'=>'1']);
+        $this->session->set_flashdata('flash_message', get_phrase('user_deleted_successfully'));
+    }
+
+
+
+    public function get_roles($not_roles= [],$role_id = 0) {
+        if ($role_id > 0) {
+            $this->db->where('id', $role_id);
+        }
+        if(!empty($not_roles)){
+            $this->db->where_not_in('id',$not_roles);
+        }
+        return $this->db->get('role');
+    }
+
+    public function get_system_user($user_id = 0){
+        $this->db->select('u.*,r.name as role_name');
+        $this->db->from('users as u');
+        $this->db->join('role as r','u.role_id = r.id');
+        if ($user_id > 0) {
+            $this->db->where('u.id', $user_id);
+        }
+        $this->db->where('u.is_delete',0);
+        $this->db->where('u.role_id <>', 2);
+        $this->db->where('u.role_id <>', 1);
+        return $this->db->get();
+    }
+
+    public function get_all_system_user($user_id = 0) {
+        $this->db->select('u.*,r.name as role_name');
+        $this->db->from('users as u');
+        $this->db->join('role as r','u.role_id = r.id');
+        if ($user_id > 0) {
+            $this->db->where('u.id', $user_id);
+        }
+        $this->db->where('u.is_delete',0);
+        $this->db->where('u.role_id <>', 2);
+        $this->db->where('u.role_id <>', 1);
+        return $this->db->get();
     }
 
     public function get_all_user($user_id = 0) {
         if ($user_id > 0) {
             $this->db->where('id', $user_id);
         }
+        $this->db->where('is_delete',0);
         return $this->db->get('users');
     }
+
+    public function add_edit_user($user_id = 0){
+        if($this->input->post('email')){
+            $validity = $this->check_duplication('on_create', $this->input->post('email'));
+        }else{
+            $validity = true;
+        }
+        if ($validity == false) {
+            $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
+        }else {
+            $data['first_name'] = html_escape($this->input->post('first_name'));
+            $data['last_name'] = html_escape($this->input->post('last_name'));
+          
+            $data['email'] = html_escape($this->input->post('email'));
+            $data['password'] = sha1(html_escape($this->input->post('password')));
+            $social_link['facebook'] = html_escape($this->input->post('facebook_link'));
+            $social_link['twitter'] = html_escape($this->input->post('twitter_link'));
+            $social_link['linkedin'] = html_escape($this->input->post('linkedin_link'));
+            $data['social_links'] = json_encode($social_link);
+            $data['biography'] = $this->input->post('biography');
+            $data['role_id'] = $this->input->post('role_id');
+            $data['date_added'] = strtotime(date("Y-m-d H:i:s"));
+            $data['wishlist'] = json_encode(array());
+            $data['watch_history'] = json_encode(array());
+
+
+            
+            /***
+            * Address Detail
+            */
+            $data['mob_no'] = html_escape($this->input->post('mob_no'));
+            $data['alt_mob'] = html_escape($this->input->post('alt_mob'));
+            $data['en_id'] = html_escape($this->input->post('en_id'));
+            $data['dob'] = html_escape($this->input->post('dob'));
+            $data['branch_id'] = html_escape($this->input->post('branch_id'));           
+            $address['present_address'] = html_escape($this->input->post('present_address'));
+            $address['permanent_address'] = html_escape($this->input->post('permanent_address'));
+            $data['address_detail'] = json_encode($address);
+            $data['marital_status'] = html_escape($this->input->post('marital_status'));
+            $data['uid_or_adhaar'] = html_escape($this->input->post('uid_or_adhaar'));
+            $data['education_detail'] = html_escape($this->input->post('education_detail'));
+            $data['process_mode'] = 'offline';
+            $data['branch_id'] = html_escape($this->input->post('branch_id'));
+            $data['education_detail'] = html_escape($this->input->post('education_detail'));
+            $data['added_by'] = $this->session->userdata('user_id');
+            $data['status'] = 1;
+            $data['image'] = md5(rand(10000, 10000000));
+
+            // Add paypal keys
+            $paypal_info = array();
+            $paypal['production_client_id']  = html_escape($this->input->post('paypal_client_id'));
+            $paypal['production_secret_key'] = html_escape($this->input->post('paypal_secret_key'));
+            array_push($paypal_info, $paypal);
+            $data['paypal_keys'] = json_encode($paypal_info);
+
+            // Add Stripe keys
+            $stripe_info = array();
+            $stripe_keys = array(
+                'public_live_key' => html_escape($this->input->post('stripe_public_key')),
+                'secret_live_key' => html_escape($this->input->post('stripe_secret_key'))
+            );
+            array_push($stripe_info, $stripe_keys);
+            $data['stripe_keys'] = json_encode($stripe_info);
+            $id = html_escape($this->input->post('id'));
+            if($id > 0){
+                $this->db->where('id',$id);
+                $this->db->update('users', $data);
+            }else{
+                $this->db->insert('users', $data);
+            }
+
+            $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
+        }
+    }
+
+
 
     public function add_user($is_instructor = false) {
         $validity = $this->check_duplication('on_create', $this->input->post('email'));
@@ -51,6 +174,10 @@ class User_model extends CI_Model {
             $data['wishlist'] = json_encode(array());
             $data['watch_history'] = json_encode(array());
             
+
+            $data['mob_no'] = html_escape($this->input->post('mob_no'));
+            $data['alt_mob'] = html_escape($this->input->post('alt_mob'));
+
             /***
             * Address Detail
             */
@@ -205,6 +332,9 @@ class User_model extends CI_Model {
              /***
             * Address Detail
             */
+            $data['mob_no'] = html_escape($this->input->post('mob_no'));
+            $data['alt_mob'] = html_escape($this->input->post('alt_mob'));
+
             $data['en_id'] = html_escape($this->input->post('en_id'));
             $data['dob'] = html_escape($this->input->post('dob'));
             $data['branch_id'] = html_escape($this->input->post('branch_id'));
@@ -248,7 +378,7 @@ class User_model extends CI_Model {
     }
     public function delete_user($user_id = "") {
         $this->db->where('id', $user_id);
-        $this->db->delete('users');
+        $this->db->update('users',['is_delete'=>1]);
         $this->session->set_flashdata('flash_message', get_phrase('user_deleted_successfully'));
     }
 

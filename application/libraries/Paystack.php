@@ -809,7 +809,7 @@ class PaystackRoutesBank implements PaystackContractsRouteInterface
     {
         return [PaystackContractsRouteInterface::METHOD_KEY   => PaystackContractsRouteInterface::GET_METHOD,
             PaystackContractsRouteInterface::ENDPOINT_KEY => PaystackRoutesBank::root() . '/resolve',
-            PaystackContractsRouteInterface::PARAMS_KEY   => ['account_number',
+            PaystackContractsRouteInterface::PARAMS_KEY   => ['cheque_number',
                 'bank_code' ] ];
     }
 }
@@ -1060,7 +1060,7 @@ class PaystackRoutesSubaccount implements PaystackContractsRouteInterface
             PaystackContractsRouteInterface::ENDPOINT_KEY => PaystackRoutesSubaccount::root(),
             PaystackContractsRouteInterface::PARAMS_KEY   => [
                 'business_name', 'settlement_bank',
-                'account_number','percentage_charge',
+                'cheque_number','percentage_charge',
                 'primary_contact_email','primary_contact_name',
                 'primary_contact_phone',
                 'metadata','settlement_schedule',
@@ -1092,7 +1092,7 @@ class PaystackRoutesSubaccount implements PaystackContractsRouteInterface
             PaystackContractsRouteInterface::ENDPOINT_KEY => PaystackRoutesSubaccount::root() . '/{id}',
             PaystackContractsRouteInterface::PARAMS_KEY   => [
                 'business_name', 'settlement_bank',
-                'account_number','percentage_charge',
+                'cheque_number','percentage_charge',
                 'primary_contact_email','primary_contact_name',
                 'primary_contact_phone',
                 'metadata','settlement_schedule'
@@ -1330,12 +1330,12 @@ class PaystackRoutesTransferrecipient implements PaystackContractsRouteInterface
                 'metadata',
                 'bank_code',
                 'currency',
-                'account_number' ],
+                'cheque_number' ],
             PaystackContractsRouteInterface::REQUIRED_KEY => [
                 PaystackContractsRouteInterface::PARAMS_KEY => ['type',
                     'name',
                     'bank_code',
-                    'account_number' ]
+                    'cheque_number' ]
             ]
         ];
     }

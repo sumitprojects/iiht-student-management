@@ -22,7 +22,7 @@ if ($("table").attr('data-filter') != undefined) {
 if ($("table").attr('data-nofilter') != undefined) {
     var targetColomns2 = $.map($("table").data('nofilter').split(','), Number);
 }
-var datatables = $("#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable").DataTable({
+var datatables = $("#payment-datatable,#payment-datatable,#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable").DataTable({
     keys: !0,
     language: {
         paginate: {

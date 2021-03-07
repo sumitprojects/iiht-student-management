@@ -16,7 +16,7 @@
                 </h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($payments) > 0): ?>
-                    <table id="payment-datatable" class="table table-striped dt-responsive nowrap" width="100%" data-page-length='25'>
+                    <table id="payment-datatable" class="table table-striped dt-responsive nowrap" data-filter="2,3,4,6,8"  width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -26,8 +26,9 @@
                                 <th><?php echo get_phrase('course_name'); ?></th>
                                 <th><?php echo get_phrase('course_price'); ?></th>
                                 <th><?php echo get_phrase('branch_name'); ?></th>
-                                <th><?php echo get_phrase('amount'); ?></th>
+                                <th><?php echo get_phrase('amount_recieved'); ?></th>
                                 <th><?php echo get_phrase('status'); ?></th>
+                                <th><?php echo get_phrase('action');?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,11 +57,30 @@
                                         <strong><?php echo ellipsis($py['amount']); ?></strong><br>
                                     </td>
                                     <td>
-                                        <?php if ($py['enrol_status'] == 'pending'): ?>
-                                            <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase('pending'); ?>"><?php echo get_phrase('pending'); ?></span>
-                                        <?php elseif ($py['enrol_status'] == 'active'):?>
-                                            <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase('active'); ?>"><?php echo get_phrase('active'); ?></span>
+                                        <?php if ($py['payment_status'] == 'unpaid' || $py['payment_status'] == 'canceled' || $py['payment_status'] == 'refunded'||$py['payment_status'] == 'pending' ): ?>
+                                            <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($py['payment_status']); ?>"><?php echo get_phrase($py['payment_status']); ?></span>
+                                        <?php elseif ($py['payment_status'] == 'paid'):?>
+                                            <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($py['payment_status']); ?>"><?php echo get_phrase($py['payment_status']); ?></span>
                                         <?php endif; ?>
+                                    </td>
+                                    <td>
+                                            <div class="dropright dropright">
+                                                <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="mdi mdi-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <?php if ($py['payment_status'] == 'paid'):?>
+                                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/payments/invoice/'.$py['id']) ?>"><?php echo get_phrase('view'); ?></a></li>
+                                                    <?php endif; ?>                                        
+                                                    <?php if ($py['payment_status'] == 'unpaid' || $py['payment_status'] == 'pending' || $py['payment_status'] == 'canceled'):?>
+                                                        <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/payments/approve/'.$py['id']); ?>');"><?php echo get_phrase('approve'); ?></a></li>
+                                                    <?php endif; ?>
+                                                    <?php if ($py['payment_status'] == 'paid'):?>
+                                                        <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/payments/pending/'.$py['id']); ?>');"><?php echo get_phrase('pending'); ?></a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/payments/cancel/'.$py['id']); ?>');"><?php echo get_phrase('cancel'); ?></a></li>
+                                                    <?php endif; ?>
+                                                </ul>
+                                            </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

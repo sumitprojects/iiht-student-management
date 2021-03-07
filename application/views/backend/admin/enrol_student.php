@@ -114,9 +114,9 @@ $invoicetypes = array(
                             <input type="text" class="form-control" name="bank_name" id="bank_name">
                         </div>
                         <div class="form-group mb-3">
-                            <label class="account_number"><?php echo get_phrase('account_number'); ?><span
+                            <label class="cheque_number"><?php echo get_phrase('cheque_number'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control" id="account_number" name="account_number">
+                            <input type="text" class="form-control" id="cheque_number" name="cheque_number">
                         </div>
 
                         <div class="form-group mb-3">
@@ -126,8 +126,8 @@ $invoicetypes = array(
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
-                            <label class=""><?php echo get_phrase('transaction_id'); ?><span class="required">*</span></label>
-                            <input type="text" class="form-control" name="transaction_id" placeholder="Please, Enter transaction number" required min="0">
+                            <label class=""><?php echo get_phrase('transaction_id'); ?></label>
+                            <input type="text" class="form-control" name="transaction_id" placeholder="Please, Enter transaction number">
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
@@ -170,30 +170,38 @@ jQuery(document).ready(function() {
             jQuery('#course_id').select2();
         }
     });
-
+    jQuery('#amount').removeAttr('readonly');
+    jQuery('#invoice_type').on('change',function(){
+        if(jQuery(this).val() == 'full-payment'){
+            jQuery('#amount').val(jQuery('[name="price"]').val());
+            jQuery('#amount').attr('readonly',true);
+        }else{
+            jQuery('#amount').removeAttr('readonly');
+        }
+    });
     jQuery('#amount').on('blur', function() {
         if(parseFloat(jQuery('[name="price"]').val()) < parseFloat(jQuery(this).val())) {
             jQuery(this).val(jQuery('[name=price]').val()/2);
         }
     });
-    jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
-    jQuery('#wallet_name,#bank_name, #account_number').parent('.form-group').hide();
+    jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+    jQuery('#wallet_name,#bank_name, #cheque_number').parent('.form-group').hide();
     jQuery('#payment_type').on('change',function(){
         if( jQuery(this).val() == 'cash' ){
-            jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
-            jQuery('#wallet_name, #bank_name, #account_number').removeAttr('required');
-            jQuery('#wallet_name, #bank_name, #account_number').parent('.form-group').hide();
+            jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+            jQuery('#wallet_name, #bank_name, #cheque_number').removeAttr('required');
+            jQuery('#wallet_name, #bank_name, #cheque_number').parent('.form-group').hide();
         }else if( jQuery(this).val() == 'cheque' ){
             jQuery('#wallet_name').attr('disabled',true);
             jQuery('#wallet_name').parent('.form-group').hide();
-            jQuery('#bank_name, #account_number').parent('.form-group').show();
+            jQuery('#bank_name, #cheque_number').parent('.form-group').show();
 
-            jQuery('#bank_name, #account_number').removeAttr('disabled');
-            jQuery('#bank_name, #account_number').attr('required',true);
+            jQuery('#bank_name, #cheque_number').removeAttr('disabled');
+            jQuery('#bank_name, #cheque_number').attr('required',true);
         }else if( jQuery(this).val() == 'wallet' ){
-            jQuery('#bank_name, #account_number').removeAttr('required');
-            jQuery('#bank_name, #account_number').attr('disabled',true);
-            jQuery('#bank_name, #account_number').parent('.form-group').hide();
+            jQuery('#bank_name, #cheque_number').removeAttr('required');
+            jQuery('#bank_name, #cheque_number').attr('disabled',true);
+            jQuery('#bank_name, #cheque_number').parent('.form-group').hide();
             jQuery('#wallet_name').removeAttr('disabled');
             jQuery('#wallet_name').attr('required',true);
             jQuery('#wallet_name').parent('.form-group').show();

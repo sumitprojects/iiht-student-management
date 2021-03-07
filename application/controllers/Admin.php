@@ -425,6 +425,34 @@ class Admin extends CI_Controller {
         echo $this->user_model->add_shortcut_user($is_instructor);
     }
 
+    public function system_user($param1 = "",$param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if ($param1 == 'add_edit_user') {
+            $page_data['page_name'] = 'user_add_edit';
+            $page_data['page_title'] = get_phrase('add_system_user');
+            $page_data['roles'] = $this->user_model->get_roles([1,2])->result_array();
+            $page_data['branch'] = $this->crud_model->get_branch()->result_array();
+            if($param2 > 0){
+                $page_data['user'] = $this->user_model->get_system_user($param2)->row_array();
+            }
+            $this->load->view('backend/index', $page_data);
+        }else if ($param1 == 'add_edit') {
+            $this->user_model->add_edit_user($param2);
+            redirect(site_url('admin/system_user'), 'refresh');
+        }else if ($param1 == 'delete') {
+            $this->user_model->delete_user($param2);
+            redirect(site_url('admin/system_user'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'system_users';
+            $page_data['page_title'] = get_phrase('system_users');
+            $page_data['users'] = $this->user_model->get_all_system_user();
+            $this->load->view('backend/index', $page_data);
+        }
+    }
+
     public function user_form($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -433,20 +461,29 @@ class Admin extends CI_Controller {
         if ($param1 == 'add_user_form') {
             $page_data['page_name'] = 'user_add';
             $page_data['page_title'] = get_phrase('student_add');
+            $page_data['offline'] = true;
             $this->load->view('backend/index', $page_data);
         }
         else if ($param1 == 'add_edit_from_inquiry') {
             $page_data['page_name'] = 'user_add';
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
-            $page_data['page_title'] = get_phrase('student_add');
-            $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            $page_data['page_title'] = get_phrase('student_admission');
+            if(!empty($param2)){
+                $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            }
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
+            $page_data['admission'] = true;
             $this->load->view('backend/index', $page_data);
         }else if($param1 == 'add_edit_from_inquiry_non'){
             $page_data['page_name'] = 'user_add';
-            $page_data['page_title'] = get_phrase('student_add');
-            $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            $page_data['intern'] = true;
+            $page_data['page_title'] = get_phrase('student_non_admission');
+            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+            $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
+            if(!empty($param2)){
+                $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
+            }
             $this->load->view('backend/index', $page_data);
         }elseif ($param1 == 'edit_user_form') {
             $page_data['page_name'] = 'user_edit';
@@ -481,18 +518,44 @@ class Admin extends CI_Controller {
         $this->load->view('backend/index', $page_data);
     }
 
-    public function payments($param1 = ""){
+    public function payments($param1 = "",$param2 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        $page_data['page_name'] = 'student_payments';
-        $page_data['payments'] = $this->crud_model->get_all_payment_by_enrol($param1)->result_array();
 
-        // echo "<pre>";
-        // print_r($page_data['payments']);
-        // echo "</pre>";
-        // die;
-        $page_data['page_title'] = get_phrase('enrol_a_student');
+        if($param1 == 'invoice' && $param2){
+            $page_data['page_name'] = 'student_invoice';
+            $page_data['payment'] = $this->crud_model->get_payment_details_by_id($param2);
+            $page_data['student_detail'] = $this->user_model->get_user($page_data['payment']['user_id'])->row_array();
+            $page_data['branch_detail'] = $this->crud_model->get_branch($page_data['student_detail']['branch_id'])->row_array();
+            $page_data['course_detail'] = $this->crud_model->get_course_by_id($page_data['payment']['course_id'])->row_array();
+            
+            $page_data['page_title'] = get_phrase('student_invoice');
+            $this->load->view('backend/index', $page_data);
+        }elseif($param1 == 'pending' && $param2){
+            $payment = $this->crud_model->get_payment_details_by_id($param2);
+            $this->crud_model->update_payment_status($param2,'pending',0);
+            redirect(site_url('admin/payment_list'), 'refresh');
+        }elseif($param1 == 'approve' && $param2){
+            $payment = $this->crud_model->get_payment_details_by_id($param2);
+            $this->crud_model->update_payment_status($param2,'paid',$payment['amount']);
+            redirect(site_url('admin/payment_list'), 'refresh');
+        }elseif($param1 == 'cancel' && $param2){
+            $payment = $this->crud_model->get_payment_details_by_id($param2);
+            $this->crud_model->update_payment_status($param2,'canceled',0);
+            redirect(site_url('admin/payment_list'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'student_payments';
+            $page_data['payments'] = $this->crud_model->get_all_payment_by_enrol($param1)->result_array();
+            $page_data['page_title'] = get_phrase('enrol_a_student');
+            $this->load->view('backend/index', $page_data);
+        }
+    }
+
+    public function payment_list(){
+        $page_data['page_name'] = 'payment_list';
+        $page_data['payments'] = $this->crud_model->get_all_payment_by_enrol()->result_array();
+        $page_data['page_title'] = get_phrase('payment_list');
         $this->load->view('backend/index', $page_data);
     }
 

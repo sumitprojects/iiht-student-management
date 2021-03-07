@@ -89,12 +89,26 @@
                                                         </div>
                                                     </div>
                                                 <?php else: ?>
-                                                    <input type="hidden" name = "course_type" value="general">
+                                                    <div class="form-group row mb-3">
+                                                        <label class="col-md-2 col-form-label" for="course_type"><?php echo get_phrase('course_type'); ?></label>
+                                                        <div class="col-md-10">
+                                                            <select class="form-control select2" data-toggle="select2" name="course_type" id="course_type">
+                                                                <option value="general"><?php echo get_phrase('general'); ?></option>
+                                                                <option value="scorm"><?php echo get_phrase('training'); ?></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 <?php endif; ?>
                                                 <div class="form-group row mb-3">
                                                     <label class="col-md-2 col-form-label" for="course_title"><?php echo get_phrase('course_title'); ?> <span class="required">*</span> </label>
                                                     <div class="col-md-10">
                                                         <input type="text" class="form-control" id="course_title" name = "title" placeholder="<?php echo get_phrase('enter_course_title'); ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-3">
+                                                    <label class="col-md-2 col-form-label" for="course_code"><?php echo get_phrase('course_code'); ?> <span class="required">*</span> </label>
+                                                    <div class="col-md-10">
+                                                        <input type="text" class="form-control" id="course_code" name = "code" placeholder="<?php echo get_phrase('enter_course_code'); ?>" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row mb-3">

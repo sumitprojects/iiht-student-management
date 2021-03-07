@@ -469,12 +469,12 @@ class Crud_model extends CI_Model
     {
         $this->db->select('en.*,IFNULL(SUM(py.amount),0) total_payment,en.final_price - sum(py.amount) as amount_due');
         $this->db->from('enrol as en');
-        $this->db->join('payment as py','py.enrol_id = en.id','left');
-        
-        $this->db->order_by('en.date_added', 'desc');
+        $this->db->join('payment as py','py.enrol_id = en.id','left');        
         $this->db->where('en.date_added >=', $timestamp_start);
         $this->db->where('en.date_added <=', $timestamp_end);
+        $this->db->where('py.payment_status','paid');
         $this->db->group_by('en.id,py.enrol_id');
+        $this->db->order_by('en.date_added', 'desc');
 
         return $this->db->get();
     }
@@ -500,6 +500,11 @@ class Crud_model extends CI_Model
             $this->db->order_by('en.date_added', 'desc');
         }
         return $this->db->get();
+    }
+
+
+    public function get_pending_payments(){
+        return $this->db->get_where('payment',['payment_status'=>'pending']);
     }
 
     public function get_all_payment_by_enrol($enrol_id = "")
@@ -595,14 +600,24 @@ class Crud_model extends CI_Model
     }
 
     public function activate_enrol_history($param1){
-        $payment = $this->db->get_where('payment',array('enrol_id'=>$param1))->row_array();
+        $payment  = $this->db->select('py.*')
+                    ->from('payment as py')
+                    ->join('enrol as en', 'en.id = py.enrol_id')
+                    ->where('py.enrol_id',$param1)
+                    ->where('payment_status','paid')
+                    ->where('en.enrol_status','pending')
+                    ->get()
+                    ->row_array();
+        // $payment = $this->db->get_where('payment',array('enrol_id'=>$param1,'payment_status'=>'paid'))->row_array();
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($payment['user_id'],$payment['course_id']);
         if($check_enrol->num_rows() > 0){
             $this->session->set_flashdata('error_message', get_phrase('student_course_is_already_enroled'));
         }else{
-            $this->db->where('id', $param1);
-            $this->db->update('enrol',['enrol_status'=>!empty($payment)?'active':'pending']);   
-            $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));     
+            if(!empty($payment)){
+                $this->db->where('id', $param1);
+                $this->db->update('enrol',['enrol_status'=>'active']);   
+                $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));
+            }
         }
     }
     public function purchase_history($user_id)
@@ -618,6 +633,18 @@ class Crud_model extends CI_Model
     {
         return $this->db->get_where('payment', array('id' => $payment_id))->row_array();
     }
+
+    public function update_payment_status($payment_id = "", $payment_status = "",$payment_amount = 0)
+    {
+        $updater = array(
+            'admin_revenue' => $payment_amount,
+            'payment_status' => $payment_status,
+            'last_modified' => strtotime(date('D, d-M-Y'))
+        );
+        $this->db->where('id', $payment_id);
+        $this->db->update('payment', $updater);
+    }
+
 
     public function update_payout_status($payout_id = "", $payment_type = "")
     {
@@ -823,6 +850,7 @@ class Crud_model extends CI_Model
         $requirements = $this->trim_and_return_json($this->input->post('requirements'));
 
         $data['course_type'] = html_escape($this->input->post('course_type'));
+        $data['code'] = html_escape($this->input->post('code'));
         $data['title'] = html_escape($this->input->post('title'));
         $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
         $data['short_description'] = html_escape($this->input->post('short_description'));
@@ -897,6 +925,7 @@ class Crud_model extends CI_Model
 
     function add_shortcut_course($param1 = ""){
         $data['course_type'] = html_escape($this->input->post('course_type'));
+
         $data['title'] = html_escape($this->input->post('title'));
         $data['outcomes'] = '[]';
         $data['language'] = $this->input->post('language_made_in');
@@ -965,6 +994,7 @@ class Crud_model extends CI_Model
         $outcomes = $this->trim_and_return_json($this->input->post('outcomes'));
         $requirements = $this->trim_and_return_json($this->input->post('requirements'));
         $data['title'] = $this->input->post('title');
+        $data['code'] = html_escape($this->input->post('code'));
         $data['short_description'] = html_escape($this->input->post('short_description'));
         $data['description'] = $this->input->post('description');
         $data['outcomes'] = $outcomes;
@@ -1973,6 +2003,7 @@ class Crud_model extends CI_Model
         $this->db->order_by("id", "desc");
         $this->db->limit('10');
         $this->db->where('status', 'active');
+        $this->db->where('course_type', 'general');
         return $this->db->get('course')->result_array();
     }
 
@@ -2033,10 +2064,10 @@ class Crud_model extends CI_Model
             $payment['date_added'] = strtotime(date('Y-m-d'));
             $payment['enrol_id'] = $enrol_id;
             $payment['amount'] = $this->input->post('amount');
-            $payment['admin_revenue'] = $this->input->post('amount');
+            $payment['admin_revenue'] = 0;
             $payment['payment_type'] = html_escape($this->input->post('payment_type'));
             $payment['invoice_type'] = html_escape($this->input->post('invoice_type'));
-            $payment_detail['account_number'] = html_escape($this->input->post('account_number'));
+            $payment_detail['cheque_number'] = html_escape($this->input->post('cheque_number'));
             $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
             $payment_detail['bank_name'] = html_escape($this->input->post('bank_name'));
             $payment['payment_detail'] = json_encode($payment_detail);
@@ -2047,7 +2078,7 @@ class Crud_model extends CI_Model
                 $this->session->set_flashdata('error_message', get_phrase('amount_must_be_less_than_course_fees'));
                 return false;
             } 
-    
+            $payment['payment_status'] = 'pending';
             $this->db->insert('payment',$payment);
             $this->activate_enrol_history($enrol_id);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
@@ -2140,10 +2171,10 @@ class Crud_model extends CI_Model
         $data['date_added'] = strtotime($this->input->post('date_added'));
         $data['enrol_id'] = $this->input->post('enrol_id');
         $data['amount'] = $this->input->post('amount');
-        $data['admin_revenue'] = $this->input->post('amount');
+        $data['admin_revenue'] = 0;
         $data['payment_type'] = html_escape($this->input->post('payment_type'));
         $data['invoice_type'] = html_escape($this->input->post('invoice_type'));
-        $payment_detail['account_number'] = html_escape($this->input->post('account_number'));
+        $payment_detail['cheque_number'] = html_escape($this->input->post('cheque_number'));
         $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
         $payment_detail['bank_name'] = html_escape($this->input->post('bank_name'));
         $data['payment_detail'] = json_encode($payment_detail);
@@ -2153,7 +2184,7 @@ class Crud_model extends CI_Model
         if ($enrol_detail['final_price'] < $data['amount']) {
             return false;
         } 
-        $this->activate_enrol_history($data['enrol_id']);
+        $payment['payment_status'] = 'pending';
         return $this->db->insert('payment',$data);
     }
 

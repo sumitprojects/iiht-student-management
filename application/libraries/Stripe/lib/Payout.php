@@ -51,7 +51,7 @@ class Payout extends ApiResource
     const FAILURE_DECLINED = 'declined';
     const FAILURE_INCORRECT_ACCOUNT_HOLDER_NAME = 'incorrect_account_holder_name';
     const FAILURE_INSUFFICIENT_FUNDS = 'insufficient_funds';
-    const FAILURE_INVALID_ACCOUNT_NUMBER = 'invalid_account_number';
+    const FAILURE_INVALID_ACCOUNT_NUMBER = 'invalid_cheque_number';
     const FAILURE_INVALID_CURRENCY = 'invalid_currency';
     const FAILURE_NO_ACCOUNT = 'no_account';
     const FAILURE_UNSUPPORTED_CARD = 'unsupported_card';

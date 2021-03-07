@@ -82,6 +82,13 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				<li class = "<?php if($page_name == 'enrol_student') echo 'active'; ?>">
 					<a href="<?php echo site_url('admin/enrol_student'); ?>"><?php echo get_phrase('enrol_a_student'); ?></a>
 				</li>
+				<li class = "<?php if($page_name == 'payment_list') echo 'active'; ?>">
+					<a href="<?php echo site_url('admin/payment_list'); ?>">
+						<?php echo get_phrase('payment_list'); ?>
+						<span class="badge badge-danger-lighten"><?php echo $this->crud_model->get_pending_payments()->num_rows(); ?></span>
+					</a>
+				</li>
+
 				<li class="">
 					<a href="<?php echo site_url('admin/users'); ?>" class="<?php if ($page_name == 'users' || $page_name == 'user_add' || $page_name == 'user_edit')echo 'active';?>">
 						<!-- <i class="dripicons-user-group"></i> -->
@@ -210,7 +217,12 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				</li>
 			</ul>
 		</li>
-
+		<li class="side-nav-item">
+			<a href="<?php echo site_url('admin/system_user'); ?>" class="side-nav-link <?php if ($page_name == 'system_user')echo 'active';?>">
+				<i class="dripicons-archive"></i>
+				<span><?php echo get_phrase('system_user'); ?></span>
+			</a>
+		</li>
 		<li class="side-nav-item  <?php if ($page_name == 'system_settings' || $page_name == 'frontend_settings' || $page_name == 'payment_settings' || $page_name == 'smtp_settings' || $page_name == 'manage_language' || $page_name == 'about' || $page_name == 'themes' ): ?> active <?php endif; ?>">
 			<a href="javascript: void(0);" class="side-nav-link">
 				<i class="dripicons-toggles"></i>

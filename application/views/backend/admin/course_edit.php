@@ -130,12 +130,29 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                <?php else:?>
+                                                    <div class="form-group row mb-3">
+                                                        <label class="col-md-2 col-form-label" for="course_type"><?php echo get_phrase('course_type'); ?></label>
+                                                        <div class="col-md-10">
+                                                            <div class="alert alert-light" role="alert">
+                                                                <h4 class="alert-heading"><?= get_phrase($course_details['course_type']); ?></h4>
+                                                                <hr class="m-1">
+                                                                <p class="mb-0"><?= get_phrase('the_course_type_can_not_be_editable'); ?>.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 <?php endif; ?>
                                                 
                                                 <div class="form-group row mb-3">
                                                     <label class="col-md-2 col-form-label" for="course_title"><?php echo get_phrase('course_title'); ?><span class="required">*</span></label>
                                                     <div class="col-md-10">
                                                         <input type="text" class="form-control" id="course_title" name = "title" placeholder="<?php echo get_phrase('enter_course_title'); ?>" value="<?php echo $course_details['title']; ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row mb-3">
+                                                    <label class="col-md-2 col-form-label" for="course_code"><?php echo get_phrase('course_code'); ?> <span class="required">*</span> </label>
+                                                    <div class="col-md-10">
+                                                        <input type="text" class="form-control" id="course_code" name = "code" placeholder="<?php echo get_phrase('enter_course_code'); ?>" value="<?php echo $course_details['code']; ?>" required>
                                                     </div>
                                                 </div>
                                                 <div class="form-group row mb-3">

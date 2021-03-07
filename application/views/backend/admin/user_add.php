@@ -9,15 +9,16 @@
     </div><!-- end col-->
 </div>
 <div>
-    <?php 
-
+<?php 
 if(isset($enquiry)){
     $enquiry['first_name'] = explode(' ',$enquiry['en_name'])[0] ?? '' ;
     $enquiry['last_name']  = explode(' ',$enquiry['en_name'])[1] ?? '' ;    
 }else{
     $enquiry = null;
 }
-
+$intern = !empty($intern)? $intern : false;
+$admission = !empty($admission)? $admission : false;
+$offline = !empty($offline) ? $offline : false;
 ?>
 </div>
 <div class="row">
@@ -94,7 +95,7 @@ if(isset($enquiry)){
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
-                                        <?php if(empty($enquiry)):?>
+                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="linkedin_link"><?php echo get_phrase('biography'); ?></label>
@@ -196,7 +197,7 @@ if(isset($enquiry)){
                             <div class="tab-pane" id="social_information">
                                 <div class="row">
                                     <div class="col-12">
-                                        <?php if(empty($enquiry)):?>
+                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="facebook_link">
                                                 <?php echo get_phrase('facebook'); ?></label>
@@ -306,7 +307,7 @@ if(isset($enquiry)){
                             <div class="tab-pane" id="payment_info">
                                 <div class="row">
                                     <div class="col-12">
-                                        <?php if(empty($enquiry)):?>
+                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="paypal_client_id">
                                                 <?php echo get_phrase('paypal_client_id'); ?></label>

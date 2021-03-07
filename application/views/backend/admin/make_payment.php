@@ -2,14 +2,16 @@
 $paymenttype = array(
     'cash','cheque','wallet'
 );
+
 $invoicetypes = array(
-    'token','partial-payment','full-payment'
+    'token','partial-payment'
 );
 
 $payment_details = $this->crud_model->get_enrol_payment_info($purchase_history['eid'])->row_array();
 $amount_due = 0;
 if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_history['final_price']){
     $amount_due = $payment_details['amount_due'];
+    unset($invoicetypes[0]);
 }else{
     $amount_due = $purchase_history['final_price']/2;
 }
@@ -100,9 +102,9 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                             <input type="text" class="form-control" name="bank_name" id="bank_name">
                         </div>
                         <div class="form-group mb-3">
-                            <label class="account_number"><?php echo get_phrase('account_number'); ?><span
+                            <label class="cheque_number"><?php echo get_phrase('cheque_number'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control" id="account_number" name="account_number">
+                            <input type="text" class="form-control" id="cheque_number" name="cheque_number">
                         </div>
 
                         <div class="form-group mb-3">
@@ -144,24 +146,24 @@ jQuery(document).ready(function() {
             jQuery(this).val(jQuery('[name=final_price]').val()/2);
         }
     });
-    jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
-    jQuery('#wallet_name,#bank_name, #account_number').parent('.form-group').hide();
+    jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+    jQuery('#wallet_name,#bank_name, #cheque_number').parent('.form-group').hide();
     jQuery('#payment_type').on('change',function(){
         if( jQuery(this).val() == 'cash' ){
-            jQuery('#wallet_name, #bank_name, #account_number').attr('disabled',true);
-            jQuery('#wallet_name, #bank_name, #account_number').removeAttr('required');
-            jQuery('#wallet_name, #bank_name, #account_number').parent('.form-group').hide();
+            jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+            jQuery('#wallet_name, #bank_name, #cheque_number').removeAttr('required');
+            jQuery('#wallet_name, #bank_name, #cheque_number').parent('.form-group').hide();
         }else if( jQuery(this).val() == 'cheque' ){
             jQuery('#wallet_name').attr('disabled',true);
             jQuery('#wallet_name').parent('.form-group').hide();
-            jQuery('#bank_name, #account_number').parent('.form-group').show();
+            jQuery('#bank_name, #cheque_number').parent('.form-group').show();
 
-            jQuery('#bank_name, #account_number').removeAttr('disabled');
-            jQuery('#bank_name, #account_number').attr('required',true);
+            jQuery('#bank_name, #cheque_number').removeAttr('disabled');
+            jQuery('#bank_name, #cheque_number').attr('required',true);
         }else if( jQuery(this).val() == 'wallet' ){
-            jQuery('#bank_name, #account_number').removeAttr('required');
-            jQuery('#bank_name, #account_number').attr('disabled',true);
-            jQuery('#bank_name, #account_number').parent('.form-group').hide();
+            jQuery('#bank_name, #cheque_number').removeAttr('required');
+            jQuery('#bank_name, #cheque_number').attr('disabled',true);
+            jQuery('#bank_name, #cheque_number').parent('.form-group').hide();
             jQuery('#wallet_name').removeAttr('disabled');
             jQuery('#wallet_name').attr('required',true);
             jQuery('#wallet_name').parent('.form-group').show();

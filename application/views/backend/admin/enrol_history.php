@@ -32,7 +32,7 @@
               </div>
               <div class="table-responsive-sm mt-4">
                   <?php if (count($enrol_history->result_array()) > 0): ?>
-                      <table id="enrol_history" class="table table-striped table-centered mb-0">
+                      <table id="enrol_history" class="table table-striped table-centered mb-0" data-filter="3,4,7" data-nofilter="8,">
                           <thead>
                               <tr>
                                   <th><?php echo get_phrase('photo'); ?></th>
@@ -56,7 +56,8 @@
                                       </td>
                                       <td>
                                           <b><?php echo $user_data['first_name'].' '.$user_data['last_name']; ?></b><br>
-                                          <small><?php echo get_phrase('email').': '.$user_data['email']; ?></small>
+                                          <small><?php echo get_phrase('email').': '.$user_data['email']; ?></small><br>
+                                          <small><?php echo get_phrase('mob_no').': '.$user_data['mob_no']; ?></small>
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
