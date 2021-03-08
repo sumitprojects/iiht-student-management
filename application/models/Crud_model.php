@@ -600,25 +600,30 @@ class Crud_model extends CI_Model
     }
 
     public function activate_enrol_history($param1){
-        $payment  = $this->db->select('py.*')
-                    ->from('payment as py')
-                    ->join('enrol as en', 'en.id = py.enrol_id')
-                    ->where('py.enrol_id',$param1)
-                    ->where('payment_status','paid')
-                    ->where('en.enrol_status','pending')
-                    ->get()
-                    ->row_array();
-        // $payment = $this->db->get_where('payment',array('enrol_id'=>$param1,'payment_status'=>'paid'))->row_array();
+
+        $this->db->where('id',$param1);
+        $this->db->or_where('enrol_status','active');
+        $this->db->or_where('enrol_status','pending');
+
+        $enrol = $this->db->get('enrol')->row_array();
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($payment['user_id'],$payment['course_id']);
         if($check_enrol->num_rows() > 0){
             $this->session->set_flashdata('error_message', get_phrase('student_course_is_already_enroled'));
         }else{
+            $payment  = $this->db->select('py.*')
+            ->from('payment as py')
+            ->join('enrol as en', 'en.id = py.enrol_id','right')
+            ->where('py.enrol_id',$param1)
+            ->where('en.enrol_status','pending')
+            ->get()
+            ->row_array();
             if(!empty($payment)){
                 $this->db->where('id', $param1);
                 $this->db->update('enrol',['enrol_status'=>'active']);   
                 $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));
             }
         }
+        return;
     }
     public function purchase_history($user_id)
     {
