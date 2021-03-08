@@ -2189,7 +2189,7 @@ class Crud_model extends CI_Model
         if ($enrol_detail['final_price'] < $data['amount']) {
             return false;
         } 
-        $payment['payment_status'] = 'pending';
+        $data['payment_status'] = 'pending';
         return $this->db->insert('payment',$data);
     }
 
