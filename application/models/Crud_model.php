@@ -606,7 +606,7 @@ class Crud_model extends CI_Model
         $this->db->or_where('enrol_status','pending');
 
         $enrol = $this->db->get('enrol')->row_array();
-        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($payment['user_id'],$payment['course_id']);
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($enrol['user_id'],$enrol['course_id']);
         if($check_enrol->num_rows() > 0){
             $this->session->set_flashdata('error_message', get_phrase('student_course_is_already_enroled'));
         }else{
