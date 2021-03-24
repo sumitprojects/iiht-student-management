@@ -94,7 +94,7 @@
                                                         <div class="col-md-10">
                                                             <select class="form-control select2" data-toggle="select2" name="course_type" id="course_type">
                                                                 <option value="general"><?php echo get_phrase('general'); ?></option>
-                                                                <option value="scorm"><?php echo get_phrase('training'); ?></option>
+                                                                <option value="training"><?php echo get_phrase('training'); ?></option>
                                                             </select>
                                                         </div>
                                                     </div>

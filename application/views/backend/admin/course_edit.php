@@ -93,7 +93,7 @@
                                 <div class="tab-content b-0 mb-0">
                                     <div class="tab-pane" id="curriculum">
                                         <?php
-                                            if($course_details['course_type'] == 'general'):
+                                            if($course_details['course_type'] == 'general' || $course_details['course_type'] == 'training'):
                                                 include 'curriculum.php';
                                             elseif($course_details['course_type'] == 'scorm' && addon_status('scorm_course') == true):
                                                 include 'scorm_curriculum.php';

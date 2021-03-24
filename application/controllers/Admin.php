@@ -564,6 +564,8 @@ class Admin extends CI_Controller {
             $page_data['page_name'] = 'user_add';
             $page_data['page_title'] = get_phrase('student_add');
             $page_data['offline'] = true;
+            $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
+            $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $this->load->view('backend/index', $page_data);
         }
         else if ($param1 == 'add_edit_from_inquiry') {
@@ -581,7 +583,9 @@ class Admin extends CI_Controller {
             $page_data['page_name'] = 'user_add';
             $page_data['intern'] = true;
             $page_data['page_title'] = get_phrase('student_non_admission');
-            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+            $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
+            $page_data['branch'] = $this->crud_model->get_branch()->result_array();
+            $page_data['courses'] = $this->crud_model->get_courses_by_type('training')->result_array();
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             if(!empty($param2)){
                 $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();

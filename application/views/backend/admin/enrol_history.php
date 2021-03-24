@@ -30,7 +30,7 @@
                       </form>
                   </div>
               </div>
-              <div class="table-responsive-sm mt-4">
+              <div class="table-responsive mt-4">
                   <?php if (count($enrol_history->result_array()) > 0): ?>
                       <table id="enrol_history" class="table table-striped table-centered mb-0" data-filter="3,4,7" data-nofilter="8,">
                           <thead>
@@ -38,6 +38,7 @@
                                   <th><?php echo get_phrase('photo'); ?></th>
                                   <th><?php echo get_phrase('user_name'); ?></th>
                                   <th><?php echo get_phrase('enrolled_course'); ?></th>
+                                  <th><?php echo get_phrase('admission_type'); ?></th>
                                   <th><?php echo get_phrase('enrolment_date'); ?></th>
                                   <th><?php echo get_phrase('course_fees')?></th>
                                   <th><?php echo get_phrase('payment_recieved')?></th>
@@ -58,8 +59,10 @@
                                           <b><?php echo $user_data['first_name'].' '.$user_data['last_name']; ?></b><br>
                                           <small><?php echo get_phrase('email').': '.$user_data['email']; ?></small><br>
                                           <small><?php echo get_phrase('mob_no').': '.$user_data['mob_no']; ?></small>
+                                        
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
+                                      <td><span class="badge badge-primary"><?php echo $enrol['is_training'] == 1? get_phrase('Admission'):get_phrase('Non Admission'); ?></span></td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
                                       <td><?=$enrol['final_price']?></td>
                                       <td><?=$enrol['total_payment']??'N/A'?></td>
@@ -80,7 +83,7 @@
                                                 <?php if($enrol['enrol_status'] != 'disable'):?>
                                                     <li><a class="dropdown-item" href="<?php echo site_url('admin/payments/'.$enrol['id']); ?>"><?=get_phrase('view_payments')?></a></li>                                                        
                                                     <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"><?=get_phrase('delete')?></a></li>
-                                                    <?php if($enrol['amount_due'] >= 0):?>
+                                                    <?php if($enrol['amount_due'] >= 0 && $enrol['total_payment'] > 0):?>
                                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/admission_form/'.$enrol['id']); ?>"><?=get_phrase('view_admission_form')?></a></li>                                                        
                                                     <?php endif;?>
                                                     <?php if(!empty($enrol['amount_due']) || $enrol['amount_due'] == NULL ):?>

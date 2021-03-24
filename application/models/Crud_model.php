@@ -645,7 +645,7 @@ class Crud_model extends CI_Model
         $this->db->join('payment as py','py.enrol_id = en.id','left');        
         $this->db->where('en.date_added >=', $timestamp_start);
         $this->db->where('en.date_added <=', $timestamp_end);
-        $this->db->where('py.payment_status','paid');
+        // $this->db->where('py.payment_status','paid');
         $this->db->group_by('en.id,py.enrol_id');
         $this->db->order_by('en.date_added', 'desc');
 
@@ -2228,12 +2228,14 @@ class Crud_model extends CI_Model
         }
     }
 
-    public function enrol_a_student_offline($user_id = 0, $course_id = 0,$price = 0,$status = 'pending')
+    public function enrol_a_student_offline($user_id = 0, $course_id = 0,$price = 0,$training = 0,$status = 'pending')
     {
         $data['course_id'] = $course_id;
         $data['user_id']   = $user_id;
         $data['final_price'] = $price;
         $data['enrol_status'] = $status;
+        $data['is_training'] = $training;
+        $data['status'] = $status;
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
         if ($check_enrol->num_rows() > 0) {
@@ -2676,6 +2678,17 @@ class Crud_model extends CI_Model
         }
     }
 
+
+    public function get_courses_by_type($type= "", $category_id = "", $sub_category_id = "", $instructor_id = 0)
+    {
+        if ($category_id > 0 && $sub_category_id > 0 && $instructor_id > 0) {
+            return $this->db->get_where('course', array('category_id' => $category_id, 'sub_category_id' => $sub_category_id, 'user_id' => $instructor_id));
+        } elseif ($category_id > 0 && $sub_category_id > 0 && $instructor_id == 0) {
+            return $this->db->get_where('course', array('category_id' => $category_id, 'sub_category_id' => $sub_category_id));
+        } else if(!empty($type)){
+            return $this->db->get_where('course',["course_type" => $type]);
+        }
+    }
     public function filter_course_for_backend($category_id, $instructor_id, $price, $status)
     {
         if ($category_id != "all") {

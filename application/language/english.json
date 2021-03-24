@@ -1233,5 +1233,8 @@
     "hod_name": "Hod name",
     "hod_ext": "Hod ext",
     "select_a_department": "Select a department",
-    "hod_add_form": "Hod add form"
+    "hod_add_form": "Hod add form",
+    "non_admission": "Non admission",
+    "admission": "Admission",
+    "admission_type": "Admission type"
 }

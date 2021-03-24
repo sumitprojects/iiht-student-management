@@ -28,7 +28,14 @@ $offline = !empty($offline) ? $offline : false;
                 <h4 class="header-title mb-3"><?php echo get_phrase('student_add_form'); ?></h4>
                 <form class="required-form needs-validation" novalidate action="<?php echo site_url('admin/users/add'); ?>"
                     enctype="multipart/form-data" method="post">
-                    <input type="hidden" name="en_id" value="<?=$enquiry['en_id']?>">
+                    <?php if(!empty($enquiry)):?>
+                        <input type="hidden" name="en_id" value="<?=$enquiry['en_id']?>">
+                    <?php endif; ?>
+
+                    <?php if(!empty($intern)):?>
+                        <input type="hidden" name="is_training" value="<?=$intern?>">
+                    <?php endif; ?>
+
                     <div id="progressbarwizard">
                         <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                             <li class="nav-item">

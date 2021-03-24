@@ -181,6 +181,7 @@ class User_model extends CI_Model {
             /***
             * Address Detail
             */
+            
             $data['en_id'] = html_escape($this->input->post('en_id'));
             $data['dob'] = html_escape($this->input->post('dob'));
             $data['branch_id'] = html_escape($this->input->post('branch_id'));
@@ -225,8 +226,11 @@ class User_model extends CI_Model {
             $enrol['user_id'] = $user_id; 
             $enrol['course_id'] = html_escape($this->input->post('course_id'));
             $enrol['price'] = $this->input->post('price');
-            
-            $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price']);
+            $enrol['is_training'] = $this->input->post('is_training') == 1? 1 : 0;
+            if(empty($data['en_id'])){
+                $enrol['status'] = 'active';
+            }
+            $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price'],$enrol['is_training'],$enrol['status']);
             $this->upload_user_image($data['image']);
             $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
         }
