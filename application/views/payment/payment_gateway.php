@@ -202,66 +202,16 @@ $total_price_of_checking_out = $this->session->userdata('total_price_of_checking
 					</div>
 				<?php endif; ?>
 
-				<!--paystack payment gateway addon-->
-				<?php
-				if (addon_status('paystack') == 1) :
-					include "paystack_payment_gateway.php";
-				endif;
-				?>
-
-				<!--payumoney payment gateway addon-->
-				<?php
-				if (addon_status('payumoney') == 1) :
-					include "payumoney_payment_gateway.php";
-				endif;
-				?>
 				<!--razorpay payment gateway addon-->
 				<?php
 				if (addon_status('razorpay') == 1) :
 					include "razorpay_payment_gateway.php";
 				endif;
 				?>
-				<!--instamojo payment gateway addon-->
-				<?php
-				if (addon_status('instamojo') == 1) :
-					include "instamojo_payment_gateway.php";
-				endif;
-				?>
-				<!--pagseguro payment gateway addon-->
-				<?php
-				if (addon_status('pagseguro') == 1) :
-					include "pagseguro_payment_gateway.php";
-				endif;
-				?>
-				<!--mercadopago payment gateway addon-->
-				<?php
-				if (addon_status('mercadopago') == 1) :
-					include "mercadopago_payment_gateway.php";
-				endif;
-				?>
-				<!--ccavenue payment gateway addon-->
-				<?php
-				if (addon_status('ccavenue') == 1) :
-					include "ccavenue_payment_gateway.php";
-				endif;
-				?>
-				<!--flutterwave payment gateway addon-->
-				<?php
-				if (addon_status('flutterwave') == 1) :
-					include "flutterwave_payment_gateway.php";
-				endif;
-				?>
 				<!--paytm payment gateway addon-->
 				<?php
 				if (addon_status('paytm') == 1) :
 					include "paytm_payment_gateway.php";
-				endif;
-				?>
-
-				<!--offline payment gateway addon-->
-				<?php
-				if (addon_status('offline_payment') == 1) :
-					include "offline_payment_gateway.php";
 				endif;
 				?>
 			</div>
@@ -310,60 +260,10 @@ $total_price_of_checking_out = $this->session->userdata('total_price_of_checking
 							<hr class="border mb-4">
 							<?php include "stripe/stripe_payment_gateway_form.php"; ?>
 						</div>
-
-						<!--Paystack payment gateway addon-->
-						<?php
-						if (addon_status('paystack') == 1) :
-							include "paystack_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--payumoney payment gateway addon-->
-						<?php
-						if (addon_status('payumoney') == 1) :
-							include "payumoney_payment_gateway_form.php";
-						endif;
-						?>
-
 						<!--razorpay payment gateway addon-->
 						<?php
 						if (addon_status('razorpay') == 1) :
 							include "razorpay_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--instamojo payment gateway addon-->
-						<?php
-						if (addon_status('instamojo') == 1) :
-							include "instamojo_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--pagseguro payment gateway addon-->
-						<?php
-						if (addon_status('pagseguro') == 1) :
-							include "pagseguro_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--mercadopago payment gateway addon-->
-						<?php
-						if (addon_status('mercadopago') == 1) :
-							include "mercadopago_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--ccavenue payment gateway addon-->
-						<?php
-						if (addon_status('ccavenue') == 1) :
-							include "ccavenue_payment_gateway_form.php";
-						endif;
-						?>
-
-						<!--flutterwave payment gateway addon-->
-						<?php
-						if (addon_status('flutterwave') == 1) :
-							include "flutterwave_payment_gateway_form.php";
 						endif;
 						?>
 
@@ -374,12 +274,6 @@ $total_price_of_checking_out = $this->session->userdata('total_price_of_checking
 						endif;
 						?>
 
-						<!--offline payment gateway addon-->
-						<?php
-						if (addon_status('offline_payment') == 1) :
-							include "offline_payment_gateway_form.php";
-						endif;
-						?>
 					</div>
 				</div>
 			</div>

@@ -72,8 +72,8 @@ class Certificate_model extends CI_Model
 		}
 
 		// MAKE A COPY OF CERTIFICATE TEMPLATE
-		$certificate_src = './uploads/certificates/'.$certificate_identifier.'.jpg';
-		copy('./uploads/certificates/template.jpg', $certificate_src);
+		$certificate_src = FCPATH.'/uploads/certificates/'.$certificate_identifier.'.jpg';
+		copy(FCPATH.'/uploads/certificates/template.jpg', $certificate_src);
 
 		$splited_certificate_template = explode( "\n", wordwrap( $certificate_template, 70));
 		$splited_certificate_template_part = count($splited_certificate_template);
@@ -88,7 +88,7 @@ class Certificate_model extends CI_Model
 			$config_certificate['source_image'] = $certificate_src;
 			$config_certificate['wm_text'] = $splited_certificate_template[$i];
 			$config_certificate['wm_type'] = 'text';
-			$config_certificate['wm_font_path'] = './system/fonts/Palatino.ttf';
+			$config_certificate['wm_font_path'] = FCPATH.'/system/fonts/Palatino.ttf';
 			$config_certificate['wm_font_size'] = '18';
 			$config_certificate['wm_font_color'] = '2C5C8F';
 			$config_certificate['wm_vrt_alignment'] = 'top';
@@ -111,7 +111,7 @@ class Certificate_model extends CI_Model
 		$config_instructor_name_plebeya['source_image'] = $certificate_src;
 		$config_instructor_name_plebeya['wm_text'] = $instructor_name;
 		$config_instructor_name_plebeya['wm_type'] = 'text';
-		$config_instructor_name_plebeya['wm_font_path'] = './system/fonts/Plebeya.otf';
+		$config_instructor_name_plebeya['wm_font_path'] = FCPATH.'/system/fonts/Plebeya.otf';
 		$config_instructor_name_plebeya['wm_font_size'] = '22';
 		$config_instructor_name_plebeya['wm_font_color'] = '2C5C8F';
 		$config_instructor_name_plebeya['wm_vrt_alignment'] = 'top';
@@ -133,7 +133,7 @@ class Certificate_model extends CI_Model
 		$config_instructor_name_palatino['source_image'] = $certificate_src;
 		$config_instructor_name_palatino['wm_text'] = $instructor_name;
 		$config_instructor_name_palatino['wm_type'] = 'text';
-		$config_instructor_name_palatino['wm_font_path'] = './system/fonts/Palatino.ttf';
+		$config_instructor_name_palatino['wm_font_path'] = FCPATH.'/system/fonts/Palatino.ttf';
 		$config_instructor_name_palatino['wm_font_size'] = '13';
 		$config_instructor_name_palatino['wm_font_color'] = '2C5C8F';
 		$config_instructor_name_palatino['wm_vrt_alignment'] = 'top';
@@ -155,7 +155,7 @@ class Certificate_model extends CI_Model
 		$config_date_plebeya['source_image'] = $certificate_src;
 		$config_date_plebeya['wm_text'] = date('d F Y');
 		$config_date_plebeya['wm_type'] = 'text';
-		$config_date_plebeya['wm_font_path'] = './system/fonts/Plebeya.otf';
+		$config_date_plebeya['wm_font_path'] = FCPATH.'/system/fonts/Plebeya.otf';
 		$config_date_plebeya['wm_font_size'] = '22';
 		$config_date_plebeya['wm_font_color'] = '2C5C8F';
 		$config_date_plebeya['wm_vrt_alignment'] = 'top';
@@ -177,7 +177,7 @@ class Certificate_model extends CI_Model
 		$config_date_palatino['source_image'] = $certificate_src;
 		$config_date_palatino['wm_text'] = "Date";
 		$config_date_palatino['wm_type'] = 'text';
-		$config_date_palatino['wm_font_path'] = './system/fonts/Palatino.ttf';
+		$config_date_palatino['wm_font_path'] = FCPATH.'/system/fonts/Palatino.ttf';
 		$config_date_palatino['wm_font_size'] = '13';
 		$config_date_palatino['wm_font_color'] = '2C5C8F';
 		$config_date_palatino['wm_vrt_alignment'] = 'top';
@@ -199,7 +199,7 @@ class Certificate_model extends CI_Model
 		$config_certificate_number_palatino['source_image'] = $certificate_src;
 		$config_certificate_number_palatino['wm_text'] = "Certificate ID: #".$certificate_no;
 		$config_certificate_number_palatino['wm_type'] = 'text';
-		$config_certificate_number_palatino['wm_font_path'] = './system/fonts/Palatino.ttf';
+		$config_certificate_number_palatino['wm_font_path'] = FCPATH.'/system/fonts/Palatino.ttf';
 		$config_certificate_number_palatino['wm_font_size'] = '7';
 		$config_certificate_number_palatino['wm_font_color'] = '757575';
 		$config_certificate_number_palatino['wm_vrt_alignment'] = 'top';
@@ -221,7 +221,7 @@ class Certificate_model extends CI_Model
 		$config_certificate_url_palatino['source_image'] = $certificate_src;
 		$config_certificate_url_palatino['wm_text'] = "Certificate URL: ".$certificate_url;
 		$config_certificate_url_palatino['wm_type'] = 'text';
-		$config_certificate_url_palatino['wm_font_path'] = './system/fonts/Palatino.ttf';
+		$config_certificate_url_palatino['wm_font_path'] = FCPATH.'/system/fonts/Palatino.ttf';
 		$config_certificate_url_palatino['wm_font_size'] = '7';
 		$config_certificate_url_palatino['wm_font_color'] = '757575';
 		$config_certificate_url_palatino['wm_vrt_alignment'] = 'top';

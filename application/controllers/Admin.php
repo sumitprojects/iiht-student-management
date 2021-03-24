@@ -152,6 +152,108 @@ class Admin extends CI_Controller {
     }
     /****Branch End */
 
+
+     /*********
+     * Department Crud
+     */
+    public function department($param1 = "", $param2 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'department_add_edit'){
+            $page_data['page_name'] = 'department/department_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_department');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
+            $response = $this->crud_model->add_department();
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('department_name_already_exists'));
+            }
+            redirect(site_url('admin/department'), 'refresh');
+        }
+        elseif ($param1 == "edit") {
+            $response = $this->crud_model->edit_department($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('department_name_already_exists'));
+            }
+            redirect(site_url('admin/department'), 'refresh');
+        }
+        elseif ($param1 == "delete") {
+            $this->crud_model->delete_department($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/department'), 'refresh');
+        }else if($param1 == 'activate'){
+            $this->crud_model->activate_department($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
+            redirect(site_url('admin/department'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'department/department';
+            $page_data['page_title'] = get_phrase('department');
+            $page_data['department'] = $this->crud_model->get_department($param2)->result_array();
+            $this->load->view('backend/index', $page_data);    
+        }
+    }
+    /****Department End */
+
+  /*********
+     * hod Crud
+     */
+    public function hod($param1 = "", $param2 = "") {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'hod_add_edit'){
+            $page_data['page_name'] = 'department/hod_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_hod');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);    
+        }else if ($param1 == 'add') {
+            $response = $this->crud_model->add_hod();
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('hod_name_already_exists'));
+            }
+            redirect(site_url('admin/hod'), 'refresh');
+        }
+        elseif ($param1 == "edit") {
+            $response = $this->crud_model->edit_hod($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('hod_name_already_exists'));
+            }
+            redirect(site_url('admin/hod'), 'refresh');
+        }
+        elseif ($param1 == "delete") {
+            $this->crud_model->delete_hod($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/hod'), 'refresh');
+        }else if($param1 == 'activate'){
+            $this->crud_model->activate_hod($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
+            redirect(site_url('admin/hod'), 'refresh');
+        }else{
+            $page_data['page_name'] = 'department/hod';
+            $page_data['page_title'] = get_phrase('hod');
+            $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
+            $this->load->view('backend/index', $page_data);    
+        }
+    }
+    /****hod End */
+
+
     /*********
      * Source Crud
      */

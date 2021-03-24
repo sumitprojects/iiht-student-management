@@ -92,6 +92,139 @@ class Crud_model extends CI_Model
      */
 
      /*****
+     * department Crud Model
+     */
+    public function get_department($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('dpid', $param1);
+        }
+        return $this->db->get('department');
+    }
+
+    public function add_department()
+    {
+        $data['dpname']   = strtoupper(html_escape($this->input->post('dpname')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('dpname', $data['dpname']);
+        $previous_data = $this->db->get('department')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('department', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_department($param1 = "")
+    {
+        $data['dpname']   = strtoupper(html_escape($this->input->post('dpname')));
+        $dpid   = html_escape($this->input->post('dpid'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('dpname', $data['dpname']);
+        $this->db->where('dpid !=', $dpid);
+        $previous_data = $this->db->get('department')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('dpid', $dpid);
+            $this->db->update('department', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_department($param1 = "")
+    {
+        $data['dp_is_delete']   = 0;
+        $this->db->where('dpid', $param1);
+        $this->db->where('dp_is_delete', 1);
+        $this->db->update('department', $data);
+        return true;
+    }
+
+    public function activate_department($param1 = "")
+    {
+        $data['dp_is_delete']   = 1;
+        $this->db->where('dpid', $param1);
+        $this->db->where('dp_is_delete', 0);
+        $this->db->update('department', $data);
+        return true;
+    }
+
+    /**
+     * department Crud End
+     */
+
+
+     /*****
+     * hod Crud Model
+     */
+    public function get_hod($param1 = ""){
+        $this->db->select('hod.*,department.dpname as department,department.dpid');
+        $this->db->from('hod');
+        $this->db->join('department', 'department.dpid = hod.hod_dpid','left');
+        if ($param1 != "") {
+            $this->db->where('hod.hod_id', $param1);    
+        }
+        
+        return $this->db->get();
+    }
+
+    public function add_hod()
+    {
+        $data['hod_name']   = strtoupper(html_escape($this->input->post('hod_name')));
+        $data['hod_ext']   = strtoupper(html_escape($this->input->post('hod_ext')));
+        $data['hod_dpid']   = strtoupper(html_escape($this->input->post('hod_dpid')));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('hod_name', $data['hod_name']);
+        $previous_data = $this->db->get('hod')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('hod', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_hod($param1 = "")
+    {
+        $data['hod_name']   = strtoupper(html_escape($this->input->post('hod_name')));
+        $data['hod_ext']   = strtoupper(html_escape($this->input->post('hod_ext')));
+        $data['hod_dpid']   = strtoupper(html_escape($this->input->post('hod_dpid')));
+        $hod_id   = html_escape($this->input->post('hod_id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('hod_name', $data['hod_name']);
+        $this->db->where('hod_id !=', $hod_id);
+        $previous_data = $this->db->get('hod')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('hod_id', $hod_id);
+            $this->db->update('hod', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_hod($param1 = "")
+    {
+        $data['hod_is_delete']   = 0;
+        $this->db->where('hod_id', $param1);
+        $this->db->where('hod_is_delete', 1);
+        $this->db->update('hod', $data);
+        return true;
+    }
+
+    public function activate_hod($param1 = "")
+    {
+        $data['hod_is_delete']   = 1;
+        $this->db->where('hod_id', $param1);
+        $this->db->where('hod_is_delete', 0);
+        $this->db->update('hod', $data);
+        return true;
+    }
+
+    /**
+     * hod Crud End
+     */
+
+
+     /*****
      * inquiry Crud Model
      */
     public function get_inquiry($param1 = ""){
@@ -323,9 +456,55 @@ class Crud_model extends CI_Model
         $this->db->delete('followup');
     }
 
+    /***
+     * Education
+     */
+    public function get_edu_list(){
+        return $this->db->get('education_list');
+    }
+
     /**
      * followup Crud End
      */
+    public function get_enrol_payment_info($id = 0,$first = false){
+        if($first){
+            $this->db->select('py.amount total_payment,(en.final_price - py.amount) as amount_due');
+            $this->db->from('enrol as en');
+            $this->db->join('payment as py','py.enrol_id = en.id','left'); 
+            $this->db->where('en.id', $id);
+            $this->db->order_by('en.date_added', 'asc');
+        }else{
+            $this->db->select('sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
+            $this->db->from('enrol as en');
+            $this->db->join('payment as py','py.enrol_id = en.id','left');        
+            $this->db->where('en.id', $id);
+            $this->db->order_by('en.date_added', 'desc');
+        }
+        return $this->db->get();
+    }
+
+
+    public function get_pending_payments(){
+        return $this->db->get_where('payment',['payment_status'=>'pending']);
+    }
+
+    public function get_all_payment_by_enrol($enrol_id = "")
+    {
+        $this->db->select('py.* ,en.final_price,en.date_added as enrol_date,en.expiry_time, concat(u.first_name," ",u.last_name) as full_name,c.title,cc.name, en.enrol_status,br.branch_name');
+        
+        $this->db->from('payment as py')
+                  ->join('users as u', 'py.user_id = u.id')
+                  ->join('enrol as en','en.id = py.enrol_id')
+                  ->join('course as c','c.id = py.course_id')
+                  ->join('category as cc','cc.id = c.category_id')
+                  ->join('branch as br','br.branch_id = u.branch_id','left');
+        if($enrol_id != ''){
+            $this->db->where('py.enrol_id',$enrol_id);   
+        }
+        return $this->db->get();
+    }
+
+
 
     public function get_category_details_by_id($id)
     {
@@ -379,13 +558,7 @@ class Crud_model extends CI_Model
     }
 
 
-    /***
-     * Eduction
-     */
-    public function get_edu_list(){
-        return $this->db->get('education_list');
-    }
-
+   
 
 
     public function edit_category($param1)
@@ -485,43 +658,7 @@ class Crud_model extends CI_Model
                 ->where('en.user_id',$id)
                 ->get();
     }
-    public function get_enrol_payment_info($id = 0,$first = false){
-        if($first){
-            $this->db->select('py.amount total_payment,(en.final_price - py.amount) as amount_due');
-            $this->db->from('enrol as en');
-            $this->db->join('payment as py','py.enrol_id = en.id','left'); 
-            $this->db->where('en.id', $id);
-            $this->db->order_by('en.date_added', 'asc');
-        }else{
-            $this->db->select('sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
-            $this->db->from('enrol as en');
-            $this->db->join('payment as py','py.enrol_id = en.id','left');        
-            $this->db->where('en.id', $id);
-            $this->db->order_by('en.date_added', 'desc');
-        }
-        return $this->db->get();
-    }
-
-
-    public function get_pending_payments(){
-        return $this->db->get_where('payment',['payment_status'=>'pending']);
-    }
-
-    public function get_all_payment_by_enrol($enrol_id = "")
-    {
-        $this->db->select('py.* ,en.final_price,en.date_added as enrol_date,en.expiry_time, concat(u.first_name," ",u.last_name) as full_name,c.title,cc.name, en.enrol_status,br.branch_name');
-        
-        $this->db->from('payment as py')
-                  ->join('users as u', 'py.user_id = u.id')
-                  ->join('enrol as en','en.id = py.enrol_id')
-                  ->join('course as c','c.id = py.course_id')
-                  ->join('category as cc','cc.id = c.category_id')
-                  ->join('branch as br','br.branch_id = u.branch_id','left');
-        if($enrol_id != ''){
-            $this->db->where('py.enrol_id',$enrol_id);   
-        }
-        return $this->db->get();
-    }
+   
 
     public function get_revenue_by_user_type($timestamp_start = "", $timestamp_end = "", $revenue_type = "")
     {

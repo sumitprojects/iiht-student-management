@@ -108,7 +108,7 @@
                                                 <div class="form-group row mb-3">
                                                     <label class="col-md-2 col-form-label" for="course_code"><?php echo get_phrase('course_code'); ?> <span class="required">*</span> </label>
                                                     <div class="col-md-10">
-                                                        <input type="text" class="form-control" id="course_code" name = "code" placeholder="<?php echo get_phrase('enter_course_code'); ?>" required>
+                                                        <input type="text" class="form-control" id="course_code" name = "code" placeholder="<?php echo get_phrase('enter_course_code'); ?>">
                                                     </div>
                                                 </div>
                                                 <div class="form-group row mb-3">

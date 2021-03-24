@@ -212,9 +212,6 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				<li class = "<?php if($page_name == 'addons') echo 'active'; ?>" >
 					<a href="<?php echo site_url('admin/addon'); ?>"><?php echo get_phrase('addon_manager'); ?></a>
 				</li>
-				<li class = "<?php if($page_name == 'available_addons') echo 'active'; ?>" >
-					<a href="<?php echo site_url('admin/available_addons'); ?>"><?php echo get_phrase('available_addons'); ?></a>
-				</li>
 			</ul>
 		</li>
 		<li class="side-nav-item">
@@ -223,6 +220,22 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
 				<span><?php echo get_phrase('system_user'); ?></span>
 			</a>
 		</li>
+		<li class="side-nav-item">
+			<a href="javascript: void(0);" class="side-nav-link <?php if ($page_name == 'department/department' || $page_name == 'department/department_add_edit' || $page_name == 'department/hod_add_edit' || $page_name == 'department/hod' ): ?> active <?php endif; ?>">
+				<i class="dripicons-graph-pie"></i>
+				<span> <?php echo get_phrase('department'); ?> </span>
+				<span class="menu-arrow"></span>
+			</a>
+			<ul class="side-nav-second-level" aria-expanded="false">
+				<li class = "<?php if($page_name == 'department') echo 'active'; ?>" >
+					<a href="<?php echo site_url('admin/department'); ?>"><?php echo get_phrase('manage_department'); ?></a>
+				</li>
+				<li class = "<?php if($page_name == 'hod') echo 'active'; ?>" >
+					<a href="<?php echo site_url('admin/hod'); ?>"><?php echo get_phrase('manage_hod'); ?></a>
+				</li>
+			</ul>
+		</li>
+
 		<li class="side-nav-item  <?php if ($page_name == 'system_settings' || $page_name == 'frontend_settings' || $page_name == 'payment_settings' || $page_name == 'smtp_settings' || $page_name == 'manage_language' || $page_name == 'about' || $page_name == 'themes' ): ?> active <?php endif; ?>">
 			<a href="javascript: void(0);" class="side-nav-link">
 				<i class="dripicons-toggles"></i>
