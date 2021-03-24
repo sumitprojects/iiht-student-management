@@ -128,7 +128,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0"
-                                                    value="<?=$enquiry['mob_no']?>" id="mob_no" name="mob_no" required>
+                                                    value="<?=$enquiry?$enquiry['mob_no']:''?>" id="mob_no" name="mob_no" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -137,7 +137,7 @@ $offline = !empty($offline) ? $offline : false;
                                                 for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0"
-                                                    value="<?=$enquiry['alt_mob']?>" id="alt_mob" name="alt_mob">
+                                                    value="<?=$enquiry?$enquiry['alt_mob']:''?>" id="alt_mob" name="alt_mob">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -149,7 +149,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     name="branch_id" data-init-plugin="select2" id="branch_id">
                                                     <?php foreach($branch as $key => $val):?>
                                                     <option value="<?=$val['branch_id']?>"
-                                                        <?=$enquiry['branch_id']==$val['branch_id']?'selected':''?>>
+                                                        <?=$enquiry?($enquiry['branch_id']==$val['branch_id']?'selected':''):''?>>
                                                         <?php echo $val['branch_name']; ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
@@ -183,7 +183,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" id="email" name="email" class="form-control"
-                                                    tabindex="0" value="<?=$enquiry['en_email']?>" <?=!empty($enquiry)?'':'required'?>>
+                                                    tabindex="0" value="<?=$enquiry?$enquiry['en_email']:''?>" <?=!empty($enquiry)?'':'required'?>>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
@@ -266,7 +266,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" id="present_address" name="present_address"
-                                                    value="<?=$enquiry['en_address']?>" class="form-control" required
+                                                    value="<?=$enquiry?$enquiry['en_address']:''?>" class="form-control" required
                                                     tabindex="0">
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
