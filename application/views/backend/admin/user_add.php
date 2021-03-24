@@ -87,7 +87,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0" id="first_name"
-                                                    name="first_name" value="<?=$enquiry['first_name']?>" autofocus
+                                                    name="first_name" value="<?=$enquiry?$enquiry['first_name']:''?>" autofocus
                                                     required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
@@ -98,7 +98,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0" id="last_name"
-                                                    name="last_name" value="<?=$enquiry['last_name']?>" required>
+                                                    name="last_name" value="<?=$enquiry?$enquiry['last_name']:''?>" required>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
