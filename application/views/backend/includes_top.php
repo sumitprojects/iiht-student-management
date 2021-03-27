@@ -38,4 +38,9 @@
     color: white !important;
 }
 
+.card,.card-img-top,.box_grid figure .price,.box_grid figure,.box_grid{
+    box-shadow: rgb(0 0 0 / 10%) 0px 1px 20px 0px;
+    border-radius:24px;
+}
+
 </style>

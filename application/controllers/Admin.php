@@ -621,6 +621,7 @@ class Admin extends CI_Controller {
         $page_data['page_name'] = 'enrol_history';
         $page_data['enrol_history'] = $this->crud_model->enrol_history_by_date_range($page_data['timestamp_start'], $page_data['timestamp_end']);
         $page_data['page_title'] = get_phrase('enrol_history');
+
         $this->load->view('backend/index', $page_data);
     }
 

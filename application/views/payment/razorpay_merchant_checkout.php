@@ -11,28 +11,30 @@
 
   <!--  The entire list of Checkout fields is available at
  https://docs.razorpay.com/docs/checkout-form#checkout-fields -->
-  <form action="<?=$CALLBACK_URL?>" method="POST">
+  <form id="razor" name="razor" action="<?=$callback_url?>" method="POST">
     <script
       src="https://checkout.razorpay.com/v1/checkout.js"
-      data-key="<?php echo htmlspecialchars()?>"
-      data-amount="<?php echo htmlspecialchars($amount_to_pay)?>"
+      data-key="<?php echo htmlspecialchars(RAZORPAY_KEY)?>"
+      data-amount="<?php echo htmlspecialchars($amount_to_pay  * 100)?>"
       data-currency="INR"
       data-name="<?php echo htmlspecialchars($user_details['first_name']. ' '.$user_details['last_name'])?>"
-      data-image="<?php echo htmlspecialchars($data['image'])?>"
-      data-description="<?php echo $data['description']?>"
-      data-prefill.name="<?php echo $data['prefill']['name']?>"
-      data-prefill.email="<?php echo $data['prefill']['email']?>"
-      data-prefill.contact="<?php echo $data['prefill']['contact']?>"
-      data-notes.shopping_order_id="3456"
-      data-order_id="<?php echo $order_detail['shopping_order_id']?>"
-      <?php if ($displayCurrency !== 'INR') { ?> data-display_amount="<?php echo $data['display_amount']?>" <?php } ?>
-      <?php if ($displayCurrency !== 'INR') { ?> data-display_currency="<?php echo $data['display_currency']?>" <?php } ?>
+      data-image="<?php echo htmlspecialchars(base_url('uploads/system/'.get_frontend_settings('dark_logo')))?>"
+      data-description="<?php echo "Razorpay helps you to pay via All UPIs, Wallets, NetBanking, and Credit/Debit Cards.";?>"
+      data-prefill.name="<?php echo htmlspecialchars($user_details['first_name']. ' '.$user_details['last_name'])?>"
+      data-prefill.email="<?php echo htmlspecialchars($user_details['email'])?>"
+      data-prefill.contact="<?php echo htmlspecialchars($user_details['mob_no'])?>"
+      data-notes.shopping_order_id="<?php echo $order_detail['receipt']?>"
+      data-order_id="<?php echo $_SESSION['razorpay_order_id']?>"
+      <?php if ($displayCurrency !== 'INR') { ?> data-display_amount="<?php echo $amount_to_pay?>" <?php } ?>
+      <?php if ($displayCurrency !== 'INR') { ?> data-display_currency="<?php echo $orderData['currency']?>" <?php } ?>
     >
     </script>
     <!-- Any extra fields to be submitted with the form but not sent to Razorpay -->
-    <input type="hidden" name="shopping_order_id" value="<?php echo $order_detail['shopping_order_id']?>">
+    <input type="hidden" name="shopping_order_id" value="<?php echo $order_detail['receipt']?>">
   </form>
 
 </body>
-
+<!-- <script type='text/javascript'>
+      document.razor.submit();
+</script> -->
 </html>

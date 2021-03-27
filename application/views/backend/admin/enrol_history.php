@@ -62,7 +62,13 @@
                                         
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
-                                      <td><span class="badge badge-primary"><?php echo $enrol['is_training'] == 1? get_phrase('Admission'):get_phrase('Non Admission'); ?></span></td>
+                                      <td>
+                                        <?php if($user_data['process_mode'] == 'online'):?>
+                                            <span class="badge badge-primary"><?=get_phrase('online')?></span>  
+                                        <?php else:?>
+                                          <span class="badge badge-primary"><?php echo $enrol['is_training'] == 1? get_phrase('Admission'):get_phrase('Non Admission'); ?></span>
+                                        <?php endif;?>
+                                      </td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
                                       <td><?=$enrol['final_price']?></td>
                                       <td><?=$enrol['total_payment']??'N/A'?></td>
@@ -71,7 +77,7 @@
                                       <?php elseif($enrol['amount_due'] == 0 && $enrol['total_payment']==$enrol['final_price']):?>
                                         <td><span class="badge badge-info"><?=get_phrase('payment_completed')?></span></td>
                                       <?php else:?>
-                                        <td><span class="badge badge-danger"><?=get_phrase('payment_pending')?></span></td>
+                                        <td><span class="badge badge-danger"><?=get_phrase('payment_pending') . $enrol['total_payment'] . ' - '. $enrol['final_price']?></span></td>
                                       <?php endif;?>
                                       <td><span class="badge badge-info"><?=get_phrase($enrol['enrol_status'])?></span></td>
                                       <td>

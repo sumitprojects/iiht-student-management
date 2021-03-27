@@ -640,15 +640,17 @@ class Crud_model extends CI_Model
 
     public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "")
     {
-        $this->db->select('en.*,IFNULL(SUM(py.amount),0) total_payment,en.final_price - sum(py.amount) as amount_due');
+        $this->db->select('en.id,en.user_id, en.course_id, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
         $this->db->from('enrol as en');
         $this->db->join('payment as py','py.enrol_id = en.id','left');        
         $this->db->where('en.date_added >=', $timestamp_start);
         $this->db->where('en.date_added <=', $timestamp_end);
         // $this->db->where('py.payment_status','paid');
-        $this->db->group_by('en.id,py.enrol_id');
+        $this->db->group_by('en.id');
         $this->db->order_by('en.date_added', 'desc');
 
+        // echo $this->db->get_compiled_select();
+        // die;
         return $this->db->get();
     }
 
@@ -2174,6 +2176,10 @@ class Crud_model extends CI_Model
         foreach ($purchased_courses as $purchased_course) {
             $data['user_id'] = $user_id;
             $data['course_id'] = $purchased_course;
+            $course = $this->db->get_where('course', ['id'=>$data['course_id']]);
+            if(!empty($course)){
+                $data['final_price'] = ($course['discounted_price'] > 0 )? $course['discounted_price']:$course['price']; 
+            }
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $exp_days = $this->get_course_expiry_days($purchased_course);
             $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
@@ -2348,6 +2354,7 @@ class Crud_model extends CI_Model
             $data['user_id'] = $user_id;
             $data['payment_type'] = $method;
             $data['course_id'] = $purchased_course;
+            $enrol = $this->db->get_where('enrol',['user_id'=>$data['user_id'], 'course_id' => $data['course_id'], 'final_price' => $amount_paid])->order_by('date_added desc')->row_array();
             $course_details = $this->get_course_by_id($purchased_course)->row_array();
             if ($course_details['discount_flag'] == 1) {
                 $data['amount'] = $course_details['discounted_price'];

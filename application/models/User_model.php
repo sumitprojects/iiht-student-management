@@ -407,7 +407,11 @@ class User_model extends CI_Model {
         if ($user_id == "") {
             $user_id = $this->session->userdata('user_id');
         }
-        return $this->db->get_where('enrol', array('user_id' => $user_id));
+        $this->db->select('e.*, p.payment_status');
+        $this->db->from('enrol as e');
+        $this->db->join('payment as p','p.enrol_id = e.id','left');
+        $this->db->where('e.user_id', $user_id);
+        return $this->db->get();
     }
 
     public function upload_user_image($image_code) {

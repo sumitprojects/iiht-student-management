@@ -3,6 +3,9 @@ $my_courses = $this->user_model->my_courses()->result_array();
 $banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
 $my_courses_banner = $banners['my_courses_banner'];
 ?>
+<style>
+.box_grid ul li:last-child{float:none};
+</style>
 <section id="hero_in" class="courses">
 	<div class="banner-img" style="background: url(<?php echo base_url($my_courses_banner); ?>) center center no-repeat;"></div>
 	<div class="wrapper">
@@ -104,7 +107,9 @@ $my_courses_banner = $banners['my_courses_banner'];
 				</div>
 				<ul>
 					<li><a href="<?php echo site_url('home/course/'.slugify($course_details['title']).'/'.$my_course['course_id']); ?>"><?php echo get_phrase('course_detail'); ?></a></li>
+					<?php if($my_course['payment_status'] == 'paid'):?>
 					<li><a href="<?php echo site_url('home/lesson/'.slugify($course_details['title']).'/'.$my_course['course_id']); ?>"><?php echo get_phrase('start_lesson'); ?></a></li>
+					<?php endif;?>
 				</ul>
 			</div>
 		</div>
