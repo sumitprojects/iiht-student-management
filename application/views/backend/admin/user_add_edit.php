@@ -1,8 +1,6 @@
 <?php 
-
 $user = !empty($user)?$user:null;
-
-
+$permission = !empty($permission)?$permission:null;
 
 ?>
 
@@ -23,7 +21,8 @@ $user = !empty($user)?$user:null;
             <div class="card-body">
                 <h4 class="header-title mb-3"><?php echo get_phrase('save_system_user'); ?></h4>
                 <form class="required-form needs-validation" novalidate
-                    action="<?php echo site_url('admin/system_user/add_edit'); ?>" enctype="multipart/form-data" method="post">
+                    action="<?php echo site_url('admin/system_user/add_edit'); ?>" enctype="multipart/form-data"
+                    method="post">
                     <?php if(!empty($user)):?>
                     <input type="hidden" name="id" value="<?=$user['id']?>">
                     <?php endif;?>
@@ -40,6 +39,12 @@ $user = !empty($user)?$user:null;
                                     <i class="mdi mdi-lock mr-1"></i>
                                     <span
                                         class="d-none d-sm-inline"><?php echo get_phrase('login_credentials'); ?></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#permission" data-toggle="tab" class="nav-link rounded-0 pt-2 pb-2">
+                                    <i class="mdi mdi-lock mr-1"></i>
+                                    <span class="d-none d-sm-inline"><?php echo get_phrase('permission'); ?></span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -65,8 +70,9 @@ $user = !empty($user)?$user:null;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0" id="first_name"
-                                                    name="first_name" value="<?=!empty($user)?$user['first_name']:set_value('first_name')?>" autofocus
-                                                    required>
+                                                    name="first_name"
+                                                    value="<?=!empty($user)?$user['first_name']:set_value('first_name')?>"
+                                                    autofocus required>
                                                 <small><?php echo get_phrase("required_for_user"); ?></small>
                                             </div>
                                         </div>
@@ -76,7 +82,9 @@ $user = !empty($user)?$user:null;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0" id="last_name"
-                                                    name="last_name" value="<?=!empty($user)?$user['last_name']:set_value('last_name')?>" required>
+                                                    name="last_name"
+                                                    value="<?=!empty($user)?$user['last_name']:set_value('last_name')?>"
+                                                    required>
                                                 <small><?php echo get_phrase("required_for_user"); ?></small>
                                             </div>
                                         </div>
@@ -86,7 +94,8 @@ $user = !empty($user)?$user:null;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0"
-                                                    value="<?=!empty($user)?$user['mob_no']:set_value('mob_no')?>" id="mob_no" name="mob_no" required>
+                                                    value="<?=!empty($user)?$user['mob_no']:set_value('mob_no')?>"
+                                                    id="mob_no" name="mob_no" required>
                                                 <small><?php echo get_phrase("required_for_user"); ?></small>
                                             </div>
                                         </div>
@@ -95,7 +104,8 @@ $user = !empty($user)?$user:null;
                                                 for="alt_mob"><?php echo get_phrase('alt_mob'); ?></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" tabindex="0"
-                                                value="<?=!empty($user)?$user['alt_mob']:set_value('alt_mob')?>" id="alt_mob" name="alt_mob">
+                                                    value="<?=!empty($user)?$user['alt_mob']:set_value('alt_mob')?>"
+                                                    id="alt_mob" name="alt_mob">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -152,8 +162,9 @@ $user = !empty($user)?$user:null;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="email" id="email" name="email" class="form-control"
-                                                    tabindex="0" value="<?=!empty($user)?$user['email']:set_value('email')?>">
-                                                    <small><?php echo get_phrase("required_for_user"); ?></small>
+                                                    tabindex="0"
+                                                    value="<?=!empty($user)?$user['email']:set_value('email')?>">
+                                                <small><?php echo get_phrase("required_for_user"); ?></small>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -163,8 +174,41 @@ $user = !empty($user)?$user:null;
                                             <div class="col-md-9">
                                                 <input type="text" id="password" name="password" class="form-control"
                                                     tabindex="0" value="<?=substr(uniqid(),0,4)?>" required>
-                                                    <small><?php echo get_phrase("required_for_user"); ?></small>
+                                                <small><?php echo get_phrase("required_for_user"); ?></small>
                                             </div>
+                                        </div>
+                                    </div> <!-- end col -->
+                                </div> <!-- end row -->
+                            </div>
+                            <div class="tab-pane" id="permission">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-centered mb-4">
+                                                <thead>
+                                                    <th><?=get_phrase('permissions')?></th>
+                                                    <th><?=get_phrase('access')?></th>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach($permission as $key => $p): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <?= $p['definition']; ?>
+                                                        </td>
+                                                        <td>
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" class="custom-control-input"
+                                                                    id="<?= $p['name'].'_'.$key ?>" name="permissions[]"
+                                                                    value="<?= $p['id'] ?>"
+                                                                    <?=isset($user_permission) && in_array($p['id'],$user_permission)?'checked': ""?>>
+                                                                <label class="custom-control-label"
+                                                                    for="<?= $p['name'].'_'.$key ?>"></label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <?php endforeach ?>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->

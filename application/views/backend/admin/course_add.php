@@ -93,8 +93,8 @@
                                                         <label class="col-md-2 col-form-label" for="course_type"><?php echo get_phrase('course_type'); ?></label>
                                                         <div class="col-md-10">
                                                             <select class="form-control select2" data-toggle="select2" name="course_type" id="course_type">
-                                                                <option value="general"><?php echo get_phrase('general'); ?></option>
-                                                                <option value="training"><?php echo get_phrase('training'); ?></option>
+                                                                <option value="general"><?php echo get_phrase('admission_course'); ?></option>
+                                                                <option value="training"><?php echo get_phrase('non_admission_course'); ?></option>
                                                             </select>
                                                         </div>
                                                     </div>

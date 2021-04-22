@@ -245,6 +245,9 @@
                                                     target="_blank"><?php echo get_phrase('view_course_on_frontend');?></a>
                                             </li>
                                             <li><a class="dropdown-item"
+                                                href="<?php echo site_url('admin/manage_examination/examination_add_edit/'.$course['id']); ?>"><?php echo get_phrase('add_course_id');?></a>
+                                            </li>
+                                            <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/course_form/course_edit/'.$course['id']); ?>"><?php echo get_phrase('edit_this_course');?></a>
                                             </li>
                                             <?php if($course['course_type'] != 'scorm'): ?>

@@ -16,6 +16,7 @@ class User_model extends CI_Model {
         return $this->db->get_where('users', array('role_id' => 1));
     }
 
+    
     public function get_user($user_id = 0) {
         if ($user_id > 0) {
             $this->db->where('id', $user_id);
@@ -25,6 +26,19 @@ class User_model extends CI_Model {
         $this->db->where('is_delete',0);
         return $this->db->get('users');
     }
+    public function get_asset($asset_id = 0) {
+        if ($asset_id > 0) {
+            $this->db->where('id', $asset_id);
+        }
+        return $this->db->get('assets');
+    }
+    public function get_course($course_id = 0) {
+        if ($course_id > 0) {
+            $this->db->where('id', $course_id);
+        }
+        return $this->db->get('course');
+    }
+    
 
     public function delete_system_user($user_id = 0){
         $this->db->where('id', $user_id);
@@ -79,10 +93,12 @@ class User_model extends CI_Model {
     }
 
     public function add_edit_user($user_id = 0){
-        if($this->input->post('email')){
-            $validity = $this->check_duplication('on_create', $this->input->post('email'));
+        if($user_id > 0){
+            $validity = $this->check_duplication('on_update', $this->input->post('email'), $user_id);
+            // var_dump($user_id);
         }else{
-            $validity = true;
+            $validity = $this->check_duplication('on_create', $this->input->post('email'));
+            // var_dump($user_id);
         }
         if ($validity == false) {
             $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
@@ -102,8 +118,6 @@ class User_model extends CI_Model {
             $data['wishlist'] = json_encode(array());
             $data['watch_history'] = json_encode(array());
 
-
-            
             /***
             * Address Detail
             */
@@ -144,8 +158,11 @@ class User_model extends CI_Model {
             if($id > 0){
                 $this->db->where('id',$id);
                 $this->db->update('users', $data);
+                $this->add_permission($id);
             }else{
                 $this->db->insert('users', $data);
+                $id = $this->db->insert_id();
+                $this->add_permission($id);
             }
 
             $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
@@ -156,6 +173,7 @@ class User_model extends CI_Model {
 
     public function add_user($is_instructor = false) {
         $validity = $this->check_duplication('on_create', $this->input->post('email'));
+        
         if ($validity == false) {
             $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
         }else {
@@ -173,7 +191,7 @@ class User_model extends CI_Model {
             $data['date_added'] = strtotime(date("Y-m-d H:i:s"));
             $data['wishlist'] = json_encode(array());
             $data['watch_history'] = json_encode(array());
-            
+            $data['comp_knowledge'] = $this->input->post('comp_knowledge');
 
             $data['mob_no'] = html_escape($this->input->post('mob_no'));
             $data['alt_mob'] = html_escape($this->input->post('alt_mob'));
@@ -181,6 +199,7 @@ class User_model extends CI_Model {
             /***
             * Address Detail
             */
+            $data['source_id'] = html_escape($this->input->post('source_id'));
             
             $data['en_id'] = html_escape($this->input->post('en_id'));
             $data['dob'] = html_escape($this->input->post('dob'));
@@ -227,8 +246,12 @@ class User_model extends CI_Model {
             $enrol['course_id'] = html_escape($this->input->post('course_id'));
             $enrol['price'] = $this->input->post('price');
             $enrol['is_training'] = $this->input->post('is_training') == 1? 1 : 0;
+            $enrol['hod_id'] = html_escape($this->input->post('hod_id'));
+            $enrol['training_cat_id'] = html_escape($this->input->post('training_cat_id'));
             if(empty($data['en_id'])){
                 $enrol['status'] = 'active';
+            }else{
+                $enrol['status'] = 'pending';
             }
             $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price'],$enrol['is_training'],$enrol['status']);
             $this->upload_user_image($data['image']);
@@ -473,6 +496,50 @@ class User_model extends CI_Model {
         }else{
             return $this->db->get_where('users', array('is_instructor' => 1));
         }
+    }
+    public function get_permission($id = 0) {
+        if ($id > 0) {
+            return $this->db->get_where('permission', array('id' => $id));
+        }else{
+            return $this->db->get('permission');
+        }
+    }
+    public function get_message($course_id = 0) {
+        if ($course_id > 0) {
+            $this->db->where('id', $course_id);
+        }
+        return $this->db->get('manage_sms');
+    }
+    public function get_email($course_id = 0) {
+        if ($course_id > 0) {
+            $this->db->where('id', $course_id);
+        }
+        return $this->db->get('manage_email');
+    }
+    public function user_permission($user_id){
+        $this->db->select('pm_id,permission.name');
+        $this->db->from('perm_user');
+        $this->db->join('permission','perm_user.pm_id = permission.id','inner');
+
+        if($user_id > 0){
+            $this->db->where('perm_user.user_id',$user_id);
+        }
+        return $this->db->get();
+    }
+
+    public  function add_permission($user_id){
+        $permission = $_POST['permissions'];
+        if(is_array($permission)){
+            $this->db->where('user_id', $user_id);
+            $this->db->delete('perm_user');
+
+            foreach ($permission as $p) { 
+                $perm['user_id'] = $user_id;
+                $perm['pm_id'] = $p;
+                $this->db->insert('perm_user',$perm);
+            }
+        }
+
     }
 
     public function get_number_of_active_courses_of_instructor($instructor_id) {

@@ -15,6 +15,401 @@ class Crud_model extends CI_Model
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
     }
+     /*****
+     * Attendance Crud Model
+     */
+    public function get_attendance($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('attendance');
+    }
+    public function add_attendance()
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['entry_date']   = strtoupper(html_escape($this->input->post('entry_date')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
+        $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
+        // CHECK IF THE Student NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $previous_data = $this->db->get('attendance')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('attendance', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_attendance($param1 = "")
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['entry_date']   = strtoupper(html_escape($this->input->post('entry_date')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
+        $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE attendance NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('attendance')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('attendance', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_attendance($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('attendance', $data);
+        return true;
+    }
+
+    public function activate_attendance($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('attendance', $data);
+        return true;
+    }
+      /*****
+     * Manage Leave Crud Model
+     */
+    public function get_leave($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('manage_leave');
+    }
+    public function add_leave()
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['start_date']   = strtoupper(html_escape($this->input->post('start_date')));
+        $data['end_date']   = strtoupper(html_escape($this->input->post('end_date')));
+        $data['reason']   = strtoupper(html_escape($this->input->post('reason')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
+        $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
+        // CHECK IF THE Student NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $previous_data = $this->db->get('manage_leave')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('manage_leave', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_leave($param1 = "")
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['start_date']   = strtoupper(html_escape($this->input->post('start_date')));
+        $data['end_date']   = strtoupper(html_escape($this->input->post('end_date')));
+        $data['reason']   = strtoupper(html_escape($this->input->post('reason')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
+        $data['att_status'] = (html_escape($this->input->post('att_status')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE  NAME ALREADY EXIST
+        if($data['att_status'] == 'approve'){
+            $begin = new DateTime(date('Y-m-d',strtotime($data['start_date'])));
+            $end = new DateTime(date('Y-m-d',strtotime($data['end_date'])));
+
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($begin, $interval, $end);
+
+            foreach ($period as $dt) {
+                $att['user_id'] = $data['user_id'];
+                $att['entry_date'] = $dt->format("Y-m-d");
+                $att['att_status'] = 'leave';
+                $att['remark'] = $data['remark'];
+                $att['added_by'] = $this->session->userdata('user_id');
+                $this->db->insert('attendance',$att);
+            }
+        }
+        $this->db->where('id', $id);
+        $this->db->update('manage_leave', $data);
+        return true;
+    }
+    public function delete_leave($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('manage_leave', $data);
+        return true;
+    }
+
+    public function activate_leave($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('manage_leave', $data);
+        return true;
+    }
+        /*****
+     * assets Crud Model
+     */
+    public function get_assets($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('assets');
+    }
+    public function add_assets()
+    {
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
+        $data['description']   = strtoupper(html_escape($this->input->post('description')));
+
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('assets')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('assets', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_assets($param1 = "")
+    {
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
+        $data['description']   = strtoupper(html_escape($this->input->post('description')));
+        
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('assets')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('assets', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_assets($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('assets', $data);
+        return true;
+    }
+
+    public function activate_assets($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('assets', $data);
+        return true;
+    }
+    
+  /*****
+     * assets Crud Model
+     */
+    public function get_asset_for_users($param1 = ""){
+        $this->db->select('af.*, users.id as uid, assets.name, assets.returnable ,upper(concat(users.first_name," ",last_name)) as full_name');
+        $this->db->from('asset_for_users as af');
+        $this->db->join('assets','assets.id = af.asset_id');
+        $this->db->join('users', 'users.id = af.user_id');
+        
+        if ($param1 != "") {
+            $this->db->where('af.id', $param1);
+        }
+        return $this->db->get();
+    }
+    public function add_asset_for_users()
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
+        
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $previous_data = $this->db->get('asset_for_users')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('asset_for_users', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_asset_for_users($param1 = "")
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
+        $data['return_date']   = $this->input->post('return_date');
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('asset_for_users')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('asset_for_users', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_asset_for_users($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('asset_for_users', $data);
+        return true;
+    }
+
+    
+
+        /*****
+     * training_cat Crud Model
+     */
+    public function get_training_cat($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('training_cat');
+    }
+
+    public function add_training_cat()
+    {
+        $data['title']   = strtoupper(html_escape($this->input->post('title')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('title', $data['title']);
+        $previous_data = $this->db->get('training_cat')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('training_cat', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_training_cat($param1 = "")
+    {
+        $data['title']   = strtoupper(html_escape($this->input->post('title')));
+        $source_id   = html_escape($this->input->post('id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('title', $data['title']);
+        $this->db->where('id !=', $source_id);
+        $previous_data = $this->db->get('training_cat')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $source_id);
+            $this->db->update('training_cat', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_training_cat($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('training_cat', $data);
+        return true;
+    }
+
+    public function activate_training_cat($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('training_cat', $data);
+        return true;
+    }
+
+    /**
+     * training_cat Crud End
+     */
+
+
+     /***
+      * placement crud
+      */
+
+      public function get_placements($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('placement');
+    }
+
+    public function add_placement()
+    {
+        $data['type']   = strtoupper(html_escape($this->input->post('type')));
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['department']   = strtoupper(html_escape($this->input->post('department')));
+        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
+        $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
+        $data['tentative_date']   = strtoupper(html_escape($this->input->post('tentative_date')));
+        $data['tentative_salary']   = strtoupper(html_escape($this->input->post('tentative_salary')));
+        $data['placement_date']   = strtoupper(html_escape($this->input->post('placement_date')));
+        $data['hod_id']   = strtoupper(html_escape($this->input->post('hod_id')));
+        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $previous_data = $this->db->get('placement')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('placement', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_placement($param1 = "")
+    {
+        $data['type']   = strtoupper(html_escape($this->input->post('type')));
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['department']   = strtoupper(html_escape($this->input->post('department')));
+        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
+        $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
+        $data['tentative_date']   = strtoupper(html_escape($this->input->post('tentative_date')));
+        $data['tentative_salary']   = strtoupper(html_escape($this->input->post('tentative_salary')));
+        $data['placement_date']   = strtoupper(html_escape($this->input->post('placement_date')));
+        $data['hod']   = strtoupper(html_escape($this->input->post('hod')));
+        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('placement')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('placement', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_placement($param1 = "")
+    {
+        $data['status']   = 'left';
+        $this->db->where('id', $param1);
+        $this->db->update('placement', $data);
+        return true;
+    }
+
+    public function activate_placement($param1 = "")
+    {
+        $data['status']   = 'placed';
+        $this->db->where('id', $param1);
+        $this->db->update('placement', $data);
+        return true;
+    }
 
     public function get_categories($param1 = "")
     {
@@ -24,6 +419,139 @@ class Crud_model extends CI_Model
         $this->db->where('parent', 0);
         return $this->db->get('category');
     }
+
+      /*****
+     * SMS Crud Model
+     */
+    public function get_sms($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('manage_sms');
+    }
+    public function add_sms()
+    {
+      
+        $data['sms_template']   = strtoupper(html_escape($this->input->post('sms_template')));
+        $data['type']   = slugify(html_escape($this->input->post('type')));
+        $data['slug']   = slugify(html_escape($this->input->post('type')));
+        // CHECK IF THE Student NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('manage_sms')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('manage_sms', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_sms($param1 = "")
+    {
+        $data['sms_template']   = strtoupper(html_escape($this->input->post('sms_template')));
+        $data['type']   = slugify(html_escape($this->input->post('type')));
+        $data['slug']   = slugify(html_escape($this->input->post('type')));
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE attendance NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('manage_sms')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('manage_sms', $data);
+            return true;
+        }
+        return false;
+    }
+    
+    /*****
+     * EMAIL Crud Model
+     */
+    public function get_email($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('manage_email');
+    }
+    public function add_email()
+    {
+        
+        $data['email_template']   = strtoupper(html_escape($this->input->post('email_template')));
+        $data['type']   = strtoupper(html_escape($this->input->post('type')));
+        $data['slug']   = slugify(html_escape($this->input->post('type')));
+        
+        // CHECK IF THE Student NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('manage_email')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('manage_email', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_email($param1 = "")
+    {
+        $data['email_template']   = strtoupper(html_escape($this->input->post('email_template')));
+        $data['type']   = strtoupper(html_escape($this->input->post('type')));
+        $data['slug']   = slugify(html_escape($this->input->post('type')));
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE attendance NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('manage_email')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('manage_email', $data);
+            return true;
+        }
+        return false;
+    }
+
+/*****
+     * Exam Schedule Crud Model
+     */
+    public function get_schedule($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('examination_schedule');
+    }
+    public function add_schedule()
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['course_id']   = strtoupper(html_escape($this->input->post('course_id')));
+        $data['exam_date']   = strtoupper(html_escape($this->input->post('exam_date')));
+        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));	
+        // CHECK IF THE Student NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $previous_data = $this->db->get('examination_schedule')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('examination_schedule', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_schedule($param1 = "")
+    {
+        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['course_id']   = strtoupper(html_escape($this->input->post('course_id')));
+        $data['exam_date']   = strtoupper(html_escape($this->input->post('exam_date')));
+        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));	
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE attendance NAME ALREADY EXISTS
+        $this->db->where('user_id', $data['user_id']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('examination_schedule')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('examination_schedule', $data);
+            return true;
+        }
+        return false;
+    }
+
 
     /*****
      * Branch Crud Model
@@ -309,9 +837,24 @@ class Crud_model extends CI_Model
         return false;
     }
 
+
+    public function get_pending_admission(){
+        $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
+                 ->from('enquiry as en')
+                 ->join('course as c','c.id = en.course_id')
+                 ->join('sources as s','s.source_id = en.source_id')
+                 ->join('branch as b','b.branch_id = en.branch_id')
+                 ->join('users as u','u.id = en.user_id','left');
+        $this->db->where('u.en_id IS NULL',NULL,true);
+        $this->db->or_where('u.en_id',0);
+        $this->db->where('en.en_status','completed');
+        return $this->db->get();
+    }
+
     public function complete_inquiry($param1 = ""){
         $this->db->set(['en_status'=>'completed']);
         $this->db->where('en_id', $param1);
+        $this->db->where('is_delete', 0);
         return $this->db->update('enquiry');
     }
 
@@ -331,11 +874,12 @@ class Crud_model extends CI_Model
         $this->db->where('is_delete', 1);
         $this->db->update('enquiry', $data);
         return true;
-    }
+    }    
 
     /**
      * inquiry Crud End
      */
+
     /*****
      * Source Crud Model
      */
@@ -995,7 +1539,7 @@ class Crud_model extends CI_Model
 
         $data['course_type'] = html_escape($this->input->post('course_type'));
         $data['code'] = html_escape($this->input->post('code'));
-        $data['title'] = html_escape($this->input->post('title'));
+        $data['title'] = strtoupper(html_escape($this->input->post('title')));
         $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
         $data['short_description'] = html_escape($this->input->post('short_description'));
         $data['description'] = $this->input->post('description');
@@ -2797,6 +3341,89 @@ class Crud_model extends CI_Model
         $this->db->where('id', $lesson_id);
         $this->db->update('lesson', $data);
     }
+    //Get Examination Qusetion Form
+
+    public function get_examination($quiz_id = 0, $course_id = 0)
+    {
+        $this->db->order_by("order", "asc");
+        if($quiz_id > 0){
+            $this->db->where('quiz_id',$quiz_id);
+        }
+        if($course_id > 0){
+            $this->db->where('course_id',$course_id);
+        }
+        return $this->db->get('question');
+    }
+    
+    public function add_qusetion_examination($quiz_id)
+    {
+        $question_type = $this->input->post('type');
+        if ($question_type == 'multiple_choice') {
+            $response = $this->add_examination($quiz_id);
+            return $response;
+        }
+    }
+
+    
+    //crud Examination
+    function add_examination($quiz_id)
+    {
+        if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+            return false;
+        }
+        foreach ($this->input->post('options') as $option) {
+            if ($option == "") {
+                return false;
+            }
+        }
+        if (sizeof($this->input->post('correct_answers')) == 0) {
+            $correct_answers = [""];
+        } else {
+            $correct_answers = $this->input->post('correct_answers');
+        }
+        $data['quiz_id']            = $quiz_id;
+        $data['course_id']            = html_escape($this->input->post('course_id'));
+        $data['title']              = html_escape($this->input->post('title'));
+        $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+        $data['type']               = html_escape($this->input->post('type'));
+        $data['options']            = json_encode($this->input->post('options'));
+        $data['correct_answers']    = json_encode($correct_answers);
+        $data['marks']  = html_escape($this->input->post('marks'));
+        $this->db->insert('question', $data);
+        return true;
+    }
+    function edit_examination($question_id)
+    {
+        if($this->input->post('type') == 'mcq'){
+            if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
+                return false;
+            }
+            foreach ($this->input->post('options') as $option) {
+                if ($option == "") {
+                    return false;
+                }
+            }
+    
+            if (sizeof($this->input->post('correct_answers')) == 0) {
+                $correct_answers = [""];
+            } else {
+                $correct_answers = $this->input->post('correct_answers');
+            }
+            $data['options']            = json_encode($this->input->post('options'));
+            $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
+            $data['correct_answers']    = json_encode($correct_answers);
+        }
+
+
+        $data['quiz_id']            = '0';
+        $data['course_id']            = html_escape($this->input->post('course_id'));
+        $data['title']              = html_escape($this->input->post('title'));
+        $data['type']               =  html_escape($this->input->post('type'));
+        $data['marks']  = html_escape($this->input->post('marks'));
+        $this->db->where('id', $question_id);
+        $this->db->update('question', $data);
+        return true;
+    }
 
     // Get quiz questions
     public function get_quiz_questions($quiz_id)
@@ -2850,7 +3477,7 @@ class Crud_model extends CI_Model
         $data['quiz_id']            = $quiz_id;
         $data['title']              = html_escape($this->input->post('title'));
         $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
-        $data['type']               = 'multiple_choice';
+        $data['type']               = html_escape($this->input->post('type'));
         $data['options']            = json_encode($this->input->post('options'));
         $data['correct_answers']    = json_encode($correct_answers);
         $this->db->insert('question', $data);

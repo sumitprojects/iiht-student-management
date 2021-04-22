@@ -49,7 +49,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/system_user/add_edit_user/'.$user['id']) ?>"><?php echo get_phrase('edit'); ?></a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/users/delete/'.$user['id']); ?>');"><?php echo get_phrase('delete'); ?></a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/system_user/delete/'.$user['id']); ?>');"><?php echo get_phrase('delete'); ?></a></li>
                                     </ul>
                                 </div>
                               </td>

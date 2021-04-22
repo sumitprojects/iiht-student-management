@@ -46,14 +46,22 @@ class Login extends CI_Controller {
 
         if ($query->num_rows() > 0) {
             $row = $query->row();
+            $permission = $this->user_model->user_permission($row->id)->result_array();
             $this->session->set_userdata('user_id', $row->id);
             $this->session->set_userdata('role_id', $row->role_id);
-            $this->session->set_userdata('role', get_user_role('user_role', $row->id));
+
+            if(get_user_role('user_role', $row->id) != 'admin' && get_user_role('user_role', $row->id) != 'user' ){
+                $this->session->set_userdata('role', 'admin');
+            }else{
+                $this->session->set_userdata('role', get_user_role('user_role', $row->id));
+            }
             $this->session->set_userdata('name', $row->first_name.' '.$row->last_name);
             $this->session->set_userdata('is_instructor', $row->is_instructor);
             $this->session->set_flashdata('flash_message', get_phrase('welcome').' '.$row->first_name.' '.$row->last_name);
-            if ($row->role_id == 1) {
+            if ($row->role_id != 2) {
                 $this->session->set_userdata('admin_login', '1');
+                $permission = !empty($permission) ? array_column($permission,'name') : $permission;
+                $this->session->set_userdata('permission',$permission);
                 redirect(site_url('admin/dashboard'), 'refresh');
             }else if($row->role_id == 2){
                 $this->session->set_userdata('user_login', '1');

@@ -265,6 +265,28 @@
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
+                                        <div class="form-group row mb-3">
+                                            <label for="source_id" class="col-md-3 col-form-label"><?php echo get_phrase('inquiry_source'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2" required data-toggle="select2"
+                                                    name="source_id" data-init-plugin="select2" id="source_id">
+                                                    <?php foreach($sources as $key => $val):?>
+                                                    <option value="<?=$val['source_id']?>">
+                                                        <?php echo $val['source_name']; ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    <?=get_phrase('please_provide_a_valid_source')?></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label
+                                                for="source_other"><?php echo get_phrase('reference_or_other'); ?><span
+                                                    class="required">*</span></label>
+                                            <input type="text" class="form-control" id="source_other" value="<?=$user_data['source_other']?>"
+                                                name="source_other">
+                                        </div>
                                         <?php endif; ?>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
@@ -362,13 +384,33 @@ jQuery(document).ready(function() {
             $('[name="permanent_address"]').val();
         }
     });
-    <?php if(!empty($enquiry)):?>
+
+    jQuery('#source_id').trigger('change');
+    if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
+        jQuery('#source_other').removeAttr('disabled');
+        jQuery('#source_other').attr('required');
+    } else {
+        jQuery('#source_other').attr('disabled','true');
+    }
+    jQuery('#source_id').on('change', function() {
+        console.log($(this).val());
+        if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
+            jQuery('#source_other').removeAttr('disabled');
+            jQuery('#source_other').attr('required');
+        } else {
+            jQuery('#source_other').attr('disabled','true');
+        }
+    });
+
+    <?php if(!empty($user_data)):?>
     jQuery('#branch_id').val(<?=$user_data['branch_id']?>);
     jQuery('#branch_id').trigger('change');
     jQuery('#marital_status').val(<?=$user_data['marital_status']?>);
     jQuery('#marital_status').trigger('change');
     jQuery('#education_detail').val(<?=$user_data['education_detail']?>);
     jQuery('#education_detail').trigger('change');
+    jQuery('#source_id').val(<?=$user_data['source_id']?>);
+    jQuery('#source_id').trigger('change');
     <?php endif;?>
 });
 

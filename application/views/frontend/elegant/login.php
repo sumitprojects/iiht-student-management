@@ -9,9 +9,9 @@ $login_banner = $banners['login_banner'];
   <form action="<?php echo site_url('login/validate_login/user'); ?>" method="post">
     <div class="form-group">
       <span class="input">
-        <input class="input_field" type="email" autocomplete="off" name="email" required>
+        <input class="input_field" type="text" autocomplete="off" name="email" required>
         <label class="input_label">
-          <span class="input__label-content"><?php echo get_phrase('your_email'); ?></span>
+          <span class="input__label-content"><?php echo get_phrase('your_email_or_phone'); ?></span>
         </label>
       </span>
 

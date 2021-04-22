@@ -66,3 +66,5 @@ $route['home/bundle_invoice/(:any)']  						= "addons/course_bundles/invoice/$1"
 //end course bundles
 
 $route['translate_uri_dashes'] = FALSE;
+$route['courses'] = "home/courses";
+$route['courses/(:any)'] = "home/courses/$1";
