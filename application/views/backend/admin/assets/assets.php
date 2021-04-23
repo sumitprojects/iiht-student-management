@@ -27,8 +27,8 @@
                             <tr>
                                 <th>#</th>
                                 <th><?php echo get_phrase('name'); ?></th>
-                               
                                 <th><?php echo get_phrase('description'); ?></th>
+                                <th><?php echo get_phrase('returnable'); ?></th>
                                 <th><?php echo get_phrase('status'); ?></th>
                                 <th><?php echo get_phrase('actions'); ?></th>
                             </tr>
@@ -40,9 +40,11 @@
                                 <td>
                                     <strong><?php echo ellipsis($br['name']); ?></strong><br>
                                 </td>
-                                
                                 <td>
                                     <strong><?php echo ellipsis($br['description']); ?></strong><br>
+                                </td>
+                                <td>
+                                    <strong class="badge badge-info-lighten"><?php echo ellipsis($br['returnable'] == 1? 'Returnable':'Non-Returnable'); ?></strong><br>
                                 </td>
                                 <td>
                                     <?php if ($br['status'] == 0): ?>

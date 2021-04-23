@@ -233,7 +233,8 @@ class Crud_model extends CI_Model
     {
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
-        
+        $data['return_date']   = $this->input->post('return_date');
+
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
         $previous_data = $this->db->get('asset_for_users')->num_rows();
@@ -250,6 +251,7 @@ class Crud_model extends CI_Model
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
         $data['return_date']   = $this->input->post('return_date');
+
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);

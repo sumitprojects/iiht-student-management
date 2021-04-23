@@ -30,6 +30,7 @@ class User_model extends CI_Model {
         if ($asset_id > 0) {
             $this->db->where('id', $asset_id);
         }
+        
         return $this->db->get('assets');
     }
     public function get_course($course_id = 0) {
@@ -118,6 +119,8 @@ class User_model extends CI_Model {
             $data['wishlist'] = json_encode(array());
             $data['watch_history'] = json_encode(array());
 
+
+            
             /***
             * Address Detail
             */
@@ -173,7 +176,6 @@ class User_model extends CI_Model {
 
     public function add_user($is_instructor = false) {
         $validity = $this->check_duplication('on_create', $this->input->post('email'));
-        
         if ($validity == false) {
             $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
         }else {
