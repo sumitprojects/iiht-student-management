@@ -349,6 +349,68 @@ class Crud_model extends CI_Model
      * training_cat Crud End
      */
 
+             /*****
+     * training_type Crud Model
+     */
+    public function get_training_type($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('training_type');
+    }
+
+    public function add_training_type()
+    {
+        $data['title']   = strtoupper(html_escape($this->input->post('title')));
+
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('title', $data['title']);
+        $previous_data = $this->db->get('training_cat')->num_rows();
+        if ($previous_data == 0){
+            $this->db->insert('training_type', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function edit_training_type($param1 = "")
+    {
+        $data['title']   = strtoupper(html_escape($this->input->post('title')));
+        $source_id   = html_escape($this->input->post('id'));
+        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
+        $this->db->where('title', $data['title']);
+        $this->db->where('id !=', $source_id);
+        $previous_data = $this->db->get('training_cat')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $source_id);
+            $this->db->update('training_type', $data);
+            return true;
+        }
+        return false;
+    }
+
+    public function delete_training_type($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('training_type', $data);
+        return true;
+    }
+
+    public function activate_training_type($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('training_type', $data);
+        return true;
+    }
+
+    /**
+     * training_cat Crud End
+     */
+
 
      /***
       * placement crud
@@ -859,8 +921,9 @@ class Crud_model extends CI_Model
                  ->join('sources as s','s.source_id = en.source_id')
                  ->join('branch as b','b.branch_id = en.branch_id')
                  ->join('users as u','u.id = en.user_id','left');
-        $this->db->where('u.en_id IS NULL',NULL,true);
+        $this->db->group_start();
         $this->db->or_where('u.en_id',0);
+        $this->db->group_end();
         $this->db->where('en.en_status','completed');
         return $this->db->get();
     }
@@ -2801,7 +2864,7 @@ class Crud_model extends CI_Model
         $data['final_price'] = $price;
         $data['enrol_status'] = $status;
         $data['is_training'] = $training;
-        $data['status'] = $status;
+        $data['enrol_status'] = $status;
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
         if ($check_enrol->num_rows() > 0) {

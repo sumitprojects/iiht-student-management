@@ -171,6 +171,15 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
             </a>
         </li>
         <?php endif; ?>
+
+        <?php if((in_array('training_type', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/training_type'); ?>" class="side-nav-link <?php if($page_name == 'training_type') echo 'active'; ?>">
+                <i class="dripicons-document"></i>
+                <span><?php echo get_phrase('training_type'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
         <?php if (addon_status('course_bundle')): ?>
         <li
             class="side-nav-item <?php if ($page_name == 'add_bundle' || $page_name == 'manage_course_bundle' || $page_name == 'edit_bundle' || $page_name == 'active_bundle_subscription_report' || $page_name == 'expire_bundle_subscription_report' || $page_name == 'bundle_invoice'): ?> active <?php endif; ?>">

@@ -58,8 +58,8 @@
                                         <i class="mdi mdi-dots-vertical"></i>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <!-- <li><a class="dropdown-item" href="<?php echo site_url('admin/user_form/edit_user_form/'.$user['id']) ?>"><?php echo get_phrase('edit'); ?></a></li> -->
-                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/users/view/'.$user['id']) ?>"><?php echo get_phrase('edit'); ?></a></li>
+                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/user_form/edit_user_form/'.$user['id']) ?>"><?php echo get_phrase('edit'); ?></a></li>
+                                        <li><a class="dropdown-item" href="<?php echo site_url('admin/users/view/'.$user['id']) ?>"><?php echo get_phrase('view'); ?></a></li>
                                         <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/users/delete/'.$user['id']); ?>');"><?php echo get_phrase('delete'); ?></a></li>
                                     </ul>
                                 </div>

@@ -349,11 +349,27 @@ $offline = !empty($offline) ? $offline : false;
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
+                                                    for="training_type_id"><?php echo get_phrase('training_type'); ?><span
+                                                        class="required">*</span></label>
+                                                <div class="col-md-10">
+                                                    <select class="form-control select2" data-toggle="select2" required
+                                                        name="training_type_id" id="training_type_id">
+                                                        <option value=""><?php echo get_phrase('select_a_training_type'); ?>
+                                                        </option>
+                                                        <?php foreach ($training_type as $train): ?>
+                                                        <option value="<?php echo $train['id']; ?>">
+                                                            <?php echo $train['title']; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-2 col-form-label"
                                                     for="course_id"><?php echo get_phrase('course_to_enrol'); ?><span
                                                         class="required">*</span></label>
                                                 <div class="col-md-10">
                                                     <select class="form-control select2" data-toggle="select2"
-                                                        name="course_id[]" id="course_id" required multiple>
+                                                        name="course_id" id="course_id" required>
                                                         <option value="">
                                                             <?php echo get_phrase('select_a_course'); ?>
                                                         </option>

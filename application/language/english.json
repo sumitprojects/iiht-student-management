@@ -1396,5 +1396,7 @@
     "enquiry": "Enquiry",
     "invoices": "Invoices",
     "dob": "Dob",
-    "source_other": "Source other"
+    "source_other": "Source other",
+    "training_type": "Training type",
+    "select_a_training_type": "Select a training type"
 }

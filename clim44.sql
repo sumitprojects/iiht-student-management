@@ -856,7 +856,7 @@ CREATE TABLE `enrol` (
   `user_id` int(11) DEFAULT NULL,
   `course_id` int(11) DEFAULT NULL,
   `final_price` double(10,2) NOT NULL DEFAULT '0.00',
-  `dept_id` int(11) DEFAULT NULL,
+  `training_type_id` int(11) DEFAULT NULL,
   `date_added` int(11) DEFAULT NULL,
   `is_training` tinyint(1) NOT NULL DEFAULT '0',
   `expiry_time` int(11) NOT NULL DEFAULT '0',

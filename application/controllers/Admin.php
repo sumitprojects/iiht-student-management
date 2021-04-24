@@ -641,7 +641,7 @@ class Admin extends CI_Controller {
         elseif ($param1 == "delete") {
             $this->crud_model->delete_training_cat($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
-            redirect(site_url('admin/source'), 'refresh');
+            redirect(site_url('admin/training'), 'refresh');
         }else if($param1 == 'activate'){
             $this->crud_model->activate_training_cat($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
@@ -652,6 +652,57 @@ class Admin extends CI_Controller {
         $page_data['source'] = $this->crud_model->get_training_cat($param2)->result_array();
         $this->load->view('backend/index', $page_data);
     }
+
+        //Training Controll
+        public function training_type($param1 = "", $param2 = ""){
+            if ($this->session->userdata('admin_login') != true) {
+                redirect(site_url('login'), 'refresh');
+            }
+    
+            if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+                redirect(site_url('admin/dashboard'), 'refresh');
+            }
+    
+    
+            if($param1 == 'training_type_add_edit'){
+                $page_data['page_name'] = 'training/training_type_add_edit';
+                $page_data['page_title'] = get_phrase('edit_this_category');
+                if($param2 != ""){
+                    $page_data['param2'] = $param2;
+                }
+                $this->load->view('backend/index', $page_data);    
+            }else if ($param1 == 'add') {
+                $response = $this->crud_model->add_training_type();
+                if ($response) {
+                    $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                }else{
+                    $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                }
+                redirect(site_url('admin/training'), 'refresh');
+            }
+            elseif ($param1 == "edit") {
+                $response = $this->crud_model->edit_training_type($param2);
+                if ($response) {
+                    $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                }else{
+                    $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                }
+                redirect(site_url('admin/training_type'), 'refresh');
+            }
+            elseif ($param1 == "delete") {
+                $this->crud_model->delete_training_type($param2);
+                $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+                redirect(site_url('admin/training_type'), 'refresh');
+            }else if($param1 == 'activate'){
+                $this->crud_model->activate_training_type($param2);
+                $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
+                redirect(site_url('admin/training_type'), 'refresh');
+            }
+            $page_data['page_name'] = 'training/training_type';
+            $page_data['page_title'] = get_phrase('training_type');
+            $page_data['source'] = $this->crud_model->get_training_type($param2)->result_array();
+            $this->load->view('backend/index', $page_data);
+        }
 
     public function admission_form($id = 0){
         if ($this->session->userdata('admin_login') != true) {
@@ -1206,7 +1257,7 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
-            $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
+            $page_data['hod'] = $this->crud_model->get_hod()->result_array();
 
             $this->load->view('backend/index', $page_data);
         }
@@ -1219,8 +1270,11 @@ class Admin extends CI_Controller {
             }
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
-            $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
-            $page_data['training'] = $this->crud_model->get_training_cat($param2)->result_array();
+            $page_data['hod'] = $this->crud_model->get_hod()->result_array();
+            $page_data['training'] = $this->crud_model->get_training_cat()->result_array();
+            $page_data['training_type'] = $this->crud_model->get_training_type()->result_array();
+            $page_data['sources'] = $this->crud_model->get_source()->result_array();
+
             $page_data['admission'] = true;
             $this->load->view('backend/index', $page_data);
         }else if($param1 == 'add_edit_from_inquiry_non'){
@@ -1232,8 +1286,10 @@ class Admin extends CI_Controller {
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
-            $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
-            $page_data['training'] = $this->crud_model->get_training_cat($param2)->result_array();
+            $page_data['hod'] = $this->crud_model->get_hod()->result_array();
+            $page_data['training'] = $this->crud_model->get_training_cat()->result_array();
+            $page_data['training_type'] = $this->crud_model->get_training_type()->result_array();
+            $page_data['sources'] = $this->crud_model->get_source()->result_array();
 
             if(!empty($param2)){
                 $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
@@ -1241,13 +1297,14 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);
         }elseif ($param1 == 'edit_user_form') {
             // $page_data['page_name'] = 'user_edit';
-            $page_data['page_name'] = 'admission/edit_user_addmission';
+            $page_data['page_name'] = 'admission/edit_user_admission';
             $page_data['user_id'] = $param2;
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['page_title'] = get_phrase('student_edit');
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
+            
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
             $this->load->view('backend/index', $page_data);
         }

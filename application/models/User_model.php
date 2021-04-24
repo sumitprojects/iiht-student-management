@@ -175,10 +175,10 @@ class User_model extends CI_Model {
 
 
     public function add_user($is_instructor = false) {
-        $validity = $this->check_duplication('on_create', $this->input->post('email'));
-        if ($validity == false) {
-            $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
-        }else {
+        // $validity = $this->check_duplication('on_create', $this->input->post('email'));
+        // if ($validity == false) {
+        //     $this->session->set_flashdata('error_message', get_phrase('email_duplication'));
+        // }else {
             $data['first_name'] = html_escape($this->input->post('first_name'));
             $data['last_name'] = html_escape($this->input->post('last_name'));
           
@@ -251,15 +251,16 @@ class User_model extends CI_Model {
             $enrol['is_training'] = $this->input->post('is_training') == 1? 1 : 0;
             $enrol['hod_id'] = html_escape($this->input->post('hod_id'));
             $enrol['training_cat_id'] = html_escape($this->input->post('training_cat_id'));
+            $enrol['training_type_id'] = html_escape($this->input->post('training_type_id'));
             if(empty($data['en_id'])){
-                $enrol['status'] = 'active';
+                $enrol['enrol_status'] = 'active';
             }else{
-                $enrol['status'] = 'pending';
+                $enrol['enrol_status'] = 'pending';
             }
-            $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price'],$enrol['is_training'],$enrol['status']);
+            $this->crud_model->enrol_a_student_offline($enrol['user_id'],$enrol['course_id'],$enrol['price'],$enrol['is_training'],$enrol['enrol_status']);
             $this->upload_user_image($data['image']);
             $this->session->set_flashdata('flash_message', get_phrase('user_added_successfully'));
-        }
+        // }
     }
 
     public function add_shortcut_user($is_instructor = false) {
