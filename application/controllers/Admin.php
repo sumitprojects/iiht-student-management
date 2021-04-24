@@ -211,7 +211,68 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
     }
-    
+    //manage Examination
+    public function manage_examination($param1 = "", $param2 = "", $param3=""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+
+        if($param1 == 'examination_add_edit'){
+            $page_data['page_name'] = 'examination/examination_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_examintaion');
+           
+            if($param2 != "" && $param3 == ''){
+                $page_data['param2'] = $param2;
+            }
+            if($param2 != "" && $param3 != '' ){
+                $page_data['param2'] = $param2;
+                $page_data['examination'] =$this->db->get_where('question',['course_id'=>$param2,'id'=>$param3])->row_array();
+            }
+            $this->load->view('backend/index', $page_data);   
+        }else if($param1 == "add_examination"){
+            $response= $this->crud_model->add_examination($param2);
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            $course_id=$this->input->post('course_id');
+            redirect(site_url('admin/manage_examination/'.$course_id), 'refresh');
+        }
+        else if($param1 == "edit_examination"){
+            $id=$this->input->post('id');
+            $response = $this->crud_model->edit_examination($id);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_update_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_examination'), 'refresh');
+         }
+        else if ($param1 == "delete" ){
+            $this->crud_model->delete_attendance($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_examination'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_attendance($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/manage_examination'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'examination/examination';
+            $page_data['page_title'] = get_phrase('examination');
+            $page_data['course_id'] =$param1;
+             $page_data['examination'] = $this->crud_model->get_examination(0,$param1)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
     //exam Schedule
     public function manage_schedule($param1 = "", $param2 = ""){
         if ($this->session->userdata('admin_login') != true) {
