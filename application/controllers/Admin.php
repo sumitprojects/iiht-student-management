@@ -2486,4 +2486,40 @@ class Admin extends CI_Controller {
         $question_json = $this->input->post('itemJSON');
         $this->crud_model->sort_question($question_json);
     }
+
+    //adil:evaluation
+     public function evaluation($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+        if($param1 == 'edit_evaluation'){
+            $page_data['page_name'] = 'evaluation/edit_evaluation';
+            $page_data['page_title'] = get_phrase('edit_this_email');
+           
+            if($param2 != ""){
+                $page_data['evaluation'] =$this->user_model->get_evalution($param2)->row_array();
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        elseif($param1 == "edit"){
+            $response = $this->crud_model->evaluation_edit($param2);
+            $page_data['page_name'] = 'evaluation/edit_evaluation';
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_update_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/evaluation'), 'refresh');
+         }
+        else{
+            $page_data['page_name'] = 'evaluation/evaluation';
+            $page_data['page_title'] = get_phrase('evaluation');
+            $page_data['evaluation'] = $this->crud_model->get_evaluation($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
 }
