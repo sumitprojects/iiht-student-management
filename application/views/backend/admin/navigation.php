@@ -371,6 +371,15 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
             </a>
         </li>
         <?php endif; ?>
+        <?php if((in_array('evaluation', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/evaluation'); ?>"
+                class="side-nav-link <?php if ($page_name == 'evaluation/evaluation' || $page_name == 'evaluation/evaluation_add_edit' ): ?> active <?php endif; ?>">
+                <i class="dripicons-graph-bar"></i>
+                <span> <?php echo get_phrase('evaluation'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
         <?php if((in_array('manage_email', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
         <li class="side-nav-item">
             <a href="<?php echo site_url('admin/manage_email'); ?>"
