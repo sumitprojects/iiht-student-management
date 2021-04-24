@@ -704,4 +704,14 @@ class User_model extends CI_Model {
             redirect(site_url('admin/instructor_application'), 'refresh');
         }
     }
+
+    //adil:get evalution 
+    public function get_evalution($e_id = 0){
+        $this->db->select('evaluation.*,upper(concat(first_name, " ",last_name)) as full_name,question.title as questions ');
+        $this->db->from('evaluation');
+        $this->db->join('users', 'evaluation.user_id = users.id');
+        $this->db->join('question', 'question.id = evaluation.qusetion_id');
+        $this->db->where('evaluation.id', $e_id); 
+        return $this->db->get();
+    }
 }
