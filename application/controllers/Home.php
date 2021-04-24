@@ -778,7 +778,9 @@ class Home extends CI_Controller {
         $quiz_questions = $this->crud_model->get_quiz_questions($quiz_id)->result_array();
         $total_correct_answers = 0;
         foreach ($quiz_questions as $quiz_question) {
+            $data=array();
             $submitted_answer_status = 0;
+            if($quiz_question['type']=='multiple_choice'):
             $correct_answers = json_decode($quiz_question['correct_answers']);
             $submitted_answers = array();
             foreach ($this->input->post($quiz_question['id']) as $each_submission) {
@@ -791,6 +793,10 @@ class Home extends CI_Controller {
             if ($correct_answers == $submitted_answers) {
                 $submitted_answer_status = 1;
                 $total_correct_answers++;
+                $data['marks_gain']=$quiz_question['marks'];
+            }
+            else{
+                $data['marks_gain']= '0';
             }
             $container = array(
                 "question_id" => $quiz_question['id'],
@@ -799,10 +805,19 @@ class Home extends CI_Controller {
                 "correct_answers"  => json_encode($correct_answers),
             );
             array_push($submitted_quiz_info, $container);
+        elseif($quiz_question['type']=='written'):
+          $data['submitted_answer']=  $this->input->post('short_description');
+        endif;
         }
         $page_data['submitted_quiz_info']   = $submitted_quiz_info;
         $page_data['total_correct_answers'] = $total_correct_answers;
         $page_data['total_questions'] = count($quiz_questions);
+        $data['qusetion_id']=$quiz_question['id'];
+        $data['quiz_id']=$quiz_question['quiz_id'];
+        $data['marks']=$quiz_question['marks'];
+        $data['user_id']=$this->session->userdata('user_id');
+
+        $this->db->insert('evaluation',$data);
         if ($from == 'mobile') {
             $this->load->view('mobile/quiz_result', $page_data);
         }else{
