@@ -3953,4 +3953,22 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $user_id);
         return $this->db->get('course');
     }
+    /*****
+     * adil:Manage evaluation Crud Model
+     */
+    public function get_evaluation($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('evaluation');
+    }
+    public function evaluation_edit($param1 = "")
+    {
+        $data['marks_gain']   = strtoupper(html_escape($this->input->post('marks_gain')));
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE  NAME ALREADY EXIST
+        $this->db->where('id', $id);
+        $this->db->update('evaluation', $data);
+        return true;
+    }
 }
