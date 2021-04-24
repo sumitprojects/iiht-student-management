@@ -1389,5 +1389,6 @@
     "non_admission_course": "Non admission course",
     "invalid_attachment": "Invalid attachment",
     "your_email_or_phone": "Your email or phone",
-    "select_a_training_category": "Select a training category"
+    "select_a_training_category": "Select a training category",
+    "evaluation": "Evaluation"
 }
