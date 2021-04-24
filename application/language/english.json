@@ -1390,5 +1390,11 @@
     "invalid_attachment": "Invalid attachment",
     "your_email_or_phone": "Your email or phone",
     "select_a_training_category": "Select a training category",
-    "evaluation": "Evaluation"
+    "evaluation": "Evaluation",
+    "view_student_details": "View student details",
+    "back_to_student_list": "Back to student list",
+    "enquiry": "Enquiry",
+    "invoices": "Invoices",
+    "dob": "Dob",
+    "source_other": "Source other"
 }

@@ -18,9 +18,12 @@ class Crud_model extends CI_Model
      /*****
      * Attendance Crud Model
      */
-    public function get_attendance($param1 = ""){
+    public function get_attendance($param1 = "", $param2 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('user_id', $param2);
         }
         return $this->db->get('attendance');
     }
@@ -76,12 +79,17 @@ class Crud_model extends CI_Model
         $this->db->update('attendance', $data);
         return true;
     }
+
+
       /*****
      * Manage Leave Crud Model
      */
-    public function get_leave($param1 = ""){
+    public function get_leave($param1 = "", $param2 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('user_id', $param2);
         }
         return $this->db->get('manage_leave');
     }
@@ -218,7 +226,7 @@ class Crud_model extends CI_Model
   /*****
      * assets Crud Model
      */
-    public function get_asset_for_users($param1 = ""){
+    public function get_asset_for_users($param1 = "", $param2 = ""){
         $this->db->select('af.*, users.id as uid, assets.name, assets.returnable ,upper(concat(users.first_name," ",last_name)) as full_name');
         $this->db->from('asset_for_users as af');
         $this->db->join('assets','assets.id = af.asset_id');
@@ -226,6 +234,10 @@ class Crud_model extends CI_Model
         
         if ($param1 != "") {
             $this->db->where('af.id', $param1);
+        }
+
+        if($param2 != ""){
+            $this->db->where('af.user_id', $param2);
         }
         return $this->db->get();
     }
@@ -1188,9 +1200,11 @@ class Crud_model extends CI_Model
     {
         $this->db->select('en.id,en.user_id, en.course_id, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
         $this->db->from('enrol as en');
-        $this->db->join('payment as py','py.enrol_id = en.id','left');        
-        $this->db->where('en.date_added >=', $timestamp_start);
-        $this->db->where('en.date_added <=', $timestamp_end);
+        $this->db->join('payment as py','py.enrol_id = en.id','left');
+        if(!empty($timestamp_start) && !empty($timestamp_end)){
+            $this->db->where('en.date_added >=', $timestamp_start);
+            $this->db->where('en.date_added <=', $timestamp_end);    
+        }
         // $this->db->where('py.payment_status','paid');
         $this->db->group_by('en.id');
         $this->db->order_by('en.date_added', 'desc');

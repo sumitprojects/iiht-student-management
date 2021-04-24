@@ -1139,9 +1139,13 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/users'), 'refresh');
         }elseif ($param1 == "view"){
             $page_data['user'] = $this->user_model->get_user($param2)->row_array();
-            $page_data['enquiry'] = $this->crud_model->get_inquiry($page_data['user']['en_id'])->row_array();
-            $page_data['admission'] = $this->crud_model->enrol_history_by_user_id($page_data['user']['id'])->result_array();
-            $page_data['page_name'] = 'users';
+            $page_data['enquiry'] = $this->crud_model->get_inquiry($page_data['user']['en_id'])->result_array();
+            $page_data['admission'] = $this->crud_model->enrol_history_by_date_range($page_data['user']['id'])->result_array();
+            $page_data['invoices'] = $this->crud_model->purchase_history($page_data['user']['id'])->result_array();
+            $page_data['assets'] = $this->crud_model->get_asset_for_users('',$page_data['user']['id'])->result_array();
+            $page_data['attendance'] = $this->crud_model->get_attendance('',$page_data['user']['id'])->result_array();
+            $page_data['leave'] = $this->crud_model->get_leave('',$page_data['user']['id'])->result_array();
+            $page_data['page_name'] = 'admission/view_admission';
         }
 
         $page_data['page_title'] = get_phrase('student');

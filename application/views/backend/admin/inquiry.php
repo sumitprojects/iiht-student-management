@@ -94,6 +94,7 @@
                       <?php echo get_phrase('no_data_found'); ?>
                     </div>
                 <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

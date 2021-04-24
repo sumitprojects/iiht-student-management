@@ -17,8 +17,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="mb-3 header-title"><?php echo get_phrase('attendance_list'); ?>
-                </h4>
+                <h4 class="mb-3 header-title"><?php echo get_phrase('attendance_list'); ?></h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($attendance) > 0): ?>
                     <table id="attendance-datatable" class="table table-striped dt-responsive nowrap" width="100%"

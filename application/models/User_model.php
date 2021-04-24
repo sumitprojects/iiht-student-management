@@ -246,6 +246,7 @@ class User_model extends CI_Model {
             if($user_id) $this->crud_model->complete_inquiry($data['en_id']);
             $enrol['user_id'] = $user_id; 
             $enrol['course_id'] = html_escape($this->input->post('course_id'));
+
             $enrol['price'] = $this->input->post('price');
             $enrol['is_training'] = $this->input->post('is_training') == 1? 1 : 0;
             $enrol['hod_id'] = html_escape($this->input->post('hod_id'));

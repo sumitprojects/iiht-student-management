@@ -353,7 +353,7 @@ $offline = !empty($offline) ? $offline : false;
                                                         class="required">*</span></label>
                                                 <div class="col-md-10">
                                                     <select class="form-control select2" data-toggle="select2"
-                                                        name="course_id" id="course_id" required>
+                                                        name="course_id[]" id="course_id" required multiple>
                                                         <option value="">
                                                             <?php echo get_phrase('select_a_course'); ?>
                                                         </option>
@@ -458,7 +458,14 @@ function calculateDiscountPercentage(discounted_price) {
 
 jQuery(document).ready(function() {
     jQuery('#course_id').on('change', function() {
-        jQuery('[name=price]').val(jQuery(this).select2('data')[0].element.dataset.price);
+        let selectedCourses = (jQuery(this).select2('data'));
+        let prices = 0;
+
+        for (let i = 0; i < selectedCourses.length; i++) {
+            const option = selectedCourses[i];
+            prices += parseInt(option.element.dataset.price);
+        }
+        jQuery('[name=price]').val(prices);            
     });
 
     jQuery('#discount_flag').on('change', function() {
