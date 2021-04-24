@@ -1125,6 +1125,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/dashboard'), 'refresh');
         }
 
+        $page_data['page_name'] = 'users';
         if ($param1 == "add") {
             $this->user_model->add_user();
             redirect(site_url('admin/users'), 'refresh');
@@ -1136,9 +1137,13 @@ class Admin extends CI_Controller {
         elseif ($param1 == "delete") {
             $this->user_model->delete_user($param2);
             redirect(site_url('admin/users'), 'refresh');
+        }elseif ($param1 == "view"){
+            $page_data['user'] = $this->user_model->get_user($param2)->row_array();
+            $page_data['enquiry'] = $this->crud_model->get_inquiry($page_data['user']['en_id'])->row_array();
+            $page_data['admission'] = $this->crud_model->enrol_history_by_user_id($page_data['user']['id'])->result_array();
+            $page_data['page_name'] = 'users';
         }
 
-        $page_data['page_name'] = 'users';
         $page_data['page_title'] = get_phrase('student');
         $page_data['users'] = $this->user_model->get_user($param2);
         $this->load->view('backend/index', $page_data);
@@ -1202,7 +1207,7 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);
         }
         else if ($param1 == 'add_edit_from_inquiry') {
-            $page_data['page_name'] = 'user_add';
+            $page_data['page_name'] = 'admission/user_addmission';
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['page_title'] = get_phrase('student_admission');
             if(!empty($param2)){
@@ -1211,10 +1216,11 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
+            $page_data['training'] = $this->crud_model->get_training_cat($param2)->result_array();
             $page_data['admission'] = true;
             $this->load->view('backend/index', $page_data);
         }else if($param1 == 'add_edit_from_inquiry_non'){
-            $page_data['page_name'] = 'user_add';
+            $page_data['page_name'] = 'admission/user_addmission';
             $page_data['intern'] = true;
             $page_data['page_title'] = get_phrase('student_non_admission');
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
@@ -1223,13 +1229,15 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
-            
+            $page_data['training'] = $this->crud_model->get_training_cat($param2)->result_array();
+
             if(!empty($param2)){
                 $page_data['enquiry'] = $this->crud_model->get_inquiry($param2)->row_array();
             }
             $this->load->view('backend/index', $page_data);
         }elseif ($param1 == 'edit_user_form') {
-            $page_data['page_name'] = 'user_edit';
+            // $page_data['page_name'] = 'user_edit';
+            $page_data['page_name'] = 'admission/edit_user_addmission';
             $page_data['user_id'] = $param2;
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['page_title'] = get_phrase('student_edit');
