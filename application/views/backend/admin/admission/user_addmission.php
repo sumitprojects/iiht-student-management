@@ -103,16 +103,6 @@ $offline = !empty($offline) ? $offline : false;
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
                                         </div>
-                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label"
-                                                for="linkedin_link"><?php echo get_phrase('biography'); ?></label>
-                                            <div class="col-md-9">
-                                                <textarea name="biography" id="summernote-basic" class="form-control"
-                                                    tabindex="0"></textarea>
-                                            </div>
-                                        </div>
-                                        <?php else:?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="dob"><?php echo get_phrase('date_of_birth'); ?><span
@@ -158,7 +148,6 @@ $offline = !empty($offline) ? $offline : false;
                                                 </select>
                                             </div>
                                         </div>
-                                        <?php endif;?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="user_image"><?php echo get_phrase('user_image'); ?></label>
@@ -208,32 +197,6 @@ $offline = !empty($offline) ? $offline : false;
                             <div class="tab-pane" id="social_information">
                                 <div class="row">
                                     <div class="col-12">
-                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label" for="facebook_link">
-                                                <?php echo get_phrase('facebook'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="facebook_link" name="facebook_link"
-                                                    class="form-control" tabindex="0">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label"
-                                                for="twitter_link"><?php echo get_phrase('twitter'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="twitter_link" name="twitter_link"
-                                                    class="form-control" tabindex="0">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label"
-                                                for="linkedin_link"><?php echo get_phrase('linkedin'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="linkedin_link" name="linkedin_link"
-                                                    class="form-control" tabindex="0">
-                                            </div>
-                                        </div>
-                                        <?php else: ?>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="marital_status"><?php echo get_phrase('marital_status'); ?><span
@@ -346,51 +309,12 @@ $offline = !empty($offline) ? $offline : false;
                                                 name="source_other">
                                                 </div>
                                         </div>
-                                        <?php endif;?>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
                             <div class="tab-pane" id="payment_info">
                                 <div class="row">
                                     <div class="col-12">
-                                        <?php if(empty($enquiry) && !$admission && !$intern && !$offline):?>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label" for="paypal_client_id">
-                                                <?php echo get_phrase('paypal_client_id'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="paypal_client_id" name="paypal_client_id"
-                                                    class="form-control" tabindex="0">
-                                                <small><?php echo get_phrase("required_for_instructor"); ?></small>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label" for="paypal_secret_key">
-                                                <?php echo get_phrase('paypal_secret_key'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="paypal_secret_key" name="paypal_secret_key"
-                                                    class="form-control" tabindex="0">
-                                                <small><?php echo get_phrase("required_for_instructor"); ?></small>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label"
-                                                for="stripe_public_key"><?php echo get_phrase('stripe_public_key'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="stripe_public_key" name="stripe_public_key"
-                                                    class="form-control" tabindex="0">
-                                                <small><?php echo get_phrase("required_for_instructor"); ?></small>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row mb-3">
-                                            <label class="col-md-3 col-form-label"
-                                                for="stripe_secret_key"><?php echo get_phrase('stripe_secret_key'); ?></label>
-                                            <div class="col-md-9">
-                                                <input type="text" id="stripe_secret_key" name="stripe_secret_key"
-                                                    class="form-control" tabindex="0">
-                                                <small><?php echo get_phrase("required_for_instructor"); ?></small>
-                                            </div>
-                                        </div>
-                                        <?php else:?>
                                         <div class="paid-course-stuffs">
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
@@ -409,15 +333,16 @@ $offline = !empty($offline) ? $offline : false;
                                             </div>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
-                                                    for="training_cat_id"><?php echo get_phrase('training_category'); ?></label>
+                                                    for="training_cat_id"><?php echo get_phrase('training_category'); ?><span
+                                                        class="required">*</span></label>
                                                 <div class="col-md-10">
-                                                    <select class="form-control select2" data-toggle="select2"
+                                                    <select class="form-control select2" data-toggle="select2" required
                                                         name="training_cat_id" id="training_cat_id">
                                                         <option value=""><?php echo get_phrase('select_a_training_category'); ?>
                                                         </option>
-                                                        <?php foreach ($hod as $ho): ?>
-                                                        <option value="<?php echo $ho['hod_id']; ?>">
-                                                            <?php echo $ho['hod_name']; ?></option>
+                                                        <?php foreach ($training as $train): ?>
+                                                        <option value="<?php echo $train['id']; ?>">
+                                                            <?php echo $train['title']; ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
@@ -454,7 +379,6 @@ $offline = !empty($offline) ? $offline : false;
                                                 </div>
                                             </div>
                                         </div> <!-- end row -->
-                                        <?php endif;?>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
