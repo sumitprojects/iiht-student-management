@@ -1225,7 +1225,7 @@ class Admin extends CI_Controller {
             $page_data['page_title'] = get_phrase('student_non_admission');
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
-            $page_data['courses'] = $this->crud_model->get_courses_by_type('training')->result_array();
+            $page_data['courses'] = $this->crud_model->get_courses()->result_array();
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
