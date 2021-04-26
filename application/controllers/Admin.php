@@ -2677,14 +2677,12 @@ class Admin extends CI_Controller {
             }
             redirect(site_url('admin/event_schedule'), 'refresh');
          }
-        else if ($param1 == "delete" ){
-            $this->crud_model->delete_designation($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_event_schedule($param2);
             redirect(site_url('admin/event_schedule'), 'refresh');
         }
-        else if ($param1 == "activate" ){
-            $this->crud_model->activate_designation($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+        else if ($param1 == "schedule" ){
+            $this->crud_model->activate_event_schedule($param2);
             redirect(site_url('admin/event_schedule'), 'refresh');
         }
         else{

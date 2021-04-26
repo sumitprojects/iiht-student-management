@@ -30,7 +30,7 @@
                                 <th><?php echo get_phrase('event_presentor'); ?></th>
                                 <th><?php echo get_phrase('event_link'); ?></th>
                                 <th><?php echo get_phrase('event_date'); ?></th>
-                              
+
                                 <th><?php echo get_phrase('actions'); ?></th>
                             </tr>
                         </thead>
@@ -50,8 +50,22 @@
                                 <td>
                                     <strong><?php echo ellipsis($br['event_date']); ?></strong><br>
                                 </td>
-                               
-                                
+                                <td>
+                                    <?php if ($br['status'] == 'pending'): ?>
+                                    <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top"
+                                        title=""
+                                        data-original-title="<?php echo get_phrase('pending'); ?>"><?php echo get_phrase('pending'); ?></span>
+                                    <?php elseif ($br['status'] == 'schedule'):?>
+                                    <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top"
+                                        title=""
+                                        data-original-title="<?php echo get_phrase('schedule'); ?>"><?php echo get_phrase('schedule'); ?></span>
+                                    <?php else : ?>
+                                    <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top"
+                                        title=""
+                                        data-original-title="<?php echo get_phrase('cancelled'); ?>"><?php echo get_phrase('cancelled'); ?></span>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td>
                                     <div class="dropright dropright">
                                         <button type="button"
@@ -60,9 +74,13 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            
+                                            <?php if ($br['status'] == 'pending'): ?>
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/event_schedule/event_schedule_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_event_schedule');?></a>
+                                            </li>
+                                            <?php endif; ?>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="confirm_modal('<?php echo site_url('admin/event_schedule/'.(($br['status'] == 'cancelled')?'schedule':'delete').'/'.$br['id']); ?>');"><?php echo get_phrase(($br['status'] == 'cancelled')?'schedule':'cancelled'); ?></a>
                                             </li>
                                         </ul>
                                     </div>

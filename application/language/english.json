@@ -1419,5 +1419,6 @@
     "event_link": "Event link",
     "event_date": "Event date",
     "event_time": "Event time",
-    "event_schedule_edit_form": "Event schedule edit form"
+    "event_schedule_edit_form": "Event schedule edit form",
+    "cancelled": "Cancelled"
 }

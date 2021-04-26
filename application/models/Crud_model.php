@@ -4159,5 +4159,20 @@ class Crud_model extends CI_Model
         }
         return false;
     }
+    public function delete_event_schedule($param1 = "")
+    {
+        $data['status']   = 'cancelled';
+        $this->db->where('id', $param1);
+        $this->db->update('event_schedule', $data);
+        return true;
+    }
+
+    public function activate_event_schedule($param1 = "")
+    {
+        $data['status']   = 'schedule';
+        $this->db->where('id', $param1);
+        $this->db->update('event_schedule', $data);
+        return true;
+    }
    
 }
