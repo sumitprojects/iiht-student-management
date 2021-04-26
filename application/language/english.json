@@ -1406,5 +1406,18 @@
     "back_to_designation_list": "Back to designation list",
     "designation_edit_form": "Designation edit form",
     "manage_designation": "Manage designation",
-    "select_a_designation": "Select a designation"
+    "select_a_designation": "Select a designation",
+    "event_schedule": "Event schedule",
+    "add_new_event_schedule": "Add new event schedule",
+    "event_schedule_list": "Event schedule list",
+    "edit_this_event_schedule": "Edit this event schedule",
+    "event_schedule_add_form": "Event schedule add form",
+    "back_to_event_schedule_list": "Back to event schedule list",
+    "event_title": "Event title",
+    "event_presentor": "Event presentor",
+    "select_a_presentor": "Select a presentor",
+    "event_link": "Event link",
+    "event_date": "Event date",
+    "event_time": "Event time",
+    "event_schedule_edit_form": "Event schedule edit form"
 }

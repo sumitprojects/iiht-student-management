@@ -4107,4 +4107,57 @@ class Crud_model extends CI_Model
         $this->db->update('manage_designation', $data);
         return true;
     }
+    /*****
+     * designation Crud Model
+     */
+    public function get_event_schedule($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('event_schedule');
+    }
+    public function add_event_schedule()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('event_title')));
+        $data['event_title']   = strtoupper(html_escape($this->input->post('event_title')));
+        $data['event_presentor']   = strtoupper(html_escape($this->input->post('event_presentor')));
+        $data['event_link']   = strtoupper(html_escape($this->input->post('event_link')));
+        $data['event_date']   = strtoupper(html_escape($this->input->post('event_date')));
+        $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
+        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('event_schedule')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('event_schedule', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_event_schedule($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('event_title')));
+        $data['event_title']   = strtoupper(html_escape($this->input->post('event_title')));
+        $data['event_presentor']   = strtoupper(html_escape($this->input->post('event_presentor')));
+        $data['event_link']   = strtoupper(html_escape($this->input->post('event_link')));
+        $data['event_date']   = strtoupper(html_escape($this->input->post('event_date')));
+        $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
+        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+        
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('event_schedule')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('event_schedule', $data);
+            return true;
+        }
+        return false;
+    }
+   
 }
