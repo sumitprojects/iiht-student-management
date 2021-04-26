@@ -407,6 +407,15 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
             </a>
         </li>
         <?php endif; ?>
+        <?php if((in_array('designation', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/manage_designation'); ?>"
+                class="side-nav-link <?php if ($page_name == 'designation/designation' || $page_name == 'designation/designation_add_edit' ): ?> active <?php endif; ?>">
+                <i class="dripicons-message"></i>
+                <span> <?php echo get_phrase('manage_designation'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
         <?php if($this->session->userdata('role_id') == 1):?>
         <li
             class="side-nav-item  <?php if ($page_name == 'system_settings' || $page_name == 'frontend_settings' || $page_name == 'payment_settings' || $page_name == 'smtp_settings' || $page_name == 'manage_language' || $page_name == 'about' || $page_name == 'themes' ): ?> active <?php endif; ?>">

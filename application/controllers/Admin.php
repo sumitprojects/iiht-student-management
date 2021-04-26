@@ -2583,7 +2583,7 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
     }
-    //Designation Controll
+    //adil:designation Controll
     public function manage_designation($param1 = "", $param2 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
