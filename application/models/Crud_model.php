@@ -4048,4 +4048,63 @@ class Crud_model extends CI_Model
         $this->db->update('evaluation', $data);
         return true;
     }
+     /*****
+     * designation Crud Model
+     */
+    public function get_designation($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('manage_designation');
+    }
+    public function add_designation()
+    {
+        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
+        $data['slug']   = slugify(html_escape($this->input->post('designation')));
+        
+
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('manage_designation')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('manage_designation', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_designation($param1 = "")
+    {
+        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
+        $data['slug']   = slugify(html_escape($this->input->post('designation')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('manage_designation')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('manage_designation', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_designation($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('manage_designation', $data);
+        return true;
+    }
+
+    public function activate_designation($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('manage_designation', $data);
+        return true;
+    }
 }

@@ -95,8 +95,8 @@ $placement = isset($placement)? $placement : null;
                     
                     <div class="form-group">
                         <label for="hod"><?php echo get_phrase('hod'); ?><span class="required">*</span></label>
-                        <input type="text" class="form-control" id="hod" name="hod"
-                            value="<?php echo !empty($placement)?$placement['hod']:''?>" required>
+                        <input type="text" class="form-control" id="hod_id" name="hod_id"
+                            value="<?php echo !empty($placement)?$placement['hod_id']:''?>" required>
                     </div>
                     <div class="form-group">
                         <label for="status"><?php echo get_phrase('Status'); ?><span

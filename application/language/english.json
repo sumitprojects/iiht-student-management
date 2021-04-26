@@ -1398,5 +1398,11 @@
     "dob": "Dob",
     "source_other": "Source other",
     "training_type": "Training type",
-    "select_a_training_type": "Select a training type"
+    "select_a_training_type": "Select a training type",
+    "add_new_designation": "Add new designation",
+    "designation_list": "Designation list",
+    "edit_this_designation": "Edit this designation",
+    "designation_add_form": "Designation add form",
+    "back_to_designation_list": "Back to designation list",
+    "designation_edit_form": "Designation edit form"
 }

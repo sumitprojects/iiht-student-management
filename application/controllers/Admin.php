@@ -2583,4 +2583,57 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
     }
+    //Designation Controll
+    public function manage_designation($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+
+        if($param1 == 'designation_add_edit'){
+            $page_data['page_name'] = 'designation/designation_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_designation');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }else if($param1 == "designation_add_form"){
+            $response= $this->crud_model->add_designation();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_designation'), 'refresh');
+        }
+        else if($param1 == "designation_edit_form"){
+            $response = $this->crud_model->edit_designation($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_designation'), 'refresh');
+         }
+        else if ($param1 == "delete" ){
+            $this->crud_model->delete_designation($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_designation'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_designation($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/manage_designation'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'designation/designation';
+            $page_data['page_title'] = get_phrase('designation');
+            $page_data['designation'] = $this->crud_model->get_designation($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
 }
