@@ -60,8 +60,8 @@ $placement = isset($placement)? $placement : null;
                         <div class="form-group">
                             <label for="designation"><?php echo get_phrase('designation'); ?><span
                                     class="required">*</span></label>
-                                    <select class="form-control select2" data-toggle="select2" name="designation" id="designation"
-                                required>
+                            <select class="form-control select2" data-toggle="select2" name="designation"
+                                id="designation" required>
                                 <option value=""><?php echo get_phrase('select_a_designation'); ?></option>
                                 <?php foreach ($designation_list as $designation): ?>
                                 <option value="<?php echo $designation['id']; ?>"
@@ -108,8 +108,15 @@ $placement = isset($placement)? $placement : null;
 
                         <div class="form-group">
                             <label for="hod"><?php echo get_phrase('hod'); ?><span class="required">*</span></label>
-                            <input type="text" class="form-control" id="hod_id" name="hod_id"
-                                value="<?php echo !empty($placement)?$placement['hod_id']:''?>" required>
+                            <select class="form-control select2" data-toggle="select2" name="hod_id"
+                                id="hod_id" required>
+                                <option value=""><?php echo get_phrase('select_a_hod'); ?></option>
+                                <?php foreach ($hod_list as $hod): ?>
+                                <option value="<?php echo $hod['hod_id']; ?>"
+                                    <?php echo !empty($placement)? (($placement['hod_id'] == $hod['hod_id'])? 'selected':'') : ''; ?>>
+                                    <?php echo $hod['hod_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="status"><?php echo get_phrase('Status'); ?><span

@@ -717,18 +717,5 @@ class User_model extends CI_Model {
         $this->db->where('evaluation.id', $e_id); 
         return $this->db->get();
     }
-    //adil:department get data
-    public function get_department($d_id = 0) {
-        if ($d_id > 0) {
-            $this->db->where('id', $d_id);
-        }
-        return $this->db->get('department');
-    }
-    //adil:designation get data
-    public function get_designation($designation = 0) {
-        if ($designation > 0) {
-            $this->db->where('id', $designation);
-        }
-        return $this->db->get('manage_designation');
-    }
+    
 }

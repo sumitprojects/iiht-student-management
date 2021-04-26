@@ -567,8 +567,9 @@ class Admin extends CI_Controller {
             $page_data['page_title'] = get_phrase('placements');
            
             $page_data['user_list'] =$this->user_model->get_user()->result_array();
-            $page_data['department_list']=$this->user_model->get_department()->result_array();
-            $page_data['designation_list']=$this->user_model->get_designation()->result_array();
+            $page_data['department_list']=$this->crud_model->get_department()->result_array();
+            $page_data['designation_list']=$this->crud_model->get_designation()->result_array();
+            $page_data['hod_list']=$this->crud_model->get_hod()->result_array();
             $page_data['placement'] = $this->crud_model->get_placements($param2)->row_array();
             $this->load->view('backend/index', $page_data); 
         }else if($param1 == "placement_add_form"){
