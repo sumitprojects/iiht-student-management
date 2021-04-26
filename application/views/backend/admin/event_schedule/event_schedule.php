@@ -74,11 +74,9 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <?php if ($br['status'] == 'pending'): ?>
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/event_schedule/event_schedule_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_event_schedule');?></a>
                                             </li>
-                                            <?php endif; ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/event_schedule/'.(($br['status'] == 'cancelled')?'schedule':'delete').'/'.$br['id']); ?>');"><?php echo get_phrase(($br['status'] == 'cancelled')?'schedule':'cancelled'); ?></a>
                                             </li>
