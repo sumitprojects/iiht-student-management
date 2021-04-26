@@ -567,6 +567,8 @@ class Admin extends CI_Controller {
             $page_data['page_title'] = get_phrase('placements');
            
             $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['department_list']=$this->user_model->get_department()->result_array();
+            $page_data['designation_list']=$this->user_model->get_designation()->result_array();
             $page_data['placement'] = $this->crud_model->get_placements($param2)->row_array();
             $this->load->view('backend/index', $page_data); 
         }else if($param1 == "placement_add_form"){
@@ -579,7 +581,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/manage_placement'), 'refresh');
         }
         else if($param1 == "placement_edit_form"){
-            $response= $this->crud_model->edit_placement();
+            $response= $this->crud_model->edit_placement($param2);
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
             }else{
@@ -2560,7 +2562,7 @@ class Admin extends CI_Controller {
         if($param1 == 'edit_evaluation'){
             $page_data['page_name'] = 'evaluation/edit_evaluation';
             $page_data['page_title'] = get_phrase('edit_this_email');
-           
+          
             if($param2 != ""){
                 $page_data['evaluation'] =$this->user_model->get_evalution($param2)->row_array();
             }

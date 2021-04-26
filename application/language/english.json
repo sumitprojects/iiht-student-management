@@ -1405,5 +1405,6 @@
     "designation_add_form": "Designation add form",
     "back_to_designation_list": "Back to designation list",
     "designation_edit_form": "Designation edit form",
-    "manage_designation": "Manage designation"
+    "manage_designation": "Manage designation",
+    "select_a_designation": "Select a designation"
 }
