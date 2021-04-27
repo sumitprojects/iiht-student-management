@@ -40,7 +40,7 @@ $placement = isset($placement)? $placement : null;
                                 <?php foreach ($user_list as $user): ?>
                                 <option value="<?php echo $user['id']; ?>"
                                     <?php echo !empty($placement)? (($placement['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].$user['last_name']; ?></option>
+                                    <?php echo $user['first_name'].' '.$user['last_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

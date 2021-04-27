@@ -1421,5 +1421,13 @@
     "event_time": "Event time",
     "event_schedule_edit_form": "Event schedule edit form",
     "cancelled": "Cancelled",
-    "regisgtrtion_event": "Regisgtrtion event"
+    "regisgtrtion_event": "Regisgtrtion event",
+    "view_register_user": "View register user",
+    "view_register": "View register",
+    "register_user_list": "Register user list",
+    "fullname": "Fullname",
+    "organization_name": "Organization name",
+    "already_registered": "Already registered",
+    "registered_successfully": "Registered successfully",
+    "register_user": "Register user"
 }

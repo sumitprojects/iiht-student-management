@@ -969,15 +969,17 @@ class Home extends CI_Controller {
     }
     public function event_registration($event_id='',$param2=''){
         if($param2 == 'register'){
+            $data['e_id']   =html_escape($this->input->post('e_id'));
             $data['fullname']   =html_escape($this->input->post('fullname'));
             $data['organization_name']   = html_escape($this->input->post('organization_name'));
             $data['phone_number']   = html_escape($this->input->post('phone_number'));
             $data['email']   = html_escape($this->input->post('email'));
-            if (!empty($data)) {
+            $result=$this->db->get_where('event_registration',array( 'e_id'=>$event_id,'email'=>$data['email']))->num_rows();
+            if ($result==0) {
                 $this->db->insert('event_registration', $data);
-                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                $this->session->set_flashdata('flash_message', get_phrase('registered_successfully'));
                 }else{
-                    $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                    $this->session->set_flashdata('error_message', get_phrase('already_registered'));
                 }
                 redirect(site_url('home'), 'refresh');
             

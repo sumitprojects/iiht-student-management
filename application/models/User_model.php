@@ -717,5 +717,14 @@ class User_model extends CI_Model {
         $this->db->where('evaluation.id', $e_id); 
         return $this->db->get();
     }
+
+    //adil: get register user
     
-}
+    public function get_register_users($e_id=''){
+        if ($e_id > 0) {
+            $this->db->where('e_id', $e_id);
+        }
+        return $this->db->get('event_registration');
+    }
+    
+} 

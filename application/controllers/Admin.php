@@ -2659,6 +2659,12 @@ class Admin extends CI_Controller {
                 $page_data['param2'] = $param2;
             }
             $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == 'view_register'){
+            $page_data['page_name'] = 'event_schedule/view_register';
+            $page_data['event_id']=$param2;
+            $page_data['page_title'] = get_phrase('view_register');
+            $this->load->view('backend/index', $page_data);   
         }else if($param1 == "event_schedule_add_form"){
             $response= $this->crud_model->add_event_schedule();
            if ($response) {

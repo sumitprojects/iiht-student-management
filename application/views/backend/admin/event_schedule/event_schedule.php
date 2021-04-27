@@ -42,7 +42,9 @@
                                     <strong><?php echo ellipsis($br['event_title']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['event_presentor']); ?></strong><br>
+                                    <?php $user = $this->user_model->get_user($br['event_presentor'])->row_array();
+                                    ?>
+                                    <strong><?php echo ellipsis($user['first_name'].' '.$user['last_name']); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['event_link']); ?></strong><br>
@@ -76,6 +78,9 @@
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/event_schedule/event_schedule_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_event_schedule');?></a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                    href="<?php echo site_url('admin/event_schedule/view_register/'.$br['id']); ?>"><?php echo get_phrase('view_register_user');?></a>
                                             </li>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/event_schedule/'.(($br['status'] == 'cancelled')?'schedule':'delete').'/'.$br['id']); ?>');"><?php echo get_phrase(($br['status'] == 'cancelled')?'schedule':'cancelled'); ?></a>
