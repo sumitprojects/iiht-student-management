@@ -967,4 +967,25 @@ class Home extends CI_Controller {
             $this->load->view('mobile/index', $page_data);
         endif;
     }
+    public function event_registration($event_id='',$param2=''){
+        if($param2 == 'register'){
+            $data['fullname']   =html_escape($this->input->post('fullname'));
+            $data['organization_name']   = html_escape($this->input->post('organization_name'));
+            $data['phone_number']   = html_escape($this->input->post('phone_number'));
+            $data['email']   = html_escape($this->input->post('email'));
+            if (!empty($data)) {
+                $this->db->insert('event_registration', $data);
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+                }else{
+                    $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                }
+                redirect(site_url('home'), 'refresh');
+            
+        }
+
+        $page_data['e_id']=$event_id;
+        $page_data['page_name'] = 'event_form';
+        $page_data['page_title'] = 'event registration form';
+        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+    }
 }

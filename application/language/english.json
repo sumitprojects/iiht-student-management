@@ -1420,5 +1420,6 @@
     "event_date": "Event date",
     "event_time": "Event time",
     "event_schedule_edit_form": "Event schedule edit form",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "regisgtrtion_event": "Regisgtrtion event"
 }
