@@ -2813,6 +2813,9 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
+        $data['hod_id']   = $this->input->post('hod_id');
+        $data['training_type_id']   = $this->input->post('training_type_id');
+        $data['training_cat_id']   = $this->input->post('training_cat_id');
         $data['final_price'] = $this->input->post('price');
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];

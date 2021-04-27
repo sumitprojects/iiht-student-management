@@ -32,8 +32,8 @@ $offline = !empty($offline) ? $offline : false;
                     <input type="hidden" name="en_id" value="<?=$enquiry['en_id']?>">
                     <?php endif; ?>
 
-                    <?php if(!empty($intern)):?>
-                    <input type="hidden" name="is_training" value="<?=$intern?>">
+                    <?php if($intern):?>
+                    <input type="hidden" name="is_training" value="1">
                     <?php endif; ?>
 
                     <div id="progressbarwizard">
@@ -304,10 +304,10 @@ $offline = !empty($offline) ? $offline : false;
                                             <label class="col-md-3 col-form-label"
                                                 for="source_other"><?php echo get_phrase('reference_or_other'); ?><span
                                                     class="required">*</span></label>
-                                                    <div class="col-md-9">
-                                            <input type="text" class="form-control" id="source_other"
-                                                name="source_other">
-                                                </div>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" id="source_other"
+                                                    name="source_other">
+                                            </div>
                                         </div>
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
@@ -316,6 +316,8 @@ $offline = !empty($offline) ? $offline : false;
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="paid-course-stuffs">
+
+                                            <?php if($intern): ?>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
                                                     for="hod_id"><?php echo get_phrase('hod'); ?></label>
@@ -338,7 +340,8 @@ $offline = !empty($offline) ? $offline : false;
                                                 <div class="col-md-10">
                                                     <select class="form-control select2" data-toggle="select2" required
                                                         name="training_cat_id" id="training_cat_id">
-                                                        <option value=""><?php echo get_phrase('select_a_training_category'); ?>
+                                                        <option value="">
+                                                            <?php echo get_phrase('select_a_training_category'); ?>
                                                         </option>
                                                         <?php foreach ($training as $train): ?>
                                                         <option value="<?php echo $train['id']; ?>">
@@ -354,7 +357,8 @@ $offline = !empty($offline) ? $offline : false;
                                                 <div class="col-md-10">
                                                     <select class="form-control select2" data-toggle="select2" required
                                                         name="training_type_id" id="training_type_id">
-                                                        <option value=""><?php echo get_phrase('select_a_training_type'); ?>
+                                                        <option value="">
+                                                            <?php echo get_phrase('select_a_training_type'); ?>
                                                         </option>
                                                         <?php foreach ($training_type as $train): ?>
                                                         <option value="<?php echo $train['id']; ?>">
@@ -363,6 +367,23 @@ $offline = !empty($offline) ? $offline : false;
                                                     </select>
                                                 </div>
                                             </div>
+                                            <?php else: ?>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-2 col-form-label"
+                                                    for="hod_id"><?php echo get_phrase('hod'); ?></label>
+                                                <div class="col-md-10">
+                                                    <select class="form-control select2" data-toggle="select2"
+                                                        name="hod_id" id="hod_id">
+                                                        <option value=""><?php echo get_phrase('select_a_hod'); ?>
+                                                        </option>
+                                                        <?php foreach ($hod as $ho): ?>
+                                                        <option value="<?php echo $ho['hod_id']; ?>">
+                                                            <?php echo $ho['hod_name']; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <?php endif; ?>
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-2 col-form-label"
                                                     for="course_id"><?php echo get_phrase('course_to_enrol'); ?><span
@@ -481,7 +502,7 @@ jQuery(document).ready(function() {
             const option = selectedCourses[i];
             prices += parseInt(option.element.dataset.price);
         }
-        jQuery('[name=price]').val(prices);            
+        jQuery('[name=price]').val(prices);
     });
 
     jQuery('#discount_flag').on('change', function() {

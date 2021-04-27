@@ -1429,5 +1429,6 @@
     "organization_name": "Organization name",
     "already_registered": "Already registered",
     "registered_successfully": "Registered successfully",
-    "register_user": "Register user"
+    "register_user": "Register user",
+    "hod_id": "Hod id"
 }
