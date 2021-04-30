@@ -15,48 +15,70 @@ function initDataTable(tableIds, length) {
         });
     }
 }
-if ($("table").attr('data-filter') != undefined) {
-    var targetColomns = $.map($("table").data('filter').split(','), Number);
-}
 
-if ($("table").attr('data-nofilter') != undefined) {
-    var targetColomns2 = $.map($("table").data('nofilter').split(','), Number);
-}
-var datatables = $("#payment-datatable,#payment-datatable,#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable").DataTable({
-    keys: !0,
-    language: {
-        paginate: {
-            previous: "<i class='mdi mdi-chevron-left'>",
-            next: "<i class='mdi mdi-chevron-right'>"
+function initDataTableWithPanes() {
+    var ids = "#payment-datatable,#payment-datatable,#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable,#invoicesdata,#attendance-datatable,#assetusers,#leave-datatable".split(",");
+
+    for (let i = 0; i < ids.length; i++) {
+        const element = ids[i];
+        var targetColomns = undefined,
+            targetColomns2 = undefined;
+        if ($(element).attr('data-filter') != undefined) {
+            targetColomns = $.map($(element).data('filter').split(','), Number);
         }
-    },
-    searchPanes: {
-        cascadePanes: true,
-        dtOpts: {
-            select: {
-                style: 'multi'
-            },
-            layout: 'columns-6'
-        },
-    },
-    columnDefs: [{
-            searchPanes: {
-                show: true
-            },
-            targets: targetColomns !== undefined ? targetColomns : null,
-        },
-        {
-            searchPanes: {
-                show: false
-            },
-            targets: targetColomns2 !== undefined ? targetColomns2 : null,
+
+        if ($(element).attr('data-nofilter') != undefined) {
+            targetColomns2 = $.map($(element).data('nofilter').split(','), Number);
         }
-    ],
-    dom: 'Plfrtip',
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
+
+        var columnDefns = [];
+        if (targetColomns != undefined) {
+            columnDefns.push({
+                searchPanes: {
+                    show: true
+                },
+                targets: targetColomns,
+            });
+        }
+
+        if (targetColomns2 != undefined) {
+            columnDefns.push({
+                searchPanes: {
+                    show: false
+                },
+                targets: targetColomns2,
+            });
+        }
+
+        // console.log(element);
+        // console.log(targetColomns, targetColomns2);
+        var datatables = $(element).DataTable({
+            keys: !0,
+            language: {
+                paginate: {
+                    previous: "<i class='mdi mdi-chevron-left'>",
+                    next: "<i class='mdi mdi-chevron-right'>"
+                }
+            },
+            searchPanes: {
+                cascadePanes: true,
+                dtOpts: {
+                    select: {
+                        style: 'multi'
+                    },
+                    layout: 'columns-6'
+                },
+            },
+            columnDefs: columnDefns,
+            dom: 'Plfrtip',
+            drawCallback: function() {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
+            }
+        });
     }
-});
+
+}
+initDataTableWithPanes();
 
 function initDateRangePicker(ids) {
     for (i = 0; i < ids.length; i++) {

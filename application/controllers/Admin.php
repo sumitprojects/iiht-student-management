@@ -1193,12 +1193,19 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/users'), 'refresh');
         }elseif ($param1 == "view"){
             $page_data['user'] = $this->user_model->get_user($param2)->row_array();
-            $page_data['enquiry'] = $this->crud_model->get_inquiry($page_data['user']['en_id'])->result_array();
-            $page_data['admission'] = $this->crud_model->enrol_history_by_date_range($page_data['user']['id'])->result_array();
-            $page_data['invoices'] = $this->crud_model->purchase_history($page_data['user']['id'])->result_array();
-            $page_data['assets'] = $this->crud_model->get_asset_for_users('',$page_data['user']['id'])->result_array();
-            $page_data['attendance'] = $this->crud_model->get_attendance('',$page_data['user']['id'])->result_array();
-            $page_data['leave'] = $this->crud_model->get_leave('',$page_data['user']['id'])->result_array();
+            // var_dump($page_data['user']['en_id']);die;
+            if($page_data['user']['en_id'] > 0){
+                $page_data['enquiry'] = $this->crud_model->get_inquiry($page_data['user']['en_id'])->result_array();
+            }else{
+                $page_data['enquiry'] = array();
+            }
+           
+            $page_data['admission'] = $this->crud_model->enrol_history_by_date_range('','',$param2)->result_array();
+            $page_data['invoices'] = $this->crud_model->purchase_history($param2)->result_array();
+          
+            $page_data['assets'] = $this->crud_model->get_asset_for_users('',$param2)->result_array();
+            $page_data['attendance'] = $this->crud_model->get_attendance('',$param2)->result_array();
+            $page_data['leave'] = $this->crud_model->get_leave('',$param2)->result_array();
             $page_data['page_name'] = 'admission/view_admission';
         }
 
@@ -1307,7 +1314,7 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod($param2)->result_array();
-            
+
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
             $this->load->view('backend/index', $page_data);
         }

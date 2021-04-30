@@ -831,7 +831,7 @@ class Crud_model extends CI_Model
      /*****
      * inquiry Crud Model
      */
-    public function get_inquiry($param1 = ""){
+    public function get_inquiry($param1 = "",$param2 = ""){
         $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
                  ->from('enquiry as en')
                  ->join('course as c','c.id = en.course_id')
@@ -840,6 +840,9 @@ class Crud_model extends CI_Model
                  ->join('users as u','u.id = en.user_id');
         if ($param1 != "") {
             $this->db->where('en.en_id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('en.user_id', $param2);
         }
         return $this->db->get();
     }
@@ -913,17 +916,14 @@ class Crud_model extends CI_Model
         return false;
     }
 
-
     public function get_pending_admission(){
         $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
                  ->from('enquiry as en')
                  ->join('course as c','c.id = en.course_id')
                  ->join('sources as s','s.source_id = en.source_id')
                  ->join('branch as b','b.branch_id = en.branch_id')
-                 ->join('users as u','u.id = en.user_id','left');
-        $this->db->group_start();
-        $this->db->or_where('u.en_id',0);
-        $this->db->group_end();
+                 ->join('users as u','u.id = en.user_id');
+        $this->db->where('u.en_id < ',0);
         $this->db->where('en.en_status','completed');
         return $this->db->get();
     }
@@ -1259,7 +1259,7 @@ class Crud_model extends CI_Model
         return $this->db->get('enrol');
     }
 
-    public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "")
+    public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "",$user_id = "")
     {
         $this->db->select('en.id,en.user_id, en.course_id, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
         $this->db->from('enrol as en');
@@ -1267,6 +1267,10 @@ class Crud_model extends CI_Model
         if(!empty($timestamp_start) && !empty($timestamp_end)){
             $this->db->where('en.date_added >=', $timestamp_start);
             $this->db->where('en.date_added <=', $timestamp_end);    
+        }
+
+        if(!empty($user_id)){
+            $this->db->where('en.user_id', $user_id);
         }
         // $this->db->where('py.payment_status','paid');
         $this->db->group_by('en.id');

@@ -29,115 +29,63 @@ $placement = isset($placement)? $placement : null;
                                 <option value="kgk" <?php if($placement['type']=='KGK'){ echo "selected"; }?>>KGK
                                 </option>
 
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="user_id"><?php echo get_phrase('student'); ?><span
-                                    class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
-                                required>
-                                <option value=""><?php echo get_phrase('select_a_student'); ?></option>
-                                <?php foreach ($user_list as $user): ?>
-                                <option value="<?php echo $user['id']; ?>"
-                                    <?php echo !empty($placement)? (($placement['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].' '.$user['last_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="department"><?php echo get_phrase('department'); ?><span
-                                    class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="department" id="department"
-                                required>
-                                <option value=""><?php echo get_phrase('select_a_department'); ?></option>
-                                <?php foreach ($department_list as $department): ?>
-                                <option value="<?php echo $department['dpid']; ?>"
-                                    <?php echo !empty($placement)? (($placement['id'] == $department['dpid'])? 'selected':'') : ''; ?>>
-                                    <?php echo $department['dpname']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="designation"><?php echo get_phrase('designation'); ?><span
-                                    class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="designation"
-                                id="designation" required>
-                                <option value=""><?php echo get_phrase('select_a_designation'); ?></option>
-                                <?php foreach ($designation_list as $designation): ?>
-                                <option value="<?php echo $designation['id']; ?>"
-                                    <?php echo !empty($placement)? (($placement['id'] == $designation['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $designation['designation']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="salary type"><?php echo get_phrase('salary type'); ?><span
-                                    class="required">*</span></label>
-                            <select name="salary_type" id="salary_type" class="form-control">
-
-                                <option disabled selected>---Salary Type---</option>
-                                <option value="Salary">Salary
-                                </option>
-                                <option value="No-Salary">No-Salary</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="ps">
-                            <label for="placement salary"><?php echo get_phrase('
-                        placement salary'); ?><span class="required">*</span></label>
-                            <input type="text" class="form-control" id="placement_salary" name="placement_salary"
-                                value="<?php echo !empty($placement)?$placement['placement_salary']:''?>">
-                        </div>
-                        <div class="form-group" id="pd">
-                            <label for="placement_date"><?php echo get_phrase('Placement Date'); ?><span
-                                    class="required">*</span></label>
-                            <input type="date" class="form-control" id="placement_date" name="placement_date"
-                                value="<?php echo !empty($placement)?$placement['placement_date']:''?>" required>
-                        </div>
-                        <div class="form-group" id="td">
-                            <label for="tentative_date"><?php echo get_phrase('Tentative Date'); ?><span
-                                    class="required">*</span></label>
-                            <input type="date" class="form-control" id="tentative_date" name="tentative_date"
-                                value="<?php echo !empty($placement)?$placement['tentative_date']:''?>">
-                        </div>
-                        <div class="form-group" id="ts">
-                            <label for="tentative_salary"><?php echo get_phrase('Tentative Salary'); ?><span
-                                    class="required">*</span></label>
-                            <input type="number" class="form-control" id="tentative_salary" name="tentative_salary"
-                                value="<?php echo !empty($placement)?$placement['tentative_salary']:''?>">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="hod"><?php echo get_phrase('hod'); ?><span class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="hod_id"
-                                id="hod_id" required>
-                                <option value=""><?php echo get_phrase('select_a_hod'); ?></option>
-                                <?php foreach ($hod_list as $hod): ?>
-                                <option value="<?php echo $hod['hod_id']; ?>"
-                                    <?php echo !empty($placement)? (($placement['hod_id'] == $hod['hod_id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $hod['hod_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status"><?php echo get_phrase('Status'); ?><span
-                                    class="required">*</span></label>
-                            <select name="status" id="status" class="form-control">
-                                <option disabled selected>---Status---</option>
-                                <option value="placed" <?php if($placement['status'] == "placed"){ echo "selected"; }?>>
-                                    Placed</option>
-                                <option value="pending"
-                                    <?php if($placement['status'] == "pending"){ echo "selected"; }?>>Pending</option>
-                                <option value="left" <?php if($placement['status'] == "left"){ echo "selected"; }?>>Left
-                                </option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-primary"
-                            onclick="checkRequiredFields()"><?php echo get_phrase("submit"); ?></button>
-                    </form>
-                </div>
-            </div> <!-- end card body-->
-        </div> <!-- end card -->
-    </div><!-- end col-->
+                            <option disabled selected>---Salary Type---</option>
+                            <option value="Salary">Salary
+                            </option>
+                            <option value="No-Salary">No-Salary</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="ps">
+                        <label for="placement salary"><?php echo get_phrase('
+                        placement salary'); ?><span
+                                class="required">*</span></label>
+                        <input type="text" class="form-control" id="placement_salary" name="placement_salary"
+                            value="<?php echo !empty($placement)?$placement['placement_salary']:''?>">
+                    </div>
+                    <div class="form-group" id="pd">
+                        <label for="placement_date"><?php echo get_phrase('Placement Date'); ?><span
+                                class="required">*</span></label>
+                        <input type="date" class="form-control" id="placement_date" name="placement_date"
+                            value="<?php echo !empty($placement)?$placement['placement_date']:''?>" required>
+                    </div>
+                    <div class="form-group" id="td">
+                        <label for="tentative_date"><?php echo get_phrase('Tentative Date'); ?><span
+                                class="required">*</span></label>
+                        <input type="date" class="form-control" id="tentative_date" name="tentative_date"
+                            value="<?php echo !empty($placement)?$placement['tentative_date']:''?>">
+                    </div>
+                    <div class="form-group" id="ts">
+                        <label for="tentative_salary"><?php echo get_phrase('Tentative Salary'); ?><span
+                                class="required">*</span></label>
+                        <input type="number" class="form-control" id="tentative_salary" name="tentative_salary"
+                            value="<?php echo !empty($placement)?$placement['tentative_salary']:''?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hod"><?php echo get_phrase('hod'); ?><span class="required">*</span></label>
+                        <input type="text" class="form-control" id="hod" name="hod_id"
+                            value="<?php echo !empty($placement)?$placement['hod_id']:''?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status"><?php echo get_phrase('Status'); ?><span
+                                class="required">*</span></label>
+                        <select name="status" id="status" class="form-control">
+                            <option disabled selected>---Status---</option>
+                            <option value="placed" <?php if($placement['status'] == "placed"){ echo "selected"; }?>>
+                                Placed</option>
+                            <option value="pending"
+                                <?php if($placement['status'] == "pending"){ echo "selected"; }?>>Pending</option>
+                            <option value="left" <?php if($placement['status'] == "left"){ echo "selected"; }?>>Left
+                            </option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary"
+                        onclick="checkRequiredFields()"><?php echo get_phrase("submit"); ?></button>
+                </form>
+            </div>
+        </div> <!-- end card body-->
+    </div> <!-- end card -->
+</div><!-- end col-->
 </div>
 <script>
 $(function() {

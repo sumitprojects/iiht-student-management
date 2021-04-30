@@ -1399,6 +1399,7 @@
     "source_other": "Source other",
     "training_type": "Training type",
     "select_a_training_type": "Select a training type",
+<<<<<<< HEAD
     "add_new_designation": "Add new designation",
     "designation_list": "Designation list",
     "edit_this_designation": "Edit this designation",
@@ -1431,4 +1432,17 @@
     "registered_successfully": "Registered successfully",
     "register_user": "Register user",
     "hod_id": "Hod id"
+=======
+    "evaluation_list": "Evaluation list",
+    "training_type_list": "Training type list",
+    "add_new_training_type": "Add new training type",
+    "training_type_add_form": "Training type add form",
+    "purchased_course": "Purchased course",
+    "paid_amount": "Paid amount",
+    "purchased_date": "Purchased date",
+    "select_a_sms_template": "Select a sms template",
+    "write_new_messages": "Write new messages",
+    "recipient": "Recipient",
+    "sent_message": "Sent message"
+>>>>>>> 3a8df5e... evalution
 }

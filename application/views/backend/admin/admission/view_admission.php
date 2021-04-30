@@ -250,7 +250,7 @@ if(!empty(json_decode($user['address_detail']))){
                                                 <?php if (count($enquiry) > 0): ?>
                                                 <table id="inquiry-datatable"
                                                     class="table table-striped dt-responsive nowrap" data-filter="3,4,5"
-                                                    data-nofilter="6,7," width="100%" data-page-length='25'>
+                                                    data-nofilter="6,7" width="100%" data-page-length='25'>
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
@@ -368,8 +368,8 @@ if(!empty(json_decode($user['address_detail']))){
                                             <div class="table-responsive my-4">
                                                 <?php if (count($admission) > 0): ?>
                                                 <table id="enrol_history"
-                                                    class="table table-striped table-centered mb-0" data-filter="3,4,7"
-                                                    data-nofilter="8,">
+                                                    class="table table-striped" data-filter="3,4,7"
+                                                    data-nofilter="1,8">
                                                     <thead>
                                                         <tr>
                                                             <th><?php echo get_phrase('photo'); ?></th>
@@ -453,13 +453,13 @@ if(!empty(json_decode($user['address_detail']))){
                                         <div class="col-xl-10">
                                             <div class="table-responsive-sm my-4">
                                                 <?php if (count($assets) > 0): ?>
-                                                <table id="asset_for_users-datatable"
+                                                <table id="assetusers"
                                                     class="table table-striped dt-responsive nowrap" width="100%"
-                                                    data-page-length='25'>
+                                                    data-filter="3,4,5"  data-page-length='25'>
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th><?php echo get_phrase('Student'); ?></th>
+                                                            <th>ID</th>
+                                                            <th><?php echo get_phrase('student'); ?></th>
                                                             <th><?php echo get_phrase('assigned_asset'); ?></th>
                                                             <th><?php echo get_phrase('assigned_date'); ?></th>
                                                             <th><?php echo get_phrase('return_date'); ?></th>
@@ -506,6 +506,8 @@ if(!empty(json_decode($user['address_detail']))){
                                                                         </li>
                                                                     </ul>
                                                                 </div>
+                                                                <?php else: ?>
+                                                                    <span class="badge badge-primary">Retuned</span>
                                                                 <?php endif; ?>
                                                             </td>
                                                         </tr>
@@ -529,67 +531,67 @@ if(!empty(json_decode($user['address_detail']))){
                                 <div class="tab-pane" id="invoices">
                                     <div class="row justify-content-center">
                                         <div class="col-xl-10 my-4">
-                                        <div class="table-responsive-sm my-4">
-                                            <?php if (count($invoices) > 0): ?>
-                                            <table class="table" id="example3">
-                                                <thead>
-                                                    <tr>
-                                                        <th><?php echo get_phrase('photo'); ?></th>
-                                                        <th><?php echo get_phrase('user_name'); ?></th>
-                                                        <th><?php echo get_phrase('email'); ?></th>
-                                                        <th><?php echo get_phrase('purchased_course'); ?></th>
-                                                        <th><?php echo get_phrase('paid_amount'); ?></th>
-                                                        <th><?php echo get_phrase('payment_type'); ?></th>
-                                                        <th><?php echo get_phrase('purchased_date'); ?></th>
-                                                        <th><?php echo get_phrase('actions'); ?></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($invoices as $purchase):
-                          $user_data = $this->db->get_where('users', array('id' => $purchase['user_id']))->row_array();
+                                            <div class="table-responsive-sm my-4">
+                                                <?php if (count($invoices) > 0): ?>
+                                                <table class="table" id="invoicesdata">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><?php echo get_phrase('photo'); ?></th>
+                                                            <th><?php echo get_phrase('user_name'); ?></th>
+                                                            <th><?php echo get_phrase('email'); ?></th>
+                                                            <th><?php echo get_phrase('purchased_course'); ?></th>
+                                                            <th><?php echo get_phrase('paid_amount'); ?></th>
+                                                            <th><?php echo get_phrase('payment_type'); ?></th>
+                                                            <th><?php echo get_phrase('purchased_date'); ?></th>
+                                                            <th><?php echo get_phrase('actions'); ?></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($invoices as $purchase):
                           $course_data = $this->db->get_where('course', array('id' => $purchase['course_id']))->row_array();?>
-                                                    <tr class="gradeU">
-                                                        <td><img src="<?php echo base_url().'assets/user_image/'.$user_data['photo']; ?>"
-                                                                alt="" height="50" width="50"> </td>
-                                                        <td>
-                                                            <?php echo $user_data['first_name'].' '.$user_data['last_name']; ?>
-                                                        </td>
-                                                        <td><?php echo $user_data['email']; ?></td>
-                                                        <td><?php echo $course_data['title']; ?></td>
-                                                        <td><?php echo $purchase['amount']; ?></td>
-                                                        <td><?php echo $purchase['payment_type']; ?></td>
-                                                        <td><?php echo date('D, d-M-Y', $purchase['date_added']); ?>
-                                                        </td>
-                                                        <td>
-                                                            <div class="btn-group">
-                                                                <button
-                                                                    class="btn btn-small btn-white btn-demo-space"><?php echo get_phrase('action'); ?></button>
-                                                                <button
-                                                                    class="btn btn-small btn-white dropdown-toggle btn-demo-space"
-                                                                    data-toggle="dropdown"> <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu">
-                                                                    <li>
-                                                                        <a href="#"
-                                                                            onclick="confirm_modal('<?php echo site_url('admin/purchase_history/delete/'.$purchase['id']); ?>');">
-                                                                            <?php echo get_phrase('delete');?>
-                                                                        </a>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                            <?php endif; ?>
-                                            <?php if (count($invoices) == 0): ?>
-                                            <div class="img-fluid w-100 text-center">
-                                                <img style="opacity: 1; width: 100px;"
-                                                    src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>
-                                                <?php echo get_phrase('no_data_found'); ?>
-                                            </div>
-                                            <?php endif; ?>
+                                                        <tr class="gradeU">
+                                                            <td><img src="<?php echo $this->user_model->get_user_image_url($user['id']);?>"
+                                                                    alt="" height="50" width="50"> </td>
+                                                            <td>
+                                                                <?php echo $user['first_name'].' '.$user['last_name']; ?>
+                                                            </td>
+                                                            <td><?php echo $user['email']; ?></td>
+                                                            <td><?php echo $course_data['title']; ?></td>
+                                                            <td><?php echo $purchase['amount']; ?></td>
+                                                            <td><?php echo $purchase['payment_type']; ?></td>
+                                                            <td><?php echo date('D, d-M-Y', $purchase['date_added']); ?>
+                                                            </td>
+                                                            <td>
+                                                                <div class="btn-group">
+                                                                    <button
+                                                                        class="btn btn-small btn-white btn-demo-space"><?php echo get_phrase('action'); ?></button>
+                                                                    <button
+                                                                        class="btn btn-small btn-white dropdown-toggle btn-demo-space"
+                                                                        data-toggle="dropdown"> <span
+                                                                            class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                        <li>
+                                                                            <a href="#"
+                                                                                onclick="confirm_modal('<?php echo site_url('admin/purchase_history/delete/'.$purchase['id']); ?>');">
+                                                                                <?php echo get_phrase('delete');?>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                                <?php endif; ?>
+                                                <?php if (count($invoices) == 0): ?>
+                                                <div class="img-fluid w-100 text-center">
+                                                    <img style="opacity: 1; width: 100px;"
+                                                        src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>
+                                                    <?php echo get_phrase('no_data_found'); ?>
+                                                </div>
+                                                <?php endif; ?>
                                             </div>
 
                                         </div>
@@ -598,12 +600,13 @@ if(!empty(json_decode($user['address_detail']))){
                                 <div class="tab-pane" id="attendance">
                                     <div class="row justify-content-center">
                                         <div class="col-xl-10 my-3">
-                                            <h4 class="mb-3 header-title"><?php echo get_phrase('attendance_list'); ?></h4>
+                                            <h4 class="mb-3 header-title"><?php echo get_phrase('attendance_list'); ?>
+                                            </h4>
                                             <div class="table-responsive-sm my-4">
                                                 <?php if (count($attendance) > 0): ?>
                                                 <table id="attendance-datatable"
                                                     class="table table-striped dt-responsive nowrap" width="100%"
-                                                    data-page-length='25'>
+                                                    data-filter="1,2,3" data-nofilter="4," data-page-length='25'>
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
@@ -625,17 +628,6 @@ if(!empty(json_decode($user['address_detail']))){
                                                             </td>
                                                             <td>
                                                                 <strong><?php echo ellipsis($br['att_status']); ?></strong><br>
-                                                            </td>
-                                                            <td>
-                                                                <?php if ($br['status'] == 0): ?>
-                                                                <span class="badge badge-danger-lighten"
-                                                                    data-toggle="tooltip" data-placement="top" title=""
-                                                                    data-original-title="<?php echo get_phrase('disabled'); ?>"><?php echo get_phrase('disabled'); ?></span>
-                                                                <?php elseif ($br['status'] == 1):?>
-                                                                <span class="badge badge-success-lighten"
-                                                                    data-toggle="tooltip" data-placement="top" title=""
-                                                                    data-original-title="<?php echo get_phrase('active'); ?>"><?php echo get_phrase('active'); ?></span>
-                                                                <?php endif; ?>
                                                             </td>
                                                             <td>
                                                                 <div class="dropright dropright">
@@ -684,7 +676,6 @@ if(!empty(json_decode($user['address_detail']))){
                                                             <th>#</th>
                                                             <th><?php echo get_phrase('start_date'); ?></th>
                                                             <th><?php echo get_phrase('end_date'); ?></th>
-
                                                             <th><?php echo get_phrase('remark'); ?></th>
                                                             <th><?php echo get_phrase('att_status'); ?></th>
                                                             <th><?php echo get_phrase('status'); ?></th>

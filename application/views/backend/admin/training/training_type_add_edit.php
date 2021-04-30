@@ -11,7 +11,7 @@ if(!empty($param2)){
             <div class="card-body">
               <div class="col-lg-12">
                 <h4 class="mb-3 header-title"><?php echo get_phrase(!empty($source)?'training_type_edit_form':'training_type_add_form'); ?>
-                    <a href="<?php echo site_url('admin/source'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_source_list'); ?></a>
+                    <a href="<?php echo site_url('admin/training_type'); ?>" class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i class=" mdi mdi-keyboard-backspace"></i> <?php echo get_phrase('back_to_source_list'); ?></a>
                 </h4>
                 <form class="required-form" action="<?php echo site_url('admin/training_type/'.(!empty($source)?'edit':'add')); ?>" method="post">
                 <?php if(!empty($source)):?>
