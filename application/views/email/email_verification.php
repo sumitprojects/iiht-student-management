@@ -386,7 +386,7 @@
           }
         }
         
-        @media (prefers-color-scheme: dark) {
+        /* @media (prefers-color-scheme: dark) {
           body,
           .email-body,
           .email-body_inner,
@@ -413,7 +413,7 @@
           .email-masthead_name {
             text-shadow: none !important;
           }
-        }
+        } */
         </style>
     </head>
     <body>

@@ -2705,4 +2705,15 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
     }
+
+    public function email_template($page = 1){
+
+        $email_data['subject'] = "Password reset request";
+        $email_data['from'] = get_settings('system_email');
+        $email_data['to'] = '$email';
+        $email_data['to_name'] = 'Sample Data';
+        $email_data['message'] = 'Your password has been changed. Your new password is : <b style="cursor: pointer;"><u>123456</u></b><br />';
+
+        $this->load->view('email/common_template', $email_data);
+    }
 }

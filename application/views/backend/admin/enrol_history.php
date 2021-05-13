@@ -67,7 +67,7 @@
                                         <?php if($user_data['process_mode'] == 'online'):?>
                                             <span class="badge badge-primary"><?=get_phrase('online')?></span>  
                                             <?php else:?>
-                                          <span class="badge badge-primary"><?php echo $intern ? get_phrase('Admission'):get_phrase('Non Admission'); ?></span>
+                                          <span class="badge badge-primary"><?php echo ($enrol['is_training'] == 0 ? get_phrase('Admission'):get_phrase('Non Admission')); ?></span>
                                         <?php endif;?>
                                       </td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>

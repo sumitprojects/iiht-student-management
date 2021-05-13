@@ -2,7 +2,7 @@
   <div class="container margin_120_95">
     <div class="row">
       <div class="col-lg-5 col-md-12 p-r-5">
-        <p><img src="<?php echo base_url().'uploads/system/logo-light.png'; ?>" height="42" data-retina="true" alt=""></p>
+        <p><img src="<?php echo base_url('uploads/system/'.get_frontend_settings('light_logo')); ?>" style="width:100px;height:auto" data-retina="true" alt=""></p>
         <p><?php echo get_settings('slogan').'<br/>'.get_settings('address'); ?></p>
         <!-- <div class="follow_us">
           <ul>

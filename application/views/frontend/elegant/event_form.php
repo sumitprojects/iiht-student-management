@@ -1,8 +1,21 @@
-<div class="container margin_30_95">
+<?php
+$banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
+$about_us_banner = $banners['about_us_banner'];
+?>
+<section id="hero_in" class="general">
+	<div class="banner-img" style="background: url(<?php echo base_url($about_us_banner); ?>) center center no-repeat;"></div>
+	<div class="wrapper">
+		<div class="container">
+			<h1 class="fadeInUp"><span></span><?php echo get_phrase('event_registration'); ?></h1>
+		</div>
+	</div>
+</section>
+
+<div class="container margin_120_95">
     <div class="main_title_2">
         <span><em></em></span>
-        <h2><?php echo get_phrase('regisgtrtion_event'); ?></h2>
-        <p><?php echo get_phrase('get_category_wise_different_courses'); ?></p>
+        <h2><?php echo get_phrase('event_registration'); ?></h2>
+        <p><?php echo get_phrase('please_fill_all_detail'); ?></p>
     </div>
     <form action="<?= site_url('home/event_registration/'.$e_id.'/register') ?>" method="post">
         <input type="hidden" name="e_id" value="<?=$e_id ?>">

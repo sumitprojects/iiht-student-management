@@ -1261,7 +1261,7 @@ class Crud_model extends CI_Model
 
     public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "",$user_id = "")
     {
-        $this->db->select('en.id,en.user_id, en.course_id, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
+        $this->db->select('en.id,en.user_id, en.course_id,en.is_training, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
         $this->db->from('enrol as en');
         $this->db->join('payment as py','py.enrol_id = en.id','left');
         if(!empty($timestamp_start) && !empty($timestamp_end)){
@@ -2818,6 +2818,8 @@ class Crud_model extends CI_Model
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
         $data['hod_id']   = $this->input->post('hod_id');
+
+        $data['is_training'] = $this->input->post('admission_type');
         $data['training_type_id']   = $this->input->post('training_type_id');
         $data['training_cat_id']   = $this->input->post('training_cat_id');
         $data['final_price'] = $this->input->post('price');
