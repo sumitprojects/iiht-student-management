@@ -292,7 +292,7 @@ function initProgressBar(dataPercent) {
         circles[i].querySelector('.bar').style['stroke-dashoffset'] = totalProgress * progress / 100;
     }
 }
-
+$('#certificate_download_btn').attr('disabled','true');
 function getCertificateShareableUrl() {
     var user_id = '<?php echo $this->session->userdata('user_id'); ?>';
     var course_id = '<?php echo $course_id; ?>';
@@ -302,6 +302,7 @@ function getCertificateShareableUrl() {
         data : {user_id : user_id, course_id : course_id},
         success: function(response)
         {
+            $('#certificate_download_btn').removeAttr('disabled');
             $('#certificate_download_btn').attr('href', response);
         }
     });

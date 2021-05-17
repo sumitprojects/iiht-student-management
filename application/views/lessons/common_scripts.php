@@ -72,6 +72,7 @@ function getCurrentTime() {
     if (totalDuration == newProgress) {
       newProgress = 1;
       $('input#'+lesson_id).prop('checked', true);
+      $('input#'+lesson_id).attr('readonly',true);
     }
 
     // update the video prgress here.

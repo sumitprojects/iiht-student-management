@@ -26,6 +26,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student'); ?></th>
                                 <th><?php echo get_phrase('type'); ?></th>
                                 <th><?php echo get_phrase('department'); ?></th>
                                 <th><?php echo get_phrase('designation'); ?></th>
@@ -40,18 +41,23 @@
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
+                                    <strong><?php echo ellipsis($br['full_name']); ?></strong><br>
+                                </td>
+                                <td>
                                     <strong><?php echo ellipsis($br['type']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['department']); ?></strong><br>
+                                    <strong><?php echo ellipsis($br['dpname']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['designation']); ?></strong><br>
+                                    <strong><?php echo ellipsis($br['designation_name']); ?></strong><br>
                                 </td>
                                 <td>
+                                    <strong><?php echo ellipsis($br['tentative_salary']); ?></strong><br>
                                     <strong><?php echo ellipsis($br['placement_salary']); ?></strong><br>
                                 </td>
                                 <td>
+                                    <strong><?php echo ellipsis($br['tentative_date']); ?></strong><br>
                                     <strong><?php echo ellipsis($br['placement_date']); ?></strong><br>
                                 </td>
                                 <td>

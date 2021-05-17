@@ -417,24 +417,35 @@ class Crud_model extends CI_Model
       */
 
       public function get_placements($param1 = ""){
+        $this->db->select('p.*,des.designation as designation_name,dp.dpname, concat(u.first_name," ",last_name) as full_name');
+        $this->db->from('placement as p');
+        $this->db->join('manage_designation as des','des.id = p.designation');
+        $this->db->join('department as dp','dp.dpid = p.department');
+        $this->db->join('users as u','u.id = p.id');
         if ($param1 != "") {
-            $this->db->where('id', $param1);
+            $this->db->where('p.id', $param1);
         }
-        return $this->db->get('placement');
+        return $this->db->get();
     }
 
     public function add_placement()
     {
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
-        $data['department']   = strtoupper(html_escape($this->input->post('department')));
-        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
-        $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
-        $data['tentative_date']   = strtoupper(html_escape($this->input->post('tentative_date')));
-        $data['tentative_salary']   = strtoupper(html_escape($this->input->post('tentative_salary')));
-        $data['placement_date']   = strtoupper(html_escape($this->input->post('placement_date')));
-        $data['hod_id']   = strtoupper(html_escape($this->input->post('hod_id')));
-        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+        $data['department']   = (html_escape($this->input->post('department')));
+        $data['designation']   = (html_escape($this->input->post('designation')));
+        $data['salary_type'] = (html_escape($this->input->post('salary_type')));
+        $data['status']   = strtolower(html_escape($this->input->post('status')));
+        if($data['salary_type'] == '1'){
+            $data['tentative_date']   = (html_escape($this->input->post('placement_date')));
+            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));    
+            $data['status'] = 'pending';
+        }else{
+            $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
+            $data['placement_date']   = (html_escape($this->input->post('placement_date')));
+            $data['status'] = 'placed';
+        }
+        $data['hod_id']   = (html_escape($this->input->post('hod_id')));
 
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
@@ -450,14 +461,18 @@ class Crud_model extends CI_Model
     {
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
-        $data['department']   = strtoupper(html_escape($this->input->post('department')));
-        $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
-        $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
-        $data['tentative_date']   = strtoupper(html_escape($this->input->post('tentative_date')));
-        $data['tentative_salary']   = strtoupper(html_escape($this->input->post('tentative_salary')));
-        $data['placement_date']   = strtoupper(html_escape($this->input->post('placement_date')));
-        $data['hod']   = strtoupper(html_escape($this->input->post('hod')));
-        $data['status']   = strtoupper(html_escape($this->input->post('status')));
+        $data['department']   = (html_escape($this->input->post('department')));
+        $data['designation']   = (html_escape($this->input->post('designation')));
+        $data['salary_type'] = (html_escape($this->input->post('salary_type')));
+        if($data['salary_type'] == '1'){
+            $data['tentative_date']   = (html_escape($this->input->post('placement_date')));
+            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));    
+        }else{
+            $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
+            $data['placement_date']   = (html_escape($this->input->post('placement_date')));
+        }
+        $data['hod_id']   = (html_escape($this->input->post('hod_id')));
+        $data['status']   = strtolower(html_escape($this->input->post('status')));
 
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
@@ -471,6 +486,7 @@ class Crud_model extends CI_Model
         }
         return false;
     }
+
     public function delete_placement($param1 = "")
     {
         $data['status']   = 'left';
