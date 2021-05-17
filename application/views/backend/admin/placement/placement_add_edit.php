@@ -28,6 +28,19 @@ $placement = isset($placement)? $placement : null;
                             value="<?php echo $placement['id']; ?>" readonly>
                         <?php endif;?>
                         <div class="form-group">
+                            <label for="user_id"><?php echo get_phrase('student'); ?><span
+                                    class="required">*</span></label>
+                            <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
+                                required>
+                                <option value=""><?php echo get_phrase('select_a_student'); ?></option>
+                                <?php foreach ($user_list as $user): ?>
+                                <option value="<?php echo $user['id']; ?>"
+                                    <?php echo !empty($placement)? (($placement['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
+                                    <?php echo $user['first_name'].$user['last_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="type"><?php echo get_phrase('type'); ?><span class="required">*</span></label>
                             <select name="type" id="type" class="form-control" required>
                                 <option disabled selected>---Type---</option>
