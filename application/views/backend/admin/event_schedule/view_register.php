@@ -25,7 +25,7 @@ $register_user=$this->user_model->get_register_users($event_id)->result_array();
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($register_user) > 0): ?>
-                    <table id="event_schedule-datatable" class="table table-striped dt-responsive nowrap" width="100%"
+                    <table id="assetusers" class="table table-striped dt-responsive nowrap" width="100%"
                         data-page-length='25'>
                         <thead>
                             <tr>

@@ -175,6 +175,8 @@ class Crud_model extends CI_Model
         $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
 
+        $data['price']   = slugify(html_escape($this->input->post('price')));
+        $data['stock']   = slugify(html_escape($this->input->post('stock')));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $previous_data = $this->db->get('assets')->num_rows();
@@ -191,7 +193,9 @@ class Crud_model extends CI_Model
         $data['slug']   = slugify(html_escape($this->input->post('name')));
         $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
-        
+        $data['price']   = slugify(html_escape($this->input->post('price')));
+        $data['stock']   = slugify(html_escape($this->input->post('stock')));
+
 
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
@@ -251,6 +255,11 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $data['user_id']);
         $previous_data = $this->db->get('asset_for_users')->num_rows();
         
+
+        $asset = $this->get_assets($data['asset_id'])->row_array();
+        $asset['stock'] = $asset['stock'] -1;
+        $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
+
         if ($previous_data == 0){
             $this->db->insert('asset_for_users', $data);
             return true;
@@ -269,6 +278,13 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $data['user_id']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('asset_for_users')->num_rows();
+        if(!empty($data['return_date'])){
+            $asset = $this->get_assets($data['asset_id'])->row_array();
+            $asset['stock'] = $asset['stock'] +1;
+            unset($asset['id']);
+            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
+        }
+
         if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('asset_for_users', $data);

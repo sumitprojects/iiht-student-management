@@ -21,13 +21,14 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($assets) > 0): ?>
-                    <table id="assets-datatable" class="table table-striped dt-responsive nowrap" width="100%"
+                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
                         data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th><?php echo get_phrase('name'); ?></th>
-                                <th><?php echo get_phrase('description'); ?></th>
+                                <th><?php echo get_phrase('price'); ?></th>
+                                <th><?php echo get_phrase('stock'); ?></th>
                                 <th><?php echo get_phrase('returnable'); ?></th>
                                 <th><?php echo get_phrase('status'); ?></th>
                                 <th><?php echo get_phrase('actions'); ?></th>
@@ -41,7 +42,10 @@
                                     <strong><?php echo ellipsis($br['name']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['description']); ?></strong><br>
+                                    <strong><?php echo ellipsis($br['price']); ?></strong><br>
+                                </td>
+                                <td>
+                                    <strong><?php echo ellipsis($br['stock']); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong class="badge badge-info-lighten"><?php echo ellipsis($br['returnable'] == 1? 'Returnable':'Non-Returnable'); ?></strong><br>

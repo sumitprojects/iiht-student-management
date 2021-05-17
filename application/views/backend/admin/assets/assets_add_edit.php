@@ -42,6 +42,18 @@ if(!empty($param2)){
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="price"><?php echo get_phrase('price'); ?><span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control" id="price" name="price"
+                            value="<?php echo !empty($assets)?$assets['price']:''?>"  required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock"><?php echo get_phrase('stock'); ?><span
+                                    class="required">*</span></label>
+                            <input type="number" class="form-control" id="stock" name="stock"
+                            value="<?php echo !empty($assets)?$assets['stock']:''?>"  required>
+                        </div>
+                        <div class="form-group">
                             <label for="description"><?php echo get_phrase('description'); ?><span
                                     class="required">*</span></label>
                             <textarea name="description" id="description" class="form-control" cols="30" rows="10"

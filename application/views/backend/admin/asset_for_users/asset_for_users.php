@@ -21,7 +21,7 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($asset_for_users) > 0): ?>
-                    <table id="asset_for_users-datatable" class="table table-striped dt-responsive nowrap" width="100%"
+                    <table id="assetusers"  data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
                         data-page-length='25'>
                         <thead>
                             <tr>
