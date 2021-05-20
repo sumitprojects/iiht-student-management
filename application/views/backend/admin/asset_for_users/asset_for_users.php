@@ -68,6 +68,9 @@
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/asset_for_users_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_asset_for_users');?></a>
                                             </li>
+                                            <li><a class="dropdown-item"
+                                                    href="<?php echo site_url('admin/manage_asset_for_users/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_user');?></a>
+                                            </li>
                                         </ul>
                                     </div>
                                 <?php endif; ?>

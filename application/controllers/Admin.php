@@ -533,13 +533,8 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/manage_asset_for_users'), 'refresh');
          }
         else if ($param1 == "delete" ){
-            $this->crud_model->delete_assets($param2);
+            $this->crud_model->delete_asset_for_users($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
-            redirect(site_url('admin/manage_asset_for_users'), 'refresh');
-        }
-        else if ($param1 == "activate" ){
-            $this->crud_model->activate_assets($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
             redirect(site_url('admin/manage_asset_for_users'), 'refresh');
         }
         else{

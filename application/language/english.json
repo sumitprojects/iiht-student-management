@@ -1461,5 +1461,6 @@
     "select_a_returnable": "Select a returnable",
     "na": "Na",
     "select_a_status": "Select a status",
-    "delete_this_record": "Delete this record"
+    "delete_this_record": "Delete this record",
+    "delete_this_user": "Delete this user"
 }

@@ -298,10 +298,10 @@ class Crud_model extends CI_Model
     }
     public function delete_asset_for_users($param1 = "")
     {
-        $data['status']   = 0;
+        // $data['status']   = 0;
         $this->db->where('id', $param1);
-        $this->db->where('status', 1);
-        $this->db->update('asset_for_users', $data);
+        // $this->db->where('status', 1);
+        $this->db->delete('asset_for_users');
         return true;
     }
 
@@ -4257,6 +4257,7 @@ class Crud_model extends CI_Model
     public function add_asset_courses()
     {
         $assets = $_POST['asset_id'];
+       
         foreach($assets as $asset){
             $data['asset_id']   = $asset;
             $data['course_id']   = html_escape($this->input->post('course_id'));
@@ -4272,7 +4273,8 @@ class Crud_model extends CI_Model
     }
     public function edit_asset_courses($param1 = "")
     {
-            $data['asset_id']   = html_escape($this->input->post('asset_id'));
+            foreach($assets as $asset){
+            $data['asset_id']   = $asset;
             $data['course_id']   = html_escape($this->input->post('course_id'));
             $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
             $id   = html_escape($this->input->post('id'));
@@ -4281,6 +4283,7 @@ class Crud_model extends CI_Model
                 $this->db->where('id', $id);
                 $this->db->update('assets_for_course', $data);
             }
+        }
        return true;
     }
     public function delete_asset_course($param1 = "")
