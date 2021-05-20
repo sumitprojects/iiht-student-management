@@ -4243,10 +4243,11 @@ class Crud_model extends CI_Model
     public function edit_asset_courses($param1 = "")
     {
         $assets = $_POST['asset_id'];
+
         foreach($assets as $asset){
+            
             $data['asset_id']   = $asset;
             $data['course_id']   = html_escape($this->input->post('course_id'));
-            
             $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
             $id   = html_escape($this->input->post('id'));
             if ($previous_data == 0){
