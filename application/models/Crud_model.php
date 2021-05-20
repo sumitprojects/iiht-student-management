@@ -172,7 +172,6 @@ class Crud_model extends CI_Model
     {
         $data['name']   = strtoupper(html_escape($this->input->post('name')));
         $data['slug']   = slugify(html_escape($this->input->post('name')));
-        $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
 
         $data['price']   = slugify(html_escape($this->input->post('price')));
@@ -191,7 +190,6 @@ class Crud_model extends CI_Model
     {
         $data['name']   = strtoupper(html_escape($this->input->post('name')));
         $data['slug']   = slugify(html_escape($this->input->post('name')));
-        $data['returnable']   = strtoupper(html_escape($this->input->post('returnable')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
         $data['price']   = slugify(html_escape($this->input->post('price')));
         $data['stock']   = slugify(html_escape($this->input->post('stock')));
@@ -231,7 +229,7 @@ class Crud_model extends CI_Model
      * assets Crud Model
      */
     public function get_asset_for_users($param1 = "", $param2 = ""){
-        $this->db->select('af.*, users.id as uid, assets.name, assets.returnable ,upper(concat(users.first_name," ",last_name)) as full_name');
+        $this->db->select('af.*, users.id as uid, assets.name,upper(concat(users.first_name," ",last_name)) as full_name');
         $this->db->from('asset_for_users as af');
         $this->db->join('assets','assets.id = af.asset_id');
         $this->db->join('users', 'users.id = af.user_id');
@@ -247,24 +245,30 @@ class Crud_model extends CI_Model
     }
     public function add_asset_for_users()
     {
-        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
-        $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
-        $data['return_date']   = $this->input->post('return_date');
-
-        // CHECK IF THE ASSETS NAME ALREADY EXISTS
-        $this->db->where('user_id', $data['user_id']);
-        $previous_data = $this->db->get('asset_for_users')->num_rows();
-        
-
-        $asset = $this->get_assets($data['asset_id'])->row_array();
-        $asset['stock'] = $asset['stock'] -1;
-        $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
-
-        if ($previous_data == 0){
-            $this->db->insert('asset_for_users', $data);
-            return true;
+        $assets = $_POST['asset_id'];
+        foreach($assets as $asset){
+           
+            $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+            $data['asset_id']   = $asset;
+            $data['return_date']   = $this->input->post('return_date');
+            $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+            $data['status']  =  strtoupper(html_escape($this->input->post('status')));
+            $previous_data = $this->db->get_where('asset_for_users',$data)->num_rows();
+            if ($previous_data == 0){
+                $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+                $this->db->insert('asset_for_users', $data);
+            }
         }
-        return false;
+            return true;
+        
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        // $this->db->where('user_id', $data['user_id']);
+        // $previous_data = $this->db->get('asset_for_users')->num_rows();
+        // $asset = $this->get_assets($data['asset_id'])->row_array();
+        // $asset['stock'] = $asset['stock'] -1;
+        // $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
+
+        
     }
 
     public function edit_asset_for_users($param1 = "")
@@ -272,7 +276,7 @@ class Crud_model extends CI_Model
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
         $data['return_date']   = $this->input->post('return_date');
-
+        $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
@@ -1278,6 +1282,7 @@ class Crud_model extends CI_Model
             return $this->db->get('enrol');
         }
     }
+
 
     public function enrol_history_by_user_id($user_id = "")
     {
@@ -2857,18 +2862,30 @@ class Crud_model extends CI_Model
         $data['final_price'] = $this->input->post('price');
         $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
+       
+
         if ($check_enrol->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
             return false;
         } else {
-
-
             $data['enrol_status'] = 'active';
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $enrol_id = $this->db->insert_id();
-            
+
+            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->result_array();
+            if(is_array($assets)){
+                foreach ($assets as $value) {
+                    $as['user_id'] = $data['user_id'];
+                    $as['asset_id'] = $value['asset_id'];
+                    $as['status'] = 'Pending';
+                    $as['returnable'] = $value['returnable'];
+
+                    $this->db->insert('asset_for_users',$as);
+                }
+            }
+
             $payment['user_id'] = $this->input->post('user_id');
             $payment['course_id'] = $this->input->post('course_id');
             $payment['session_id'] = $this->input->post('session_id');
@@ -2914,6 +2931,19 @@ class Crud_model extends CI_Model
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
+
+            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->result_array();
+            if(is_array($assets)){
+                foreach ($assets as $value) {
+                    $as['user_id'] = $data['user_id'];
+                    $as['asset_id'] = $value['asset_id'];
+                    $as['status'] = 'Pending';
+                    $as['returnable'] = $value['returnable'];
+
+                    $this->db->insert('asset_for_users',$as);
+                }
+            }
+
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
         }
     }
@@ -4260,9 +4290,8 @@ class Crud_model extends CI_Model
     }
     public function delete_asset_course($param1 = "")
     {
-        $data['status']   = 'cancelled';
         $this->db->where('id', $param1);
-        $this->db->update('assets_for_course', $data);
+        $this->db->delete('assets_for_course');
         return true;
     }
    

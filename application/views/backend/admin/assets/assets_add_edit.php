@@ -31,17 +31,6 @@ if(!empty($param2)){
                             value="<?php echo !empty($assets)?$assets['name']:''?>"  required>
                         </div>
                         <div class="form-group">
-                            <label for="returnable"><?php echo get_phrase('returnable'); ?><span
-                                    class="required">*</span></label>
-                            <select name="returnable" id="returnable" class="form-control">
-                                <option disabled selected>---Returnable---</option>
-                                <option value="1" <?php if($assets['returnable']=='1'){ echo "selected"; }?>>
-                                    Yes</option>
-                                <option value="0" <?php if($assets['returnable']=='0'){ echo "selected"; }?>>No
-                                </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label for="price"><?php echo get_phrase('price'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" id="price" name="price"

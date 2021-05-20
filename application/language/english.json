@@ -1458,5 +1458,8 @@
     "add_asset_for_course": "Add asset for course",
     "back_to_asset_for_course_list": "Back to asset for course list",
     "edit_asset_for_course": "Edit asset for course",
-    "select_a_returnable": "Select a returnable"
+    "select_a_returnable": "Select a returnable",
+    "na": "Na",
+    "select_a_status": "Select a status",
+    "delete_this_record": "Delete this record"
 }

@@ -65,6 +65,9 @@
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_course/asset_for_course_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_asset_for_course');?></a>
                                             </li>
+                                            <li><a class="dropdown-item"
+                                                    href="<?php echo site_url('admin/manage_asset_for_course/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_record');?></a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </td>

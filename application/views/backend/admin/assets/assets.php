@@ -29,7 +29,7 @@
                                 <th><?php echo get_phrase('name'); ?></th>
                                 <th><?php echo get_phrase('price'); ?></th>
                                 <th><?php echo get_phrase('stock'); ?></th>
-                                <th><?php echo get_phrase('returnable'); ?></th>
+                                
                                 <th><?php echo get_phrase('status'); ?></th>
                                 <th><?php echo get_phrase('actions'); ?></th>
                             </tr>
@@ -47,9 +47,7 @@
                                 <td>
                                     <strong><?php echo ellipsis($br['stock']); ?></strong><br>
                                 </td>
-                                <td>
-                                    <strong class="badge badge-info-lighten"><?php echo ellipsis($br['returnable'] == 1? 'Returnable':'Non-Returnable'); ?></strong><br>
-                                </td>
+                               
                                 <td>
                                     <?php if ($br['status'] == 0): ?>
                                     <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top"

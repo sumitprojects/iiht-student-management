@@ -45,8 +45,8 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="asset_name"><?php echo get_phrase('asset_name'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="asset_id" id="asset_id" <?php echo !empty($asset_for_users)?'disabled':''?>
-                                required>
+                            <select class="form-control select2" data-toggle="select2" name="asset_id[]" id="asset_id" <?php echo !empty($asset_for_users)?'disabled':''?>
+                                required multiple>
                                 <option value=""><?php echo get_phrase('select_a_asset'); ?></option>
                                 <?php foreach ($asset_list as $asset): ?>
                                 <option value="<?php echo $asset['id']; ?>"
@@ -63,6 +63,26 @@ if(!empty($param2)){
                                 value="<?php echo !empty($asset_for_users)?$asset_for_users['return_date']:''?>" required>
                         </div>
                         <?php endif; ?>
+                        <div class="form-group">
+                            <label for="returnable"><?php echo get_phrase('returnable'); ?><span
+                                    class="required">*</span></label>
+                            <select class="form-control select2" data-toggle="select2" name="returnable" id="returnable" 
+                                required>
+                                <option value=""><?php echo get_phrase('select_a_returnable'); ?></option>
+                                <option value="0" <?php if($asset_for_users['returnable'] =='0') echo 'selected';?>>Yes</option>
+                                <option value="1" <?php if($asset_for_users['returnable'] =='1') echo 'selected';?>>No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status"><?php echo get_phrase('status'); ?><span
+                                    class="required">*</span></label>
+                            <select class="form-control select2" data-toggle="select2" name="status" id="status">
+                                
+                                <option value="Pending" <?php if($asset_for_users['status'] =='Pending') echo 'selected';?> >Pending</option>
+                                <option value="Returned" <?php if($asset_for_users['status'] =='Returned') echo 'selected';?>>Returned</option>
+                                <option value="Approved" <?php if($asset_for_users['status'] =='Approved') echo 'selected';?>>Approved</option>
+                            </select>
+                        </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase("submit"); ?></button>
                     </form>
