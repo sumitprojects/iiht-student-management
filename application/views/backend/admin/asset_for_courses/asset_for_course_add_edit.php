@@ -66,7 +66,7 @@ if(!empty($param2)){
                             <?php 
                             $course = $this->user_model->get_course($asset_for_courses['course_id'])->row_array();
                             ?>
-                            <input type="text" class="form-control" id="asset_id" name="asset_id"
+                            <input type="text" class="form-control" id="course_id" name="course_id"
                             value="<?php echo $course['title']; ?>" readonly>
                             
                         <?php endif; ?>
