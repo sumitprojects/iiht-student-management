@@ -4149,7 +4149,7 @@ class Crud_model extends CI_Model
         return true;
     }
     /*****
-     * designation Crud Model
+     * Event Shedule Crud Model
      */
     public function get_event_schedule($param1 = ""){
         if ($param1 != "") {
@@ -4213,6 +4213,55 @@ class Crud_model extends CI_Model
         $data['status']   = 'schedule';
         $this->db->where('id', $param1);
         $this->db->update('event_schedule', $data);
+        return true;
+    }
+
+    //assets for courses 
+    
+    public function get_asset_courses($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('assets_for_course');
+    }
+    public function add_asset_courses()
+    {
+        $assets = $_POST['asset_id'];
+        foreach($assets as $asset){
+            $data['asset_id']   = $asset;
+            $data['course_id']   = html_escape($this->input->post('course_id'));
+            
+            $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
+            if ($previous_data == 0){
+                $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+                $this->db->insert('assets_for_course', $data);
+            }
+        }
+        
+        return true;
+    }
+    public function edit_asset_courses($param1 = "")
+    {
+        $assets = $_POST['asset_id'];
+        foreach($assets as $asset){
+            $data['asset_id']   = $asset;
+            $data['course_id']   = html_escape($this->input->post('course_id'));
+            
+            $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
+            $id   = html_escape($this->input->post('id'));
+            if ($previous_data == 0){
+                $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+                $this->db->where('id', $id);
+                $this->db->update('assets_for_course', $data);
+            }
+        }       
+       return true;
+    }
+    public function delete_asset_course($param1 = "")
+    {
+        $data['status']   = 'cancelled';
+        $this->db->where('id', $param1);
+        $this->db->update('assets_for_course', $data);
         return true;
     }
    

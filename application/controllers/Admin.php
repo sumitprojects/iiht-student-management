@@ -2716,4 +2716,57 @@ class Admin extends CI_Controller {
 
         $this->load->view('email/common_template', $email_data);
     }
+
+
+    //Assets For Courses Controll
+    public function manage_asset_for_course($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+        if($param1 == 'asset_for_course_add_edit'){
+            $page_data['page_name'] = 'asset_for_courses/asset_for_course_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_asset_for_courses');
+            $page_data['asset_list'] =$this->user_model->get_asset()->result_array();
+            $page_data['course_list'] =$this->user_model->get_course()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+            
+        }else if($param1 == "add_asset_courses"){
+            $response= $this->crud_model->add_asset_courses();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_asset_for_course'), 'refresh');
+        }
+        else if($param1 == "edit_asset_courses"){
+            $response = $this->crud_model->edit_asset_courses($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_asset_for_course'), 'refresh');
+         }
+        else if ($param1 == "delete" ){
+            $this->crud_model->delete_asset_course($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_asset_for_course'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'asset_for_courses/asset_for_courses';
+            $page_data['page_title'] = get_phrase('asset_for_courses');
+            $page_data['asset_for_courses'] = $this->crud_model->get_asset_courses($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+   
+    }
 }

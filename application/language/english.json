@@ -1449,5 +1449,14 @@
     "please_fill_all_detail": "Please fill all detail",
     "instructor_courses": "Instructor courses",
     "placement_salary": "Placement salary",
-    "stock": "Stock"
+    "stock": "Stock",
+    "asset_for_courses": "Asset for courses",
+    "add_new_asset_for_course": "Add new asset for course",
+    "asset_for_courses_list": "Asset for courses list",
+    "edit_this_asset_for_courses": "Edit this asset for courses",
+    "edit_this_asset_for_course": "Edit this asset for course",
+    "add_asset_for_course": "Add asset for course",
+    "back_to_asset_for_course_list": "Back to asset for course list",
+    "edit_asset_for_course": "Edit asset for course",
+    "select_a_returnable": "Select a returnable"
 }
