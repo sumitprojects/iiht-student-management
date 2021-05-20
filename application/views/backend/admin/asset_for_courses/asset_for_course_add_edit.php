@@ -21,55 +21,32 @@ if(!empty($param2)){
                         method="post">
                         <input type="hidden" class="form-control" id="id" name="id"
                             value="<?php echo $asset_for_courses['id']; ?>" readonly>
-                        <?php if(empty($asset_for_courses['asset_id'])): ?>
+                
                         <div class="form-group">
                             <label for="asset_name"><?php echo get_phrase('asset_name'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="asset_id[]" id="asset_id" multiple                   required >
+                            <select class="form-control select2" data-toggle="select2" name="asset_id[]" id="asset_id" <?php echo !empty($asset_for_courses)?'disabled':''?> multiple required >
                             <option value="" disabled><?php echo get_phrase('select_a_asset'); ?></option>
-                                <?php
-                                foreach ($asset_list as $asset): ?>
-                                <option value="<?php echo $asset['id']; ?>">
+                                <?php foreach ($asset_list as $asset): ?>
+                                <option value="<?php echo $asset['id']; ?>"
+                                    <?php echo !empty($asset_for_courses)? (($asset_for_courses['asset_id'] == $asset['id'])? 'selected':'') : ''; ?>>
                                     <?php echo $asset['name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            
                         </div>
-                        <?php else: ?>
-                            <div class="form-group">
-                            <label for="asset_name"><?php echo get_phrase('asset_name'); ?><span
-                            class="required">*</span></label>
-                            <?php 
-                            $asset = $this->user_model->get_asset($asset_for_courses['asset_id'])->row_array();
-                            ?>
-                            <input type="text" class="form-control" id="asset_id" name="asset_id"
-                            value="<?php echo $asset['name']; ?>" readonly>
-                            
-                        <?php endif; ?>
-                        <?php if(empty($asset_for_courses['course_id'])): ?>
                         <div class="form-group">
                             <label for="course_name"><?php echo get_phrase('course_name'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="course_id" id="course_id" 
+                            <select class="form-control select2" data-toggle="select2" name="course_id" id="course_id" <?php echo !empty($asset_for_courses)?'disabled':''?>
                                 required>
                                 <option value=""><?php echo get_phrase('select_a_course'); ?></option>
                                 <?php foreach ($course_list as $course): ?>
-                                <option value="<?php echo $course['id']; ?>">
+                                <option value="<?php echo $course['id']; ?>"
+                                    <?php echo !empty($asset_for_courses)? (($asset_for_courses['course_id'] == $course['id'])? 'selected':'') : ''; ?>>
                                     <?php echo $course['title']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <?php else: ?>
-                            <div class="form-group">
-                            <label for="course_name"><?php echo get_phrase('course_name'); ?><span
-                            class="required">*</span></label>
-                            <?php 
-                            $course = $this->user_model->get_course($asset_for_courses['course_id'])->row_array();
-                            ?>
-                            <input type="text" class="form-control" id="course_id" name="course_id"
-                            value="<?php echo $course['title']; ?>" readonly>
-                            
-                        <?php endif; ?>
                         <div class="form-group">
                             <label for="returnable"><?php echo get_phrase('returnable'); ?><span
                                     class="required">*</span></label>
