@@ -21,8 +21,8 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($asset_for_courses) > 0): ?>
-                    <table id="assetusers"  data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
-                        data-page-length='25'>
+                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap"
+                        width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -30,7 +30,7 @@
                                 <th><?php echo get_phrase('courses'); ?></th>
                                 <th><?php echo get_phrase('returnable'); ?></th>
                                 <th><?php echo get_phrase('action'); ?></th>
-                               
+
                             </tr>
                         </thead>
                         <tbody>
@@ -38,22 +38,22 @@
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
-                                <?php
+                                    <?php
                                  $asset = $this->user_model->get_asset($br['asset_id'])->row_array();
                                     ?>
                                     <strong><?php echo ellipsis($asset['name']);?></strong><br>
                                 </td>
                                 <td>
-                                <?php
+                                    <?php
                                  $course = $this->user_model->get_course($br['course_id'])->row_array();
                                     ?>
                                     <strong><?php echo ellipsis($course['title']);?></strong><br>
                                 </td>
-                               
+
                                 <td>
                                     <strong><?php echo date($br['returnable']); ?></strong><br>
                                 </td>
-                             
+
                                 <td>
                                     <div class="dropright dropright">
                                         <button type="button"
