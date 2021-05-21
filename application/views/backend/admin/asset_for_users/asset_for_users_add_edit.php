@@ -112,6 +112,7 @@ if(!empty($param2)){
                         </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase("submit"); ?></button>
+                        
                     </form>
                 </div>
             </div> <!-- end card body-->

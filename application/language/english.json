@@ -1462,5 +1462,9 @@
     "na": "Na",
     "select_a_status": "Select a status",
     "delete_this_record": "Delete this record",
-    "delete_this_user": "Delete this user"
+    "delete_this_user": "Delete this user",
+    "add_penalty": "Add penalty",
+    "assets_add_penalty": "Assets add penalty",
+    "date_of_penalty": "Date of penalty",
+    "added_by": "Added by"
 }

@@ -538,6 +538,7 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
             redirect(site_url('admin/manage_asset_for_users'), 'refresh');
         }
+       
         else{
             $page_data['page_name'] = 'asset_for_users/asset_for_users';
             $page_data['page_title'] = get_phrase('asset_for_users');
@@ -547,7 +548,27 @@ class Admin extends CI_Controller {
    
     }
 
-
+    //penalty
+    public function manage_asset_for_penalty($param1 = "", $param2 = "")
+    {
+        if($param1 == 'assets_add_penalty'){
+            $page_data['page_name'] = 'asset_for_users/assets_add_penalty';
+            $page_data['page_title'] = get_phrase('assets_add_penalty');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data); 
+        }
+        elseif($param1== 'add'){
+            $response= $this->crud_model->assets_add_penalty();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_asset_for_users'), 'refresh');
+        }
+    }
     //Placement Controll
     public function manage_placement($param1 = "", $param2 = ""){
         if ($this->session->userdata('admin_login') != true) {

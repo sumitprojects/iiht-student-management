@@ -72,6 +72,9 @@
                                             </li>
                                             <?php endif; ?>
                                             <li><a class="dropdown-item"
+                                                    href="<?php echo site_url('admin/manage_asset_for_penalty/assets_add_penalty/'.$br['id']); ?>"><?php echo get_phrase('add_penalty');?></a>
+                                            </li>
+                                            <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_user');?></a>
                                             </li>
                                         </ul>

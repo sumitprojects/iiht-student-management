@@ -305,7 +305,19 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    
+    public function assets_add_penalty(){
+        $data['asset_id']  = html_escape($this->input->post('asset_id'));
+        $data['user_id'] = html_escape($this->input->post('user_id'));
+        $data['price']  =  (html_escape($this->input->post('price')));
+        $data['date_of_penalty']  =  (html_escape($this->input->post('date_of_penalty')));
+        $data['added_by'] = $this->session->userdata('user_id');
+        $data['remark']  =  (html_escape($this->input->post('remark')));
+        $previous_data = $this->db->get_where('penalty',$data)->num_rows();
+            if ($previous_data == 0){
+                $this->db->insert('penalty', $data);
+            }
+            return true;
+    }
 
         /*****
      * training_cat Crud Model
