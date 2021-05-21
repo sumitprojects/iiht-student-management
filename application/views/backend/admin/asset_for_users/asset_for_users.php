@@ -47,9 +47,9 @@
                                     <strong><?php echo date($br['asset_date']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <?php if($br['returnable'] && !empty($br['return_date'])):?>
+                                    <?php if($br['returnable']=='0' && !empty($br['return_date'])):?>
                                         <strong><?php echo date($br['asset_date']); ?></strong>
-                                    <?php elseif($br['returnable'] && empty($br['return_date'])): ?>
+                                    <?php elseif($br['returnable']=='1' && empty($br['return_date'])): ?>
                                         <span class="badge badge-danger-lighten"><?php echo get_phrase('asset_not_retuned'); ?></span>
                                     <?php else: ?>
                                         <span class="badge badge-info-lighten"><?php echo get_phrase('NA'); ?></span>
@@ -57,7 +57,7 @@
 
                                 </td>
                                 <td>
-                                <?php if($br['returnable'] && empty($br['return_date'])): ?>
+                                
                                     <div class="dropright dropright">
                                         <button type="button"
                                             class="btn btn-sm btn-outline-primary btn-rounded btn-icon"
@@ -65,15 +65,17 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
+                                        <?php if($br['returnable']=='1' && empty($br['return_date'])): ?>
+
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/asset_for_users_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_asset_for_users');?></a>
                                             </li>
+                                            <?php endif; ?>
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_user');?></a>
                                             </li>
                                         </ul>
                                     </div>
-                                <?php endif; ?>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -92,3 +94,4 @@
         </div>
     </div>
 </div>
+

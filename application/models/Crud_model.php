@@ -274,15 +274,13 @@ class Crud_model extends CI_Model
         $data['return_date']   = $this->input->post('return_date');
         $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
         $data['status']  =  (html_escape($this->input->post('status')));
-
         $id   = html_escape($this->input->post('id'));
         $this->db->where('user_id', $data['user_id']);
         $this->db->where('asset_id', $data['asset_id']);
-        
         $previous_data = $this->db->get('asset_for_users')->row_array();
           
         if($data['status']=='Approved' && $previous_data['status']== 'Pending'){
-            $this->db->where('user_id', $data['user_id']);
+            
             $asset = $this->get_assets($data['asset_id'])->row_array();
             $asset['stock'] = $asset['stock'] -1;
             $this->db->update('assets', $asset, ['id' => $data['asset_id']]);   

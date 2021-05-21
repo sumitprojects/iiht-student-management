@@ -51,7 +51,7 @@ if(!empty($param2)){
                                 value="<?php echo $user['first_name'].' '.$user['last_name']; ?>" readonly>
                         </div>
                         <?php endif;?>
-                        <?php if(empty($asset_for_users['asset_id'])): ?>
+                        <?php if(empty($asset_for_users['asset_id'])): ?>   
                         <div class="form-group">
                             <label for="asset_name"><?php echo get_phrase('asset_name'); ?><span
                                     class="required">*</span></label>
