@@ -304,8 +304,14 @@ class Crud_model extends CI_Model
         $this->db->delete('asset_for_users');
         return true;
     }
-    
+
     //Penalty Add
+    public function get_penalty($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('penalty');
+    }
     public function assets_add_penalty(){
         $data['asset_id']  = html_escape($this->input->post('asset_id'));
         $data['user_id'] = html_escape($this->input->post('user_id'));

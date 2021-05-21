@@ -573,6 +573,12 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
             redirect(site_url('admin/manage_asset_for_users'), 'refresh');
         }
+        else{
+            $page_data['page_name'] = 'asset_for_users/view_penalty';
+            $page_data['page_title'] = get_phrase('view_penalty');
+            $page_data['asset_for_penalty'] = $this->crud_model->get_penalty($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
     }
     //Placement Controll
     public function manage_placement($param1 = "", $param2 = ""){
