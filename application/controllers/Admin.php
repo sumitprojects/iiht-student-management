@@ -568,6 +568,11 @@ class Admin extends CI_Controller {
             }
             redirect(site_url('admin/manage_asset_for_users'), 'refresh');
         }
+        elseif($param1 == 'delete'){
+            $this->crud_model->delete_penalty($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_asset_for_users'), 'refresh');
+        }
     }
     //Placement Controll
     public function manage_placement($param1 = "", $param2 = ""){

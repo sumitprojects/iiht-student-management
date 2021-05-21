@@ -1466,5 +1466,6 @@
     "add_penalty": "Add penalty",
     "assets_add_penalty": "Assets add penalty",
     "date_of_penalty": "Date of penalty",
-    "added_by": "Added by"
+    "added_by": "Added by",
+    "delete_this_user_penalty": "Delete this user penalty"
 }
