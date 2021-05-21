@@ -252,7 +252,7 @@ class Crud_model extends CI_Model
             $data['asset_id']   = $asset;
             $data['return_date']   = $this->input->post('return_date');
             $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
-            $data['status']  =  strtoupper(html_escape($this->input->post('status')));
+            $data['status']  =  (html_escape($this->input->post('status')));
             $previous_data = $this->db->get_where('asset_for_users',$data)->num_rows();
             if ($previous_data == 0){
                 $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
@@ -262,39 +262,41 @@ class Crud_model extends CI_Model
             return true;
         
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
-        // $this->db->where('user_id', $data['user_id']);
-        // $previous_data = $this->db->get('asset_for_users')->num_rows();
-        // $asset = $this->get_assets($data['asset_id'])->row_array();
-        // $asset['stock'] = $asset['stock'] -1;
-        // $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
+         
 
         
     }
 
     public function edit_asset_for_users($param1 = "")
     {
-        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
+        $data['user_id']   = $this->input->post('user_id');
         $data['asset_id']   = slugify(html_escape($this->input->post('asset_id')));
         $data['return_date']   = $this->input->post('return_date');
         $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+        $data['status']  =  (html_escape($this->input->post('status')));
+
         $id   = html_escape($this->input->post('id'));
-        // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
-        $this->db->where('id !=', $id);
-        $previous_data = $this->db->get('asset_for_users')->num_rows();
-        if(!empty($data['return_date'])){
+        $this->db->where('asset_id', $data['asset_id']);
+        
+        $previous_data = $this->db->get('asset_for_users')->row_array();
+          
+        if($data['status']=='Approved' && $previous_data['status']== 'Pending'){
+            $this->db->where('user_id', $data['user_id']);
+            $asset = $this->get_assets($data['asset_id'])->row_array();
+            $asset['stock'] = $asset['stock'] -1;
+            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);   
+        }
+        if(!empty($data['return_date']) && $data['status']=='Approved'){
             $asset = $this->get_assets($data['asset_id'])->row_array();
             $asset['stock'] = $asset['stock'] +1;
             unset($asset['id']);
             $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
         }
-
-        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('asset_for_users', $data);
             return true;
-        }
-        return false;
+        
     }
     public function delete_asset_for_users($param1 = "")
     {
@@ -4273,17 +4275,17 @@ class Crud_model extends CI_Model
     }
     public function edit_asset_courses($param1 = "")
     {
-            foreach($assets as $asset){
-            $data['asset_id']   = $asset;
-            $data['course_id']   = html_escape($this->input->post('course_id'));
-            $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
+            $asset_id   = html_escape($this->input->post('asset_id'));
+            $course_id = html_escape($this->input->post('course_id'));
+            $data['returnable']  =  (html_escape($this->input->post('returnable')));
+          
             $id   = html_escape($this->input->post('id'));
-            if ($previous_data == 0){
-                $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
-                $this->db->where('id', $id);
-                $this->db->update('assets_for_course', $data);
-            }
-        }
+           
+            $this->db->where('id', $id);
+            $this->db->where('asset_id', $asset_id);
+            $this->db->where('course_id', $course_id);
+            $this->db->update('assets_for_course', $data);
+    
        return true;
     }
     public function delete_asset_course($param1 = "")

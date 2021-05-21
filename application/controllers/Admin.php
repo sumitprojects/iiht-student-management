@@ -525,6 +525,7 @@ class Admin extends CI_Controller {
         }
         else if($param1 == "edit_asset_for_users"){
             $response = $this->crud_model->edit_asset_for_users($param2);
+            
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
             }else{
