@@ -65,7 +65,7 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                        <?php if($br['returnable']=='1' && empty($br['return_date'])): ?>
+                                <?php if($br['returnable']=='1' && empty($br['return_date'] && $br['return_date']=='NA')): ?>
 
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/asset_for_users_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_asset_for_users');?></a>
