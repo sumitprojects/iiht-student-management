@@ -549,7 +549,7 @@ class Admin extends CI_Controller {
     }
 
     //penalty
-    public function manage_asset_for_penalty($param1 = "", $param2 = "")
+    public function manage_asset_for_penalty($param1 = "", $param2 = "",$param3 = "")
     {
         if($param1 == 'assets_add_penalty'){
             $page_data['page_name'] = 'asset_for_users/assets_add_penalty';
@@ -576,7 +576,7 @@ class Admin extends CI_Controller {
         else{
             $page_data['page_name'] = 'asset_for_users/view_penalty';
             $page_data['page_title'] = get_phrase('view_penalty');
-            $page_data['asset_for_penalty'] = $this->crud_model->get_penalty($param2)->result_array();
+            $page_data['asset_for_penalty'] = $this->crud_model->get_penalty_by_user_asset($param2,$param3)->result_array();
             $this->load->view('backend/index', $page_data);     
         }
     }

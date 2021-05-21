@@ -306,9 +306,10 @@ class Crud_model extends CI_Model
     }
 
     //Penalty Add
-    public function get_penalty($param1 = ""){
-        if ($param1 != "") {
-            $this->db->where('id', $param1);
+    public function get_penalty_by_user_asset($param1 = "",$param2=""){
+        if ($param1 != "" && $param2!= "") {
+            $this->db->where('asset_id', $param1);
+            $this->db->where('user_id', $param2);
         }
         return $this->db->get('penalty');
     }

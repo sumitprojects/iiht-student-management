@@ -2,7 +2,14 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                
+            <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i>
+                    <?php echo get_phrase('asset_for_penalty'); ?>
+                    <!-- href="<?php //echo site_url('admin/asset_for_users_form/add_asset_for_users'); ?>" -->
+                    <a href="<?php echo site_url('admin/manage_asset_for_users'); ?>"
+                            class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i
+                                class=" mdi mdi-keyboard-backspace"></i>
+                            <?php echo get_phrase('back_to_asset_for_users_list'); ?></a>
+                </h4>
             </div> <!-- end card body-->
         </div> <!-- end card -->
     </div><!-- end col-->
@@ -39,11 +46,15 @@
                                     <strong><?php echo ellipsis($br['asset_id']); ?></strong><br>
                                 </td>
                                 <td>
+                                    <strong><?php echo ellipsis($br['price']); ?></strong><br>
+                                </td>
+                                <td>
+                                    <strong><?php echo ellipsis($br['date_of_penalty']); ?></strong><br>
+                                </td>
+                                <td>
                                     <strong><?php echo date($br['remark']); ?></strong><br>
                                 </td>
-                                
                                 <td>
-                                
                                     <div class="dropright dropright">
                                         <button type="button"
                                             class="btn btn-sm btn-outline-primary btn-rounded btn-icon"
@@ -53,7 +64,7 @@
                                         <ul class="dropdown-menu">
                                           
                                             <li><a class="dropdown-item"
-                                                    href="<?php echo site_url('admin/manage_assets_for_penalty/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_penalty');?></a>
+                                                    href="<?php echo site_url('admin/manage_asset_for_penalty/delete/'.$br['id']); ?>"><?php echo get_phrase('delete_this_penalty');?></a>
                                             </li>
 
                                         </ul>
@@ -64,7 +75,7 @@
                         </tbody>
                     </table>
                     <?php endif; ?>
-                    <?php if (count($assets_for_penalty) == 0): ?>
+                    <?php if (count($asset_for_penalty) == 0): ?>
                     <div class="img-fluid w-100 text-center">
                         <img style="opacity: 1; width: 100px;"
                             src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>

@@ -1470,5 +1470,7 @@
     "delete_this_user_penalty": "Delete this user penalty",
     "view_penalty": "View penalty",
     "asset_for_penalty": "Asset for penalty",
-    "asset_for_penalty_list": "Asset for penalty list"
+    "asset_for_penalty_list": "Asset for penalty list",
+    "delete_this_penalty": "Delete this penalty",
+    "add_new_asset_for_penalty": "Add new asset for penalty"
 }
