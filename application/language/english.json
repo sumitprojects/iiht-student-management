@@ -1472,5 +1472,11 @@
     "asset_for_penalty": "Asset for penalty",
     "asset_for_penalty_list": "Asset for penalty list",
     "delete_this_penalty": "Delete this penalty",
-    "add_new_asset_for_penalty": "Add new asset for penalty"
+    "add_new_asset_for_penalty": "Add new asset for penalty",
+    "leave_request": "Leave request",
+    "leave_apply": "Leave apply",
+    "please_login": "Please login",
+    "view_apply": "View apply",
+    "apply_leave_list": "Apply leave list",
+    "edit_this_apply_leave": "Edit this apply leave"
 }

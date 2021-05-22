@@ -93,6 +93,7 @@ class Crud_model extends CI_Model
         }
         return $this->db->get('manage_leave');
     }
+    
     public function add_leave()
     {
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));

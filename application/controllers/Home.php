@@ -990,4 +990,33 @@ class Home extends CI_Controller {
         $page_data['page_title'] = 'event registration form';
         $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
     }
+    public function leave_apply($param1 = '' ,$param2 = ''){
+    if($this->session->userdata('user_login') != '1'){
+        $this->session->set_flashdata('error_message', get_phrase('please_login'));
+        redirect(site_url('home'), 'refresh');
+    }
+        if($param1 == 'leave'){
+            $data['user_id']   =$this->session->userdata('user_id');
+            $data['start_date']   =html_escape($this->input->post('start_date'));
+            $data['end_date']   = html_escape($this->input->post('end_date'));
+            $data['reason']   = html_escape($this->input->post('reason'));
+            $data['att_status']   = 'pending';
+           
+            $this->db->insert('manage_leave', $data);
+            $this->session->set_flashdata('flash_message', get_phrase('registered_successfully'));
+            redirect(site_url('home'), 'refresh');
+        }
+        else if($param1 == 'request'){
+            $page_data['u_id'] = $param2;
+            $page_data['page_name'] = 'leave_apply';
+            $page_data['page_title'] = 'leave apply form';
+        }
+        else{
+        $page_data['u_id'] = $param1;
+        $page_data['page_name'] = 'view_apply';
+        $page_data['page_title'] = 'view apply form';
+        }
+        $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+    }
+    
 }
