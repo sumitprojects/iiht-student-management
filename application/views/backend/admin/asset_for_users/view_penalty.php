@@ -40,10 +40,16 @@
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['user_id']); ?></strong><br>
+                                <?php
+                                 $user = $this->user_model->get_all_user($br['user_id'])->row_array();
+                                    ?>
+                                    <strong><?php echo ellipsis($user['first_name'].' '.$user['last_name']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['asset_id']); ?></strong><br>
+                                <?php
+                                 $asset = $this->user_model->get_asset($br['asset_id'])->row_array();
+                                    ?>
+                                    <strong><?php echo ellipsis($asset['name']); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['price']); ?></strong><br>
