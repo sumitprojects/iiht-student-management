@@ -78,7 +78,6 @@ $placement = isset($placement)? $placement : null;
                         </div>
                         <?php endif;?>
 
-
                         <div class="form-group" id="ps">
                             <label for="placement salary"><?php echo get_phrase('placement_salary'); ?><span
                                     class="required">*</span></label>

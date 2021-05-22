@@ -176,15 +176,14 @@ class Crud_model extends CI_Model
 
         $data['price']   = slugify(html_escape($this->input->post('price')));
         $data['stock']   = slugify(html_escape($this->input->post('stock')));
-        // CHECK IF THE ASSETS NAME ALREADY EXISTS
-        $this->db->where('slug', $data['slug']);
-        $previous_data = $this->db->get('assets')->num_rows();
+       
+        $previous_data = $this->db->get_where('assets',$data)->num_rows();
+        // $previous_data = $this->db->get('assets')->num_rows();
         
         if ($previous_data == 0){
             $this->db->insert('assets', $data);
-            return true;
         }
-        return false;
+        return true;
     }
     public function edit_assets($param1 = "")
     {
@@ -463,11 +462,11 @@ class Crud_model extends CI_Model
       */
 
       public function get_placements($param1 = ""){
-        $this->db->select('p.*,des.designation as designation_name,dp.dpname, concat(u.first_name," ",last_name) as full_name');
+        $this->db->select('p.*,des.designation as designation_name,dp.dpname, concat(u.first_name," ",u.last_name) as full_name');
         $this->db->from('placement as p');
         $this->db->join('manage_designation as des','des.id = p.designation');
         $this->db->join('department as dp','dp.dpid = p.department');
-        $this->db->join('users as u','u.id = p.id');
+        $this->db->join('users as u','u.id = p.user_id');
         if ($param1 != "") {
             $this->db->where('p.id', $param1);
         }
@@ -480,8 +479,10 @@ class Crud_model extends CI_Model
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['department']   = (html_escape($this->input->post('department')));
         $data['designation']   = (html_escape($this->input->post('designation')));
-        $data['salary_type'] = (html_escape($this->input->post('salary_type')));
+        $data['salary_type']   = (html_escape($this->input->post('salary_type')));
+        
         $data['status']   = strtolower(html_escape($this->input->post('status')));
+        //1=no-salary && 0=salary
         if($data['salary_type'] == '1'){
             $data['tentative_date']   = (html_escape($this->input->post('placement_date')));
             $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));    
