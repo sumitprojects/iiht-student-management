@@ -250,6 +250,7 @@ class User_model extends CI_Model {
             $enrol['price'] = $this->input->post('price');
             $enrol['is_training'] = $this->input->post('is_training') == 1? 1 : 0;
             $enrol['hod_id'] = html_escape($this->input->post('hod_id'));
+            $enrol['instructor_id'] = html_escape($this->input->post('instructor_id'));
             $enrol['training_cat_id'] = html_escape($this->input->post('training_cat_id'));
             $enrol['training_type_id'] = html_escape($this->input->post('training_type_id'));
             if(empty($data['en_id'])){

@@ -2883,7 +2883,7 @@ class Crud_model extends CI_Model
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
         $data['hod_id']   = $this->input->post('hod_id');
-
+        $data['instructor_id'] = $this->input->post('instructor_id');
         $data['is_training'] = $this->input->post('admission_type');
         $data['training_type_id']   = $this->input->post('training_type_id');
         $data['training_cat_id']   = $this->input->post('training_cat_id');
@@ -2902,7 +2902,7 @@ class Crud_model extends CI_Model
             $this->db->insert('enrol', $data);
             $enrol_id = $this->db->insert_id();
 
-            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->result_array();
+            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->get()->result_array();
             if(is_array($assets)){
                 foreach ($assets as $value) {
                     $as['user_id'] = $data['user_id'];

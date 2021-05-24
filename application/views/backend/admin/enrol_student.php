@@ -78,9 +78,25 @@ $invoicetypes = array(
                                 <option value="1">Non-Admission</option>
                             </select>
                         </div>
-                        
+                        <div class="form-group">
+                            <label
+                                for="instructor"><?php echo get_phrase('instructor').' ('.currency_code_and_symbol().')'; ?></label>
+                            <select class="form-control select2" data-toggle="select2" name="instructor_id" id="instructor_id">
+                                <option value=""><?php echo get_phrase('select_a_instructor'); ?>
+                                </option>
+                                <?php 
+                                    $instructors=$this->user_model->get_instructor()->result_array();
+                                    
+                                    foreach ($instructors as $inst): ?>
+                                <option value="<?php echo $inst['is_instructor']; ?>">
+                                    <?php echo $inst['first_name'].' '.$inst['last_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
                         <div class="form-group" id="hod">
-                            <label for="hod_id"><?php echo get_phrase('hod_id'); ?><span class="required">*</span></label>
+                            <label for="hod_id"><?php echo get_phrase('hod_id'); ?><span
+                                    class="required">*</span></label>
                             <select class="form-control select2" data-toggle="select2" name="hod_id" id="hod_id">
                                 <option value=""><?php echo get_phrase('select_a_hod'); ?>
                                 </option>
@@ -97,7 +113,7 @@ $invoicetypes = array(
                             <label for="training_cat_id"><?php echo get_phrase('training_category'); ?><span
                                     class="required">*</span></label>
 
-                            <select class="form-control select2" data-toggle="select2"  name="training_cat_id"
+                            <select class="form-control select2" data-toggle="select2" name="training_cat_id"
                                 id="training_cat_id">
                                 <option value="">
                                     <?php echo get_phrase('select_a_training_category'); ?>
@@ -115,7 +131,7 @@ $invoicetypes = array(
                             <label for="training_type_id"><?php echo get_phrase('training_type'); ?><span
                                     class="required">*</span></label>
 
-                            <select class="form-control select2" data-toggle="select2"  name="training_type_id"
+                            <select class="form-control select2" data-toggle="select2" name="training_type_id"
                                 id="training_type_id">
                                 <option value="">
                                     <?php echo get_phrase('select_a_training_type'); ?>
@@ -129,7 +145,7 @@ $invoicetypes = array(
                             </select>
 
                         </div>
-                      
+
                         <div class="form-group mb-3">
 
                             <label
@@ -301,4 +317,4 @@ $(function() {
         }
     });
 });
-    </script>
+</script>

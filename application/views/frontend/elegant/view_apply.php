@@ -39,7 +39,6 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th><?php echo get_phrase('user_name'); ?></th>
                                 <th><?php echo get_phrase('start_date'); ?></th>
                                 <th><?php echo get_phrase('end_date'); ?></th>
                                 <th><?php echo get_phrase('reason'); ?></th>

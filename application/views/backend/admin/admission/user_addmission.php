@@ -148,6 +148,7 @@ $offline = !empty($offline) ? $offline : false;
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="user_image"><?php echo get_phrase('user_image'); ?></label>
@@ -329,6 +330,27 @@ $offline = !empty($offline) ? $offline : false;
                                                         <?php foreach ($hod as $ho): ?>
                                                         <option value="<?php echo $ho['hod_id']; ?>">
                                                             <?php echo $ho['hod_name']; ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row mb-3">
+                                                <label class="col-md-2 col-form-label"
+                                                    for="instructor_id"><?php echo get_phrase('instructor'); ?><span
+                                                        class="required">*</span></label>
+                                                <div class="col-md-10">
+                                                    <select class="form-control select2" data-toggle="select2" required
+                                                        name="instructor_id" id="instructor_id">
+                                                        <option value="">
+                                                            <?php echo get_phrase('select_a_instructor'); ?>
+                                                        </option>
+                                                        <?php  
+                                                        $instructors=$this->user_model->get_instructor()->result_array();
+                                                        foreach ($instructors as $inst):
+                                                         ?>
+                                                        <option value="<?php echo $inst['is_instructor']; ?>">
+                                                            <?php echo $inst['first_name'].' '.$inst['last_name']; ?>
+                                                        </option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
