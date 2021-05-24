@@ -2960,7 +2960,7 @@ class Crud_model extends CI_Model
             $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
 
-            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->result_array();
+            $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->get()->result_array();
             if(is_array($assets)){
                 foreach ($assets as $value) {
                     $as['user_id'] = $data['user_id'];
