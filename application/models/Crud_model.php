@@ -143,6 +143,29 @@ class Crud_model extends CI_Model
         $this->db->update('manage_leave', $data);
         return true;
     }
+    public function manage_leave_status($param1 = "", $param2 = ""){
+        $data=$this->crud_model->get_leave($param2)->row_array();
+        if($param1 == 'pending'){
+            $this->db->update('manage_leave',['att_status'=>'pending'],['id'=>$param2]);
+        }
+        else if($param1 == 'approve'){
+            $begin = new DateTime(date('Y-m-d',strtotime($data['start_date'])));
+            $end = new DateTime(date('Y-m-d',strtotime($data['end_date'])));
+
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($begin, $interval, $end);
+
+            foreach ($period as $dt) {
+                $att['user_id'] = $data['user_id'];
+                $att['entry_date'] = $dt->format("Y-m-d");
+                $att['att_status'] = 'leave';
+                $att['remark'] = $data['remark'];
+                $att['added_by'] = $this->session->userdata('user_id');
+                $this->db->insert('attendance',$att);
+            }
+            $this->db->update('manage_leave',['att_status'=>'approve'],['id'=>$param2]);
+        }
+    }
     public function delete_leave($param1 = "")
     {
         $data['status']   = 0;
@@ -2808,7 +2831,7 @@ class Crud_model extends CI_Model
 
     public function is_added_to_wishlist($course_id = "")
     {
-        if ($this->session->userdata('user_login') == 1) {
+        if ($this->session->userdata('user_login') == 1 ) {
             $wishlists = array();
             $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
             $wishlists = json_decode($user_details['wishlist']);
@@ -3020,7 +3043,7 @@ class Crud_model extends CI_Model
         }
     }
     public function get_enrol($enrol_id = 0){
-        $this->db->select('e.id as eid,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
+        $this->db->select('e.id as eid,e.instructor_id,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
                         ->from('enrol as e')
                         ->join('course as c','c.id = e.course_id','left')
                         ->join('users as u','u.id = e.user_id','left')
@@ -4140,7 +4163,7 @@ class Crud_model extends CI_Model
     }
     public function evaluation_edit($param1 = "")
     {
-        $data['marks_gain']   = strtoupper(html_escape($this->input->post('marks_gain')));
+        $data['marks_gain']   = html_escape($this->input->post('marks_gain'));
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE  NAME ALREADY EXIST
         $this->db->where('id', $id);

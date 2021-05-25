@@ -21,11 +21,14 @@
           <li><a href="<?php echo site_url('home/courses'); ?>"><?php echo get_phrase('courses'); ?></a></li>
           <li><a href="<?php echo site_url('home/login'); ?>"><?php echo get_phrase('login'); ?></a></li>
           <li><a href="<?php echo site_url('home/sign_up'); ?>"><?php echo get_phrase('register'); ?></a></li>
-          <?php if($this->session->userdata('user_login')== '1'){
+          <?php if($this->session->userdata('user_login') == '1'){
             $u_id=$this->session->userdata('user_id');
             ?>
           <li><a href="<?php echo site_url('home/leave_apply/'.$u_id); ?>"><?php echo get_phrase('view_apply'); ?></a></li>
           <?php } ?>
+          <?php if($this->session->userdata('is_instructor') == '1'):?>
+          <li><a href="<?php echo site_url('home/student_view/'); ?>"><?php echo get_phrase('view_student'); ?></a></li>
+          <?php  endif;  ?>
         </ul>
       </div>
       <div class="col-lg-3 col-md-6">

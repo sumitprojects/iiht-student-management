@@ -348,7 +348,7 @@ $offline = !empty($offline) ? $offline : false;
                                                         $instructors=$this->user_model->get_instructor()->result_array();
                                                         foreach ($instructors as $inst):
                                                          ?>
-                                                        <option value="<?php echo $inst['is_instructor']; ?>">
+                                                        <option value="<?php echo $inst['id']; ?>">
                                                             <?php echo $inst['first_name'].' '.$inst['last_name']; ?>
                                                         </option>
                                                         <?php endforeach; ?>

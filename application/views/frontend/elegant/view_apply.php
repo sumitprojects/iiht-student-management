@@ -2,6 +2,7 @@
 $banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
 $about_us_banner = $banners['about_us_banner'];
 $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
+
 ?>
 <section id="hero_in" class="general">
 	<div class="banner-img" style="background: url(<?php echo base_url($about_us_banner); ?>) center center no-repeat;"></div>
@@ -39,6 +40,7 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student'); ?></th>
                                 <th><?php echo get_phrase('start_date'); ?></th>
                                 <th><?php echo get_phrase('end_date'); ?></th>
                                 <th><?php echo get_phrase('reason'); ?></th>
@@ -51,8 +53,8 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
-                                <?php $user = $this->user_model->get_user()->row_array();?>
-                                <strong><?php echo ellipsis($user['first_name'].' '.$user['last_name']); ?></strong><br>
+                                <?php $user = $this->user_model->get_user($br['user_id'])->row_array();?>
+                                <strong><?php echo strtoupper(ellipsis($user['first_name'].' '.$user['last_name'])); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['start_date']); ?></strong><br>

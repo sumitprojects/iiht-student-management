@@ -1018,5 +1018,72 @@ class Home extends CI_Controller {
         }
         $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
     }
-    
+
+    public function student_view($param1 = '' , $param2 = ''){
+        
+            if($param1 == 'request'){
+                $page_data['s_id'] = $param2;
+                $page_data['page_name'] = 'view_attendance';
+                $page_data['page_title'] = 'view_attendance_form';
+            }
+            else if($param1 == 'leave'){
+                $page_data['s_id'] = $param2;
+                $page_data['page_name'] = 'leave_request';
+                $page_data['page_title'] = 'leave_request_form';
+            }
+            else if($param1 == 'evolution'){
+                $page_data['s_id'] = $param2;
+                $page_data['page_name'] = 'evolution_student';
+                $page_data['page_title'] = 'evolution_student_form';
+            }
+            
+            else{
+            $page_data['page_name'] = 'student_view';
+            $page_data['page_title'] = 'student_view';
+            }
+            $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+        }
+
+        public function evolution_student($param1 = "" , $param2 = ""){
+            $userdata=$this->crud_model->get_evaluation($param2)->row_array();
+
+            if($param1 == 'edit'){
+                $response = $this->crud_model->evaluation_edit($param2);
+                if ($response) {
+                    $this->session->set_flashdata('flash_message', get_phrase('data_update_successfully'));
+                }else{
+                    $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                }
+                
+                redirect(site_url('home/student_view/evolution/'.$userdata['user_id']), 'refresh');
+            }
+            else if($param1 == 'edit_evolution'){
+                $page_data['page_name'] = 'edit_evolution';
+                $page_data['page_title'] = 'edit_evolution_form';
+                if($param2 != ""){
+                    $page_data['evaluation'] =$this->user_model->get_evalution($param2)->row_array();
+                }
+            }
+            $this->load->view('frontend/'.get_frontend_settings('theme').'/index', $page_data);
+            
+        }
+        public function leave_request($param1 = "" , $param2 = ""){
+            $userdata=$this->crud_model->get_leave($param2)->row_array();
+            if($param1 == 'pending'){
+                $this->crud_model->manage_leave_status($param1,$param2);
+                $this->session->set_flashdata('flash_message', get_phrase('status_pending_successfully'));
+                redirect(site_url('home/student_view/leave/'.$userdata['user_id']), 'refresh');
+            }
+            else if($param1 == 'approve'){
+                $this->crud_model->manage_leave_status($param1,$param2);
+                $this->session->set_flashdata('flash_message', get_phrase('status_approve_successfully'));
+                redirect(site_url('home/student_view/leave/'.$userdata['user_id']), 'refresh');
+            }
+            else{
+                $this->crud_model->manage_leave_status($param1,$param2);
+                $this->session->set_flashdata('flash_message', get_phrase('status_reject_successfully'));
+                redirect(site_url('home/student_view/reject/'.$userdata['user_id']), 'refresh');
+            }
+            
+        }
 }
