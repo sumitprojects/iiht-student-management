@@ -332,6 +332,34 @@ $status_wise_courses = $this->crud_model->get_status_wise_courses();
             </a>
         </li>
         <?php endif; ?>
+        <?php if((in_array('leave_reason', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/leave_reason'); ?>"
+                class="side-nav-link <?php if ($page_name == 'leave_reason' || $page_name == 'leave_reason_view')echo 'active';?>">
+                <i class="dripicons-message"></i>
+                <span><?php echo get_phrase('leave_reason'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
+
+        <?php if((in_array('manage_bank', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/manage_bank'); ?>"
+                class="side-nav-link <?php if ($page_name == 'manage_bank' || $page_name == 'bank')echo 'active';?>">
+                <i class="dripicons-message"></i>
+                <span><?php echo get_phrase('manage_bank'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
+        <?php if((in_array('payment_gateway', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
+        <li class="side-nav-item">
+            <a href="<?php echo site_url('admin/payment_gateway'); ?>"
+                class="side-nav-link <?php if ($page_name == 'payment_gateway' || $page_name == 'payment_gateway_view')echo 'active';?>">
+                <i class="dripicons-message"></i>
+                <span><?php echo get_phrase('payment_gateway'); ?></span>
+            </a>
+        </li>
+        <?php endif; ?>
 
         <?php if((in_array('department', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1) ^ $this->session->userdata('role_id') == 1):?>
         <li class="side-nav-item">

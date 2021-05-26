@@ -452,6 +452,7 @@ class Admin extends CI_Controller {
         if($param1 == 'assets_add_edit'){
             $page_data['page_name'] = 'assets/assets_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_assets');
+            $page_data['assets_report'] = $this->crud_model->get_assets_report($param2)->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
@@ -2799,4 +2800,170 @@ class Admin extends CI_Controller {
         }
    
     }
+
+    //adil:Bank Controll
+    public function manage_bank($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+
+        if($param1 == 'bank_info_add_edit'){
+            $page_data['page_name'] = 'manage_bank/bank_info_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_bank_info');
+            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "bank_info_add_form"){
+            $response= $this->crud_model->add_bank_info();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else if($param1 == "bank_info_edit_form"){
+            $response = $this->crud_model->edit_bank_info($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_bank'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_bank_info($param2);
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_bank_status($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'manage_bank/bank';
+            $page_data['page_title'] = get_phrase('bank');
+            $page_data['bank_info'] = $this->crud_model->get_bank_info($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
+     //adil:Leave Reason Controll
+     public function leave_reason($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+
+        if($param1 == 'leave_reason_add_edit'){
+            $page_data['page_name'] = 'leave_reason/leave_reason_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_leave_reason');
+            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "leave_reason_add_form"){
+            $response= $this->crud_model->add_leave_reason();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else if($param1 == "leave_reason_edit_form"){
+            $response = $this->crud_model->edit_leave_reason($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/leave_reason'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_leave_reason($param2);
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_leave_reason($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'leave_reason/leave_reason_view';
+            $page_data['page_title'] = get_phrase('leave_reason_view');
+            $page_data['leave_reason'] = $this->crud_model->get_leave_reason($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
+     //adil:Payment Gateway  Controll
+     public function payment_gateway($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
+            redirect(site_url('admin/dashboard'), 'refresh');
+        }
+
+
+        if($param1 == 'payment_gateway_add_edit'){
+            $page_data['page_name'] = 'payment_gateway/payment_gateway_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_payment_gateway');
+            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "payment_gateway_add_form"){
+            $response= $this->crud_model->add_payment_gateway();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if($param1 == "payment_gateway_edit_form"){
+            $response = $this->crud_model->edit_payment_gateway($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_payment_gateway($param2);
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_payment_gateway($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'payment_gateway/payment_gateway_view';
+            $page_data['page_title'] = get_phrase('payment_gateway_view');
+            $page_data['payment_gateway'] = $this->crud_model->get_payment_gateway($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
 }

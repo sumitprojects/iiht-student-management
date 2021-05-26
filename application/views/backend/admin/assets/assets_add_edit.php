@@ -57,3 +57,54 @@ if(!empty($param2)){
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3 header-title"><?php echo get_phrase('assets_report_list'); ?>
+                </h4>
+                <div class="table-responsive-sm mt-4">
+                    <?php if (count($assets_report) > 0): ?>
+                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
+                        data-page-length='25'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><?php echo get_phrase('inward'); ?></th>
+                                <th><?php echo get_phrase('outward'); ?></th>
+                                <th><?php echo get_phrase('balance'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($assets_report as $key => $br):?>
+                            <tr>
+                                <td><?php echo ++$key; ?></td>
+                                <td>
+                                    <strong><?php echo ellipsis($br['inward']); ?></strong><br>
+                                </td>
+                                <td>
+                                    <strong><?php echo ellipsis($br['outward']); ?></strong><br>
+                                </td>
+                                <td>
+                                    <strong><?php echo ellipsis($br['balance']); ?></strong><br>
+                                </td>
+                               
+                               
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <?php endif; ?>
+                    <?php if (count($assets_report) == 0): ?>
+                    <div class="img-fluid w-100 text-center">
+                        <img style="opacity: 1; width: 100px;"
+                            src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>
+                        <?php echo get_phrase('no_data_found'); ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -65,12 +65,12 @@ if(!empty($param2)){
                             <label for="leave status"><?php echo get_phrase('leave status'); ?><span
                                     class="required">*</span></label>
                             <select name="att_status" id="att_status" class="form-control">
-                                <option value="pending" selected>pending</option>
-                                <option value="approve"
-                                    <?php if($leave['att_status']=='approve'){ echo "selected"; }?>>approve
+                                <option value="pending" selected>Pending</option>
+                                <option value="approved"
+                                    <?php if($leave['att_status']=='approved'){ echo "selected"; }?>>Approved
                                 </option>
-                                <option value="reject"
-                                    <?php if($leave['att_status']=='reject'){ echo "selected"; }?>>reject</option>
+                                <option value="rejected"
+                                    <?php if($leave['att_status']=='rejected'){ echo "selected"; }?>>Rejected</option>
                               
                             </select>
                         </div>

@@ -123,7 +123,7 @@ class Crud_model extends CI_Model
 
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE  NAME ALREADY EXIST
-        if($data['att_status'] == 'approve'){
+        if($data['att_status'] == 'approved'){
             $begin = new DateTime(date('Y-m-d',strtotime($data['start_date'])));
             $end = new DateTime(date('Y-m-d',strtotime($data['end_date'])));
 
@@ -191,6 +191,15 @@ class Crud_model extends CI_Model
             $this->db->where('id', $param1);
         }
         return $this->db->get('assets');
+    }
+    public function get_assets_report($param1 = "",$param2=""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('user_id', $param2);
+        }
+        return $this->db->get('assets_report');
     }
     public function add_assets()
     {
@@ -4152,12 +4161,16 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $user_id);
         return $this->db->get('course');
     }
+    
     /*****
      * adil:Manage evaluation Crud Model
      */
-    public function get_evaluation($param1 = ""){
+    public function get_evaluation($param1 = "",$param2=""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('user_id', $param2);
         }
         return $this->db->get('evaluation');
     }
@@ -4343,5 +4356,183 @@ class Crud_model extends CI_Model
         $this->db->delete('assets_for_course');
         return true;
     }
+
+
+    /*****
+     * adil:Bank Details Crud Model
+     */
+    public function get_bank_info($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('bank_info');
+    }
+    public function add_bank_info()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('bank_name')));
+        $data['ifsc']   = strtoupper(html_escape($this->input->post('ifsc')));
+        $data['bank_name']   = strtoupper(html_escape($this->input->post('bank_name')));
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $data['added_by']   = $this->session->userdata('user_id');
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('bank_info')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('bank_info', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_bank_info($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('bank_name')));
+        $data['ifsc']   = strtoupper(html_escape($this->input->post('ifsc')));
+        $data['bank_name']   = strtoupper(html_escape($this->input->post('bank_name')));
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $data['added_by']   = $this->session->userdata('user_id');
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('bank_info')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('bank_info', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_bank_info($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('bank_info');
+        return true;
+    }
+
+    public function activate_bank_status($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('bank_info', $data);
+        return true;
+    }
+
+        /*****
+     * adil:Leave Reason Crud Model
+     */
+    public function get_leave_reason($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('	leave_reason');
+    }
+    public function add_leave_reason()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['reasons']   = strtoupper(html_escape($this->input->post('reasons')));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('leave_reason')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('leave_reason', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_leave_reason($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['reasons']   = strtoupper(html_escape($this->input->post('reasons')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('leave_reason')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('leave_reason', $data);
+            return true;
+        }
+        return false;
+    }
+    public function activate_leave_reason($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('leave_reason', $data);
+        return true;
+    }
+    public function delete_leave_reason($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('leave_reason');
+        return true;
+    }
+
+
+    /*****
+     * adil:Payment Gateway Crud Model
+     */
+    public function get_payment_gateway($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('	payment_gateway');
+    }
+    public function add_payment_gateway()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('payment_gateway')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('payment_gateway', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_payment_gateway($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('payment_gateway')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('payment_gateway', $data);
+            return true;
+        }
+        return false;
+    }
+    public function activate_payment_gateway($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('payment_gateway', $data);
+        return true;
+    }
+    public function delete_payment_gateway($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('payment_gateway');
+        return true;
+    }
+
    
 }

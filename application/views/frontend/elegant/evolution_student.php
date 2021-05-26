@@ -41,11 +41,8 @@ $student_evolution= $this->crud_model->get_evaluation('',$s_id)->result_array();
                             <tbody>
                                 <?php
                                  foreach ($student_evolution as $key => $br):
-
                                  $user = $this->user_model->get_user()->row_array();
-
                                  $question = $this->crud_model->get_quiz_question_by_id($br['qusetion_id'])->row_array();
-                                 
                                 ?>
                                 <tr>
                                     <td><?php echo ++$key; ?></td>
