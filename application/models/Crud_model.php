@@ -192,12 +192,12 @@ class Crud_model extends CI_Model
         }
         return $this->db->get('assets');
     }
-    public function get_assets_report($param1 = "",$param2=""){
+    public function get_assets_report($param1 = "", $param2=""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
         if ($param2 != "") {
-            $this->db->where('user_id', $param2);
+            $this->db->where('asset_id', $param2);
         }
         return $this->db->get('assets_report');
     }
@@ -215,6 +215,12 @@ class Crud_model extends CI_Model
         
         if ($previous_data == 0){
             $this->db->insert('assets', $data);
+            $asset_id = $this->db->insert_id();
+            $assetr['asset_id'] = $asset_id;
+            $assetr['balance'] = $data['price'];
+            $assetr['inward'] = $data['stock'];
+            $assetr['outward'] = 0;
+            $this->db->insert('assets_report',$assetr);
         }
         return true;
     }
@@ -224,10 +230,11 @@ class Crud_model extends CI_Model
         $data['slug']   = slugify(html_escape($this->input->post('name')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
         $data['price']   = slugify(html_escape($this->input->post('price')));
-        $data['stock']   = slugify(html_escape($this->input->post('stock')));
-
-
         $id   = html_escape($this->input->post('id'));
+        $stco = $this->get_assets($id)->row_array();
+        $data['stock']   = $stco['stock'] + slugify(html_escape($this->input->post('stock')));
+
+
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $this->db->where('id !=', $id);
@@ -235,6 +242,9 @@ class Crud_model extends CI_Model
         if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('assets', $data);
+            $assetr['balance'] = $data['price'];
+            $assetr['inward'] = $data['stock'];
+            $this->db->update('assets_report',$assetr,['asset_id'=>$id]);
             return true;
         }
         return false;
@@ -4420,6 +4430,15 @@ class Crud_model extends CI_Model
         $this->db->update('bank_info', $data);
         return true;
     }
+    public function pending_bank_status($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('bank_info', $data);
+        return true;
+    }
+    
 
         /*****
      * adil:Leave Reason Crud Model
@@ -4470,6 +4489,15 @@ class Crud_model extends CI_Model
         $this->db->update('leave_reason', $data);
         return true;
     }
+    public function pending_leave_reason($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('leave_reason', $data);
+        return true;
+    }
+    
     public function delete_leave_reason($param1 = "")
     {
         $this->db->where('id', $param1);
@@ -4527,6 +4555,15 @@ class Crud_model extends CI_Model
         $this->db->update('payment_gateway', $data);
         return true;
     }
+    public function pending_payment_gateway($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('payment_gateway', $data);
+        return true;
+    }
+    
     public function delete_payment_gateway($param1 = "")
     {
         $this->db->where('id', $param1);

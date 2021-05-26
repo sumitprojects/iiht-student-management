@@ -430,6 +430,7 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
             redirect(site_url('admin/manage_leave'), 'refresh');
         }
+        
         else{
             $page_data['page_name'] = 'leave/leave';
             $page_data['page_title'] = get_phrase('manage_leave');
@@ -439,7 +440,7 @@ class Admin extends CI_Controller {
     }
     
     //Assets Controll
-    public function manage_assets($param1 = "", $param2 = ""){
+    public function manage_assets($param1 = "", $param2 = "" ,$param3 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
@@ -447,12 +448,10 @@ class Admin extends CI_Controller {
         if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
             redirect(site_url('admin/dashboard'), 'refresh');
         }
-
-
         if($param1 == 'assets_add_edit'){
             $page_data['page_name'] = 'assets/assets_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_assets');
-            $page_data['assets_report'] = $this->crud_model->get_assets_report($param2)->result_array();
+            
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
@@ -2848,6 +2847,11 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
             redirect(site_url('admin/manage_bank'), 'refresh');
         }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_bank_status($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
         else{
             $page_data['page_name'] = 'manage_bank/bank';
             $page_data['page_title'] = get_phrase('bank');
@@ -2903,6 +2907,11 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
             redirect(site_url('admin/leave_reason'), 'refresh');
         }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_leave_reason($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
         else{
             $page_data['page_name'] = 'leave_reason/leave_reason_view';
             $page_data['page_title'] = get_phrase('leave_reason_view');
@@ -2956,6 +2965,11 @@ class Admin extends CI_Controller {
         else if ($param1 == "activate" ){
             $this->crud_model->activate_payment_gateway($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_payment_gateway($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
             redirect(site_url('admin/payment_gateway'), 'refresh');
         }
         else{

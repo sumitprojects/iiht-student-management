@@ -67,9 +67,15 @@
                                                     onclick="confirm_modal('<?php echo site_url('admin/leave_reason/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a>
                                             </li>
                                             <?php endif; ?>
+                                            <?php if ($br['status'] == 0): ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/leave_reason/activate/'.$br['id']); ?>');"><?php echo get_phrase('activate'); ?></a>
                                             </li>
+                                            <?php else: ?>
+                                                <li><a class="dropdown-item" href="#"
+                                                    onclick="confirm_modal('<?php echo site_url('admin/leave_reason/pending/'.$br['id']); ?>');"><?php echo get_phrase('pending'); ?></a>
+                                            </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>

@@ -21,15 +21,15 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($bank_info) > 0): ?>
-                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
-                        data-page-length='25'>
+                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap"
+                        width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th><?php echo get_phrase('ifsc'); ?></th>
                                 <th><?php echo get_phrase('bank_name'); ?></th>
                                 <th><?php echo get_phrase('branch_name'); ?></th>
-                                
+
                                 <th><?php echo get_phrase('status'); ?></th>
                                 <th><?php echo get_phrase('actions'); ?></th>
                             </tr>
@@ -38,7 +38,7 @@
                             <?php foreach ($bank_info as $key => $br):?>
                             <tr>
                                 <td><?php echo ++$key; ?></td>
-                                
+
                                 <td>
                                     <strong><?php echo ellipsis($br['ifsc']); ?></strong><br>
                                 </td>
@@ -76,9 +76,15 @@
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_bank/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a>
                                             </li>
                                             <?php endif; ?>
+                                            <?php if ($br['status'] == 0): ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_bank/activate/'.$br['id']); ?>');"><?php echo get_phrase('activate'); ?></a>
                                             </li>
+                                            <?php else: ?>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="confirm_modal('<?php echo site_url('admin/manage_bank/pending/'.$br['id']); ?>');"><?php echo get_phrase('pending'); ?></a>
+                                            </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>

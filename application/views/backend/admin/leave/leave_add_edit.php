@@ -58,8 +58,17 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="reason"><?php echo get_phrase('reason'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control" id="reason" name="reason"
-                                value="<?php echo !empty($leave)?$leave['reason']:''?>" required>
+                                    <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
+                                required>
+                                    <option value="" disabled selected><?php echo get_phrase('select_a_leave_reason'); ?></option>
+                                <?php $leave_reson = $this->crud_model->get_leave_reason()->result_array();
+                                foreach ($leave_reson as $leave_res): 
+                                ?>
+                                <option value="<?php echo $leave_res['id'] ?>">
+                                    <?php echo ($leave_res['reasons']); ?></option>
+                                    
+                                <?php endforeach; ?>
+                                </select>
                         </div>
                         <div class="form-group">
                             <label for="leave status"><?php echo get_phrase('leave status'); ?><span

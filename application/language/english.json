@@ -1534,5 +1534,10 @@
     "inward": "Inward",
     "outward": "Outward",
     "balance": "Balance",
-    "manage_bank": "Manage bank"
+    "manage_bank": "Manage bank",
+    "data_disabled": "Data disabled",
+    "data_pending": "Data pending",
+    "select_a_wallet_name": "Select a wallet name",
+    "select_a_bank_name": "Select a bank name",
+    "select_a_leave_reason": "Select a leave reason"
 }

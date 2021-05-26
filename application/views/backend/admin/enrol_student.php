@@ -188,15 +188,34 @@ $invoicetypes = array(
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="wallet_name"><?php echo get_phrase('wallet_name'); ?><span
-                                    class="required">*</span></label>
-                            <input type="text" class="form-control" name="wallet_name" id="wallet_name">
+                        <div class="form-group">
+                            <label for="wallet_name"><?php echo get_phrase('wallet_name'); ?><span class="required">*</span>
+                            </label>
+                            <select class="form-control select2" data-toggle="select2" name="wallet_name" id="wallet_name"
+                                required>
+                                <option value="" disabled selected><?php echo get_phrase('select_a_wallet_name'); ?></option>
+                                <?php $wallet_nm = $this->crud_model->get_payment_gateway()->result_array();
+                                foreach ($wallet_nm as $wallet): 
+                                ?>
+                                <option value="<?php echo $wallet['id'] ?>">
+                                    <?php echo ($wallet['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="bank_name"><?php echo get_phrase('bank_name'); ?><span
-                                    class="required">*</span></label>
-                            <input type="text" class="form-control" name="bank_name" id="bank_name">
+                        
+                        <div class="form-group">
+                            <label for="bank_name"><?php echo get_phrase('bank_name'); ?><span class="required">*</span>
+                            </label>
+                            <select class="form-control select2" data-toggle="select2" name="bank_name" id="bank_name"
+                                required>
+                                <option value="" disabled selected><?php echo get_phrase('select_a_bank_name'); ?></option>
+                                <?php $bank_nm = $this->crud_model->get_bank_info()->result_array();
+                                foreach ($bank_nm as $bank): 
+                                ?>
+                                <option value="<?php echo $bank['id'] ?>">
+                                    <?php echo ($bank['bank_name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group mb-3">
                             <label class="cheque_number"><?php echo get_phrase('cheque_number'); ?><span

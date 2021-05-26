@@ -3,6 +3,9 @@ $assets = null;
 if(!empty($param2)){
     $assets = $this->crud_model->get_assets($param2)->row_array();
 }
+if($assets){
+    $assets_report=$this->crud_model->get_assets_report('',$param2)->result_array();
+}
 ?>
 
 <div class="row justify-content-center">
@@ -57,7 +60,7 @@ if(!empty($param2)){
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
-
+<?php if($assets): ?>
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
@@ -108,3 +111,4 @@ if(!empty($param2)){
         </div>
     </div>
 </div>
+<?php endif; ?>
