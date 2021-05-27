@@ -58,13 +58,13 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="reason"><?php echo get_phrase('reason'); ?><span
                                     class="required">*</span></label>
-                                    <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
+                                    <select class="form-control select2" data-toggle="select2" name="reason_id" id="reason_id"
                                 required>
                                     <option value="" disabled selected><?php echo get_phrase('select_a_leave_reason'); ?></option>
                                 <?php $leave_reson = $this->crud_model->get_leave_reason()->result_array();
                                 foreach ($leave_reson as $leave_res): 
                                 ?>
-                                <option value="<?php echo $leave_res['id'] ?>">
+                                <option value="<?php echo $leave_res['id'] ?>" <?php echo !empty($leave)? (($leave['reason_id'] == $leave_res['id'])? 'selected':'') : ''; ?>>
                                     <?php echo ($leave_res['reasons']); ?></option>
                                     
                                 <?php endforeach; ?>

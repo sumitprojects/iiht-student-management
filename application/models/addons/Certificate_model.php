@@ -43,8 +43,16 @@ class Certificate_model extends CI_Model
 			}
 		}
 	}
-
+	
 	//CERTIFICATE CREATION CODE
+	public function get_certificate($param1 = ""){
+		if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+      
+        return $this->db->get('certificates');
+	}
+
 	public function create_certificate($user_id = "", $course_id = "", $certificate_identifier = "") {
 
 		// USER DETAILS

@@ -1539,5 +1539,15 @@
     "data_pending": "Data pending",
     "select_a_wallet_name": "Select a wallet name",
     "select_a_bank_name": "Select a bank name",
-    "select_a_leave_reason": "Select a leave reason"
+    "select_a_leave_reason": "Select a leave reason",
+    "inquiy_list": "Inquiy list",
+    "inquiy_name": "Inquiy name",
+    "inquiy_email": "Inquiy email",
+    "inquiy_address": "Inquiy address",
+    "follow_type": "Follow type",
+    "due_enrol": "Due enrol",
+    "irregular_student": "Irregular student",
+    "cirtified_student": "Cirtified student",
+    "approve_payment": "Approve payment",
+    "not_approve_payment": "Not approve payment"
 }

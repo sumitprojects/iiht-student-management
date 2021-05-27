@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student'); ?></th>
                                 <th><?php echo get_phrase('entry_date'); ?></th>
                                 <th><?php echo get_phrase('remark'); ?></th>
                                 <th><?php echo get_phrase('att_status'); ?></th>
@@ -35,6 +36,12 @@
                             <?php foreach ($attendance as $key => $br):?>
                             <tr>
                                 <td><?php echo ++$key; ?></td>
+                                <td>
+                                <?php
+                                 $user_e=$this->user_model->get_user($br['user_id'])->row_array();
+                                ?>
+                                <strong><?php echo ellipsis($user_e['first_name'].' '.$user_e['last_name']); ?></strong><br>
+                                </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['entry_date']); ?></strong><br>
                                 </td>
