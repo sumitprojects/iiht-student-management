@@ -2,7 +2,7 @@
     <input type="hidden" name="question_type" value="mcq">
     <div class="form-group">
         <label for="title"><?php echo get_phrase('question_title'); ?></label>
-        <input class="form-control" type="text" name="title" id="title" required>
+        <textarea name="title" id = "title" class="form-control"></textarea>
     </div>
     <div class="form-group">
         <label for="type"><?php echo get_phrase('type'); ?><span class="required">*</span></label>
@@ -38,6 +38,11 @@
             data-dismiss="modal"><?php echo get_phrase('submit'); ?></button>
     </div>
 </form>
+<script type="text/javascript">
+  $(document).ready(function () {
+    initSummerNote(['#title']);
+  });
+</script>
 <script type="text/javascript">
 function showOptions(number_of_options) {
     $.ajax({

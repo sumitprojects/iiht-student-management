@@ -1549,5 +1549,11 @@
     "irregular_student": "Irregular student",
     "cirtified_student": "Cirtified student",
     "approve_payment": "Approve payment",
-    "not_approve_payment": "Not approve payment"
+    "not_approve_payment": "Not approve payment",
+    "source_by_user": "Source by user",
+    "branch_by_user": "Branch by user",
+    "enroll": "Enroll",
+    "quiz_has_been_updated_successfully": "Quiz has been updated successfully",
+    "question_has_been_deleted": "Question has been deleted",
+    "nextdate": "Nextdate"
 }

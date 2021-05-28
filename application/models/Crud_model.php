@@ -743,6 +743,16 @@ class Crud_model extends CI_Model
         }
         return $this->db->get('branch');
     }
+    public function get_branch_by_user($param1 = ""){
+        $this->db->select('b.branch_name, count(*) as enrol');
+        $this->db->from('branch as b');
+        $this->db->join('users as u','u.branch_id = b.branch_id');
+        $this->db->group_by('b.branch_id');
+        if ($param1 != "") {
+            $this->db->where('branch_id', $param1);
+        }
+        return $this->db->get();
+    }
 
     public function add_branch()
     {
@@ -1077,6 +1087,16 @@ class Crud_model extends CI_Model
         }
         return $this->db->get('sources');
     }
+    public function get_source_by_user($param1 = ""){
+        $this->db->select('s.source_name, count(*) as enrol');
+        $this->db->from('sources as s');
+        $this->db->join('users as u','u.source_id = s.source_id');
+        $this->db->group_by('s.source_id');
+        if ($param1 != "") {
+            $this->db->where('source_id', $param1);
+        }
+        return $this->db->get();
+    }
    
     public function add_source()
     {
@@ -1137,7 +1157,8 @@ class Crud_model extends CI_Model
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
-        return $this->db->get('followup ');
+        $this->db->order_by("next_date", "desc");
+        return $this->db->get('followup');
     }
     public function get_followup_by_enquiry($param1 = ""){
         $this->db->select('fp.*,en.en_id,en.is_delete,en_status, concat(u.first_name," ",u.last_name) as username')

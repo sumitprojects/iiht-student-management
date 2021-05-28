@@ -209,8 +209,9 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col"><?php echo get_phrase('follow_type'); ?></th>
-                            <th scope="col"><?php echo get_phrase('user'); ?></th>
+                            <th scope="col"><?php echo get_phrase('description'); ?></th>
+                            <th scope="col"><?php echo get_phrase('fullname'); ?></th>
+                            <th scope="col"><?php echo get_phrase('nextdate'); ?></th>
                             <th scope="col"><?php echo get_phrase('status'); ?></th>
 
                         </tr>
@@ -220,16 +221,24 @@
                         <?php 
                         $follow=$this->crud_model->get_followups()->result_array();
                         foreach ($follow as $key => $br):
-                           
+                           if($br['status']== 'OPEN'):
                         $user=$this->user_model->get_user($br['user_id'])->row_array();
+                        $fullname=$this->crud_model->get_inquirys($br['en_id'])->row_array();
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo strtoupper($br['followup_type']); ?></td>
-                            <td><?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?></td>
-                            <td><?php echo strtoupper($br['status']); ?></td>
+                            <td><?php echo strtoupper(substr($br['description'],0,15)); ?></td>
+                            <td><?php echo strtoupper($fullname['en_name']); ?></td>
+                            <td><?php echo $br['next_date']; ?></td>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['status']); ?>
+                                </span>
+                            </td>
                         </tr>
-                        <?php endforeach; ?>
+                        <?php 
+                    endif;
+                    endforeach; ?>
                     </tbody>
                 </table>
                 <!-- Table -->
@@ -306,12 +315,12 @@
                                   $user_data = $this->db->get_where('users', array('id' => $enrol['user_id']))->row_array();
                                   $course_data = $this->db->get_where('course', array('id' => $enrol['course_id']))->row_array();?>
                         <tr class="gradeU">
-                        <td><?php echo ++$key; ?></td>
-                        <td>
+                            <td><?php echo ++$key; ?></td>
+                            <td>
                                 <?php echo strtoupper($user_data['first_name'].' '.$user_data['last_name']); ?>
                             </td>
                             <td>
-                            <?php echo strtoupper($course_data['title']); ?>
+                                <?php echo strtoupper($course_data['title']); ?>
                             </td>
                             <?php if($enrol['amount_due']>0 && $enrol['total_payment']>0):?>
                             <td><?=$enrol['amount_due']?></td>
@@ -321,10 +330,10 @@
                             <td><span
                                     class="badge badge-danger"><?=get_phrase('payment_pending') . $enrol['total_payment'] . ' - '. $enrol['final_price']?></span>
                             </td>
-                            
-                            
+
+
                             <?php endif;?>
-                           
+
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -370,7 +379,32 @@
                             <td><?php echo strtoupper($course_s['title']); ?></td>
 
                             <td><?php echo $br['exam_date']; ?></td>
-                            <td><?php echo strtoupper($br['exam_status']); ?></td>
+                            <?php if($br['exam_status'] == 'canceled'): ?>
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php elseif($br['exam_status']== 'pending'): ?>
+                            <td>
+                                <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php elseif($br['exam_status']== 'schedule'): ?>
+                            <td>
+                                <span class="badge badge-secondary-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+
+                            <?php else: ?>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php endif; ?>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -443,16 +477,18 @@
                         foreach ($irr_student as $key => $br):
                             $user_e=$this->user_model->get_user($br['user_id'])->row_array();
                             
-                            if($br['att_status']=='pending'):
+                            if($br['att_status'] == 'absent' ||$br['att_status']== 'pending'):
                            
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
                             <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
                             <td><?php echo $br['entry_date']; ?></td>
-
-                            <td><?php echo strtoupper($br['att_status']); ?></td>
-
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['att_status']); ?>
+                                </span>
+                            </td>
                         </tr>
                         <?php endif; 
                     endforeach; ?>
@@ -533,7 +569,11 @@
                             <td><?php echo ++$key; ?></td>
                             <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
                             <td><?php echo strtoupper($br['payment_type']); ?></td>
-                            <td><?php echo strtoupper($br['payment_status']); ?></td>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['payment_status']); ?>
+                                </span>
+                            </td>
                         </tr>
                         <?php endif;
                     endforeach; ?>
@@ -573,9 +613,88 @@
                             <td><?php echo ++$key; ?></td>
                             <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
                             <td><?php echo strtoupper($br['payment_type']); ?></td>
-                            <td><?php echo strtoupper($br['payment_status']); ?></td>
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['payment_status']); ?>
+                                </span>
+                            </td>
                         </tr>
                         <?php endif;
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('source_by_user'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('source_name'); ?></th>
+                            <th scope="col"><?php echo get_phrase('enrol'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $source_by_user=$this->crud_model->get_source_by_user()->result_array();
+                        foreach ($source_by_user as $key => $br):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['source_name']); ?></td>
+                            <td><?php echo strtoupper($br['enrol']); ?></td>
+                        </tr>
+                        <?php 
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('branch_by_user'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('branch_name'); ?></th>
+                            <th scope="col"><?php echo get_phrase('enroll'); ?></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $branch_by_user=$this->crud_model->get_branch_by_user()->result_array();
+                        foreach ($branch_by_user as $key => $br):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['branch_name']); ?></td>
+                            <td><?php echo strtoupper($br['enrol']); ?></td>
+                        </tr>
+                        <?php 
                     endforeach; ?>
 
                     </tbody>
