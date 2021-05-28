@@ -185,8 +185,8 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $br['en_name']; ?></td>
-                            <td><?php echo $br['en_address']; ?></td>
+                            <td><?php echo strtoupper($br['en_name']); ?></td>
+                            <td><?php echo strtoupper($br['en_address']); ?></td>
                             <td><?php echo $br['en_email']; ?></td>
                         </tr>
                         <?php endforeach; ?>
@@ -225,9 +225,9 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $br['followup_type']; ?></td>
-                            <td><?php echo $user['first_name'].' '.$user['last_name']; ?></td>
-                            <td><?php echo $br['status']; ?></td>
+                            <td><?php echo strtoupper($br['followup_type']); ?></td>
+                            <td><?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?></td>
+                            <td><?php echo strtoupper($br['status']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -268,10 +268,10 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user['first_name'].' '.$user['last_name']; ?></td>
-                            <td><?php echo $course['title']; ?></td>
+                            <td><?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?></td>
+                            <td><?php echo strtoupper($course['title']); ?></td>
 
-                            <td><?php echo $instructor['first_name'].' '.$instructor['last_name']; ?></td>
+                            <td><?php echo strtoupper($instructor['first_name'].' '.$instructor['last_name']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -308,10 +308,10 @@
                         <tr class="gradeU">
                         <td><?php echo ++$key; ?></td>
                         <td>
-                                <?php echo $user_data['first_name'].' '.$user_data['last_name']; ?>
+                                <?php echo strtoupper($user_data['first_name'].' '.$user_data['last_name']); ?>
                             </td>
                             <td>
-                            <?php echo $course_data['title']; ?>
+                            <?php echo strtoupper($course_data['title']); ?>
                             </td>
                             <?php if($enrol['amount_due']>0 && $enrol['total_payment']>0):?>
                             <td><?=$enrol['amount_due']?></td>
@@ -366,11 +366,11 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user_e['first_name'].' '.$user_e['last_name']; ?></td>
-                            <td><?php echo $course_s['title']; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($course_s['title']); ?></td>
 
                             <td><?php echo $br['exam_date']; ?></td>
-                            <td><?php echo $br['exam_status']; ?></td>
+                            <td><?php echo strtoupper($br['exam_status']); ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -404,7 +404,7 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $br['name']; ?></td>
+                            <td><?php echo strtoupper($br['name']); ?></td>
                             <td><?php echo $br['price']; ?></td>
 
                             <td><?php echo $br['stock']; ?></td>
@@ -448,10 +448,10 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user_e['first_name'].' '.$user_e['last_name']; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
                             <td><?php echo $br['entry_date']; ?></td>
 
-                            <td><?php echo $br['att_status']; ?></td>
+                            <td><?php echo strtoupper($br['att_status']); ?></td>
 
                         </tr>
                         <?php endif; 
@@ -490,8 +490,8 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user_e['first_name'].' '.$user_e['last_name']; ?></td>
-                            <td><?php echo $course_e['title']; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($course_e['title']); ?></td>
 
                         </tr>
                         <?php  
@@ -531,9 +531,9 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user_e['first_name'].' '.$user_e['last_name']; ?></td>
-                            <td><?php echo $br['payment_type']; ?></td>
-                            <td><?php echo $br['payment_status']; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($br['payment_type']); ?></td>
+                            <td><?php echo strtoupper($br['payment_status']); ?></td>
                         </tr>
                         <?php endif;
                     endforeach; ?>
@@ -571,9 +571,9 @@
                         ?>
                         <tr>
                             <td><?php echo ++$key; ?></td>
-                            <td><?php echo $user_e['first_name'].' '.$user_e['last_name']; ?></td>
-                            <td><?php echo $br['payment_type']; ?></td>
-                            <td><?php echo $br['payment_status']; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($br['payment_type']); ?></td>
+                            <td><?php echo strtoupper($br['payment_status']); ?></td>
                         </tr>
                         <?php endif;
                     endforeach; ?>
