@@ -83,7 +83,7 @@
                     <p class="card-text"><?php echo $event['event_time'];?></p>
                     <a href="<?php echo site_url('home/event_registration/'.$event['id']); ?>" class="btn btn-primary">Go registration</a>
                 </div>
-                <img class="ml-3" src="<?php ?>" alt="event image">
+                <img class="ml-3" src="<?php echo base_url('uploads/event/'.$event['event_image']); ?>" alt="event image" style="height:auto; width:200px;">
                 </div>
                    
                 </div>
