@@ -20,7 +20,7 @@ if(!empty($param2)){
                     </h4>
                     <form class="required-form"
                         action="<?php echo site_url('admin/event_schedule/'.(!empty($event_schedule)?'event_schedule_edit_form':'event_schedule_add_form')); ?>"
-                        method="post">
+                        method="post" enctype="multipart/form-data">
                         <?php if(!empty($event_schedule)):?>
                         <input type="hidden" class="form-control" id="id" name="id"
                             value="<?php echo $event_schedule['id']; ?>" readonly>
@@ -60,6 +60,13 @@ if(!empty($param2)){
                                     class="required">*</span></label>
                             <input type="time" class="form-control" id="	event_date" name="event_time"
                                 value="<?php echo !empty($event_schedule)?$event_schedule['event_time']:''?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event_image"><?php echo get_phrase('event_image'); ?><span
+                                    class="required">*</span></label>
+
+                            <input type="file" class="form-control" id="event_image" name="event_image"
+                                value="<?php echo !empty($event_schedule)?$event_schedule['event_image']:''?>" required>
                         </div>
                         <div class="form-group">
                             <label for="status"><?php echo get_phrase('status'); ?><span

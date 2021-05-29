@@ -514,7 +514,15 @@ class Crud_model extends CI_Model
         }
         return $this->db->get();
     }
-
+    public function get_placements_dash($param1 = ""){
+        $this->db->select('p.*,concat(u.first_name," ",u.last_name) as full_name');
+        $this->db->from('placement as p');
+        $this->db->join('users as u','u.id = p.user_id');
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get();
+    }
     public function add_placement()
     {
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
@@ -4321,16 +4329,16 @@ class Crud_model extends CI_Model
         $data['event_date']   = strtoupper(html_escape($this->input->post('event_date')));
         $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
         $data['status']   = strtoupper(html_escape($this->input->post('status')));
-
-        // CHECK IF THE ASSETS NAME ALREADY EXISTS
-        $this->db->where('slug', $data['slug']);
-        $previous_data = $this->db->get('event_schedule')->num_rows();
+       
         
-        if ($previous_data == 0){
-            $this->db->insert('event_schedule', $data);
-            return true;
+        if (isset($_FILES['event_image']) && $_FILES['event_image']['name'] != "") {
+            unlink('uploads/event/' . get_frontend_settings('event_image'));
+            $data['event_image'] = md5(rand(1000, 100000)).'.jpg';
+            move_uploaded_file($_FILES['event_image']['tmp_name'], 'uploads/event/'.$data['event_image']);
         }
-        return false;
+        $this->db->insert('event_schedule', $data);
+        return true;
+       
     }
     public function edit_event_schedule($param1 = "")
     {
@@ -4342,17 +4350,21 @@ class Crud_model extends CI_Model
         $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
         $data['status']   = strtoupper(html_escape($this->input->post('status')));
         
+        
+        if (isset($_FILES['event_image']) && $_FILES['event_image']['name'] != "") {
+            unlink('uploads/event/' . get_frontend_settings('event_image'));
+            $data['event_image'] = md5(rand(1000, 100000)).'.jpg';
+            move_uploaded_file($_FILES['event_image']['tmp_name'], 'uploads/event/'.$data['event_image']);
+        }
+        
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
-        $this->db->where('id !=', $id);
-        $previous_data = $this->db->get('event_schedule')->num_rows();
-        if ($previous_data == 0){
+        
             $this->db->where('id', $id);
             $this->db->update('event_schedule', $data);
             return true;
-        }
-        return false;
+    
     }
     public function delete_event_schedule($param1 = "")
     {

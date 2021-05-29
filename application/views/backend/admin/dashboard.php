@@ -705,6 +705,87 @@
         <!-- Card -->
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('placement'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('type'); ?></th>
+                            <th scope="col"><?php echo get_phrase('student'); ?></th>
+                            <th scope="col"><?php echo get_phrase('placement_date'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $placement=$this->crud_model->get_placements_dash()->result_array();
+                        foreach ($placement as $key => $br):
+                            if($br['status']=='pending'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['type']); ?></td>
+                            <td><?php echo strtoupper($br['full_name']); ?></td>
+                            <td><?php echo strtoupper($br['placement_date']); ?></td>
+                        </tr>
+                        <?php
+                        endif; 
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('event'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('event_title'); ?></th>
+                            <th scope="col"><?php echo get_phrase('event_link'); ?></th>
+                            <th scope="col"><?php echo get_phrase('event_date_time'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $event=$this->crud_model->get_event_schedule()->result_array();
+                        foreach ($event as $key => $br):
+                            if($br['status']=='pending' || $br['status']=='schedule'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['event_title']); ?></td>
+                            <td><a href="<?php echo $br['event_link']; ?>"><?php echo get_phrase('event_link'); ?></a></td>
+                            <td><?php echo strtoupper($br['event_date']); ?><br><?php echo strtoupper($br['event_time']); ?></td>
+                        </tr>
+                        <?php endif;
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
 <script type="text/javascript">
 $('#unpaid-instructor-revenue').mouseenter(function() {
     $('#go-to-instructor-revenue').show();

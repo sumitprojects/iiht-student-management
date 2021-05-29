@@ -1555,5 +1555,8 @@
     "enroll": "Enroll",
     "quiz_has_been_updated_successfully": "Quiz has been updated successfully",
     "question_has_been_deleted": "Question has been deleted",
-    "nextdate": "Nextdate"
+    "nextdate": "Nextdate",
+    "event_image": "Event image",
+    "event_date_time": "Event date time",
+    "event": "Event"
 }
