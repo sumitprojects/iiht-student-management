@@ -74,17 +74,18 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <h5  class="col-sm-3 card-title">Event:</h5>
-                        <div class="col-sm-9">
-						<h5 class="card-title"><?php echo $event['event_title'];?></h5>
-                        </div>
-                    </div>
-                    <?php $user = $this->user_model->get_user($event['event_presentor'])->row_array();?>
+                <div class="media">
+                 <?php $user = $this->user_model->get_user($event['event_presentor'])->row_array();?>
+                <div class="media-body">
+                    <h3 class="mt-0 mb-1"><?php echo $event['event_title'];?></h3>
                     <p class="card-text"><?php echo $user['first_name'] .' '.$user['last_name'];?></p>
                     <p class="card-text"><?php echo $event['event_date'];?></p>
                     <p class="card-text"><?php echo $event['event_time'];?></p>
                     <a href="<?php echo site_url('home/event_registration/'.$event['id']); ?>" class="btn btn-primary">Go registration</a>
+                </div>
+                <img class="ml-3" src="<?php ?>" alt="event image">
+                </div>
+                   
                 </div>
             </div>
         </div>
