@@ -56,7 +56,8 @@ $leave_approve= $this->crud_model->get_leave('',$s_id)->result_array();
                                         <strong><?php echo ellipsis($br['end_date']); ?></strong><br>
                                     </td>
                                     <td>
-                                        <strong><?php echo ellipsis($br['reason']); ?></strong><br>
+                                    <?php $reasons = $this->crud_model->get_leave_reason($br['reason_id'])->row_array();?>
+                                        <strong><?php echo ellipsis($reasons['reasons']); ?></strong><br>
                                     </td>
                                     <td>
                                         <strong><?php echo ellipsis($br['remark']); ?></strong><br>
