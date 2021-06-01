@@ -999,7 +999,7 @@ class Home extends CI_Controller {
             $data['user_id']   =$this->session->userdata('user_id');
             $data['start_date']   =html_escape($this->input->post('start_date'));
             $data['end_date']   = html_escape($this->input->post('end_date'));
-            $data['reason']   = html_escape($this->input->post('reason'));
+            $data['reason_id']   = html_escape($this->input->post('reason_id'));
             $data['att_status']   = 'pending';
            
             $this->db->insert('manage_leave', $data);

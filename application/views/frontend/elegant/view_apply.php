@@ -63,8 +63,9 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                                     <strong><?php echo ellipsis($br['end_date']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['reason']); ?></strong><br>
-                                </td>
+                                <?php $reasons = $this->crud_model->get_leave_reason($br['reason_id'])->row_array();?>
+                                        <strong><?php echo ellipsis($reasons['reasons']); ?></strong><br>
+                                    </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['att_status']); ?></strong><br>
                                 </td>

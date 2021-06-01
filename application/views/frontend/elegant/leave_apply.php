@@ -3,13 +3,14 @@ $banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
 $about_us_banner = $banners['about_us_banner'];
 ?>
 <section id="hero_in" class="general">
-	<div class="banner-img" style="background: url(<?php echo base_url($about_us_banner); ?>) center center no-repeat;"></div>
-	<div class="wrapper">
-		<div class="container">
-			<h1 class="fadeInUp"><span></span><?php echo get_phrase('leave_apply'); ?></h1>
-            
-		</div>
-	</div>
+    <div class="banner-img" style="background: url(<?php echo base_url($about_us_banner); ?>) center center no-repeat;">
+    </div>
+    <div class="wrapper">
+        <div class="container">
+            <h1 class="fadeInUp"><span></span><?php echo get_phrase('leave_apply'); ?></h1>
+
+        </div>
+    </div>
 </section>
 
 <div class="container margin_120_95">
@@ -18,13 +19,13 @@ $about_us_banner = $banners['about_us_banner'];
         <h2><?php echo get_phrase('leave_apply'); ?></h2>
         <p><?php echo get_phrase('please_fill_all_detail'); ?></p>
         <a href="<?php echo site_url('home/leave_apply/'.$u_id); ?>"
-                            class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i
-                                class="mdi mdi-keyboard-backspace"></i>
-                            <?php echo get_phrase('back_to_leave_list'); ?></a>
+            class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i
+                class="mdi mdi-keyboard-backspace"></i>
+            <?php echo get_phrase('back_to_leave_list'); ?></a>
     </div>
-    
+
     <form action="<?= site_url('home/leave_apply/leave') ?>" method="post">
-        
+
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="form-group row">
@@ -39,12 +40,22 @@ $about_us_banner = $banners['about_us_banner'];
                         <input type="date" class="form-control" id="end_date" name="end_date">
                     </div>
                 </div>
+
                 <div class="form-group row">
-                    <label for="fullname" class="col-sm-2 col-form-label">Reason</label>
+                    <label for="Reason" class="col-sm-2 col-form-label">Reason</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="reason" name="reason">
+                        <select class="form-control select2" data-toggle="select2" name="reason_id" id="reason_id" required>
+                            <option value=""><?php echo get_phrase('select_a_reason'); ?></option>
+                             <?php $reason = $this->crud_model->get_leave_reason()->result_array();
+                            foreach ($reason as $reasons): ?>
+                            <option value="<?php echo $reasons['id']; ?>">
+                                <?php echo $reasons['reasons']; ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
+
                 <button type="submit" class="btn btn-primary mb-2">Leave Apply</button>
             </div>
         </div>
