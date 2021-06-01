@@ -47,9 +47,9 @@
                                     <strong><?php echo date($br['asset_date']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <?php if($br['returnable']=='0' && !empty($br['return_date'])):?>
+                                    <?php if($br['returnable']=='0'):?>
                                         <strong><?php echo date($br['asset_date']); ?></strong>
-                                    <?php elseif($br['returnable']=='1' && empty($br['return_date'])): ?>
+                                    <?php elseif($br['returnable']=='1'): ?>
                                         <span class="badge badge-danger-lighten"><?php echo get_phrase('asset_not_retuned'); ?></span>
                                     <?php else: ?>
                                         <span class="badge badge-info-lighten"><?php echo get_phrase('NA'); ?></span>

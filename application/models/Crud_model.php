@@ -218,7 +218,6 @@ class Crud_model extends CI_Model
             $assetr['asset_id'] = $asset_id;
             $assetr['balance'] = $data['price'];
             $assetr['inward'] = $data['stock'];
-            $assetr['outward'] = 0;
             $this->db->insert('assets_report',$assetr);
         }
         return true;
@@ -298,6 +297,12 @@ class Crud_model extends CI_Model
             if ($previous_data == 0){
                 $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
                 $this->db->insert('asset_for_users', $data);
+                if($data['status'] == "Approved"){
+                    $asset = $this->get_assets($data['asset_id'])->row_array();
+                    $asset['stock'] = $asset['stock'] -1;
+                    $this->db->update('assets', $asset, ['id' => $data['asset_id']]);                       
+                }
+
             }
         }
             return true;
