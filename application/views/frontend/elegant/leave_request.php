@@ -65,7 +65,7 @@ $leave_approve= $this->crud_model->get_leave('',$s_id)->result_array();
                                     <td>
                                         <strong><?php echo ellipsis($br['att_status']); ?></strong><br>
                                     </td>
-                                    <?php if($br['att_status'] != 'approve' && $br['att_status'] != 'reject'): ?>
+                                    <?php if($br['att_status'] != 'approved' && $br['att_status'] != 'reject'): ?>
                                     <td>
                                         <div class="dropright dropright">
                                             <button type="button"

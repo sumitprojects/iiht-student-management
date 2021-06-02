@@ -78,7 +78,7 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                     <?php if (count($apply_leave) == 0): ?>
                     <div class="img-fluid w-100 text-center">
                         <img style="opacity: 1; width: 100px;"
-                            src="<?php echo base_url('apply_leave/backend/images/file-search.svg'); ?>"><br>
+                            src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>
                         <?php echo get_phrase('no_data_found'); ?>
                     </div>
                     <?php endif; ?>

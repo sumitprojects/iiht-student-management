@@ -216,6 +216,7 @@ class Crud_model extends CI_Model
             $this->db->insert('assets', $data);
             $asset_id = $this->db->insert_id();
             $assetr['asset_id'] = $asset_id;
+            $assetr['added_by']=$this->session->userdata('user_id');
             $assetr['balance'] = $data['price'];
             $assetr['inward'] = $data['stock'];
             $this->db->insert('assets_report',$assetr);
@@ -240,9 +241,11 @@ class Crud_model extends CI_Model
         if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('assets', $data);
+            $assetr['asset_id'] = $id;
+            $assetr['added_by']=$this->session->userdata('user_id');
             $assetr['balance'] = $data['price'];
-            $assetr['inward'] = $data['stock'];
-            $this->db->update('assets_report',$assetr,['asset_id'=>$id]);
+            $assetr['inward'] = $this->input->post('stock');
+            $this->db->insert('assets_report',$assetr);
             return true;
         }
         return false;

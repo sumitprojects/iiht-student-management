@@ -75,7 +75,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th><?php echo get_phrase('inward'); ?></th>
-                                    <th><?php echo get_phrase('outward'); ?></th>
+                                    <th><?php echo get_phrase('date_added'); ?></th>
                                     <th><?php echo get_phrase('balance'); ?></th>
                                 </tr>
                             </thead>
@@ -87,8 +87,9 @@
                                         <strong><?php echo ellipsis($br['inward']); ?></strong><br>
                                     </td>
                                     <td>
-                                        <strong><?php echo ellipsis($br['outward']); ?></strong><br>
+                                        <strong><?php echo ellipsis($br['date_added']); ?></strong><br>
                                     </td>
+                                    
                                     <td>
                                         <strong><?php echo ellipsis($br['balance']); ?></strong><br>
                                     </td>
