@@ -1,24 +1,25 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Lazyloaddata_model extends CI_Model {
+class Lazyloaddata_model extends CI_Model
+{
 
   // constructor
-	function __construct()
-	{
-		parent::__construct();
-	}
+  function __construct()
+  {
+    parent::__construct();
+  }
 
   // Servre side testing
   function courses($limit, $start, $col, $dir, $filter_data)
   {
-    $this->db->limit($limit,$start);
-    $this->db->order_by($col,$dir);
+    $this->db->limit($limit, $start);
+    $this->db->order_by($col, $dir);
 
     // apply the filter data
     // check if the user is admin. Admin can not see the draft courses
     if (strtolower($this->session->userdata('role')) == 'admin') {
-        $this->db->where("status !=", 'draft');
+      $this->db->where("status !=", 'draft');
     }
     if ($filter_data['selected_category_id'] != 'all') {
       $this->db->where('sub_category_id', $filter_data['selected_category_id']);
@@ -29,7 +30,7 @@ class Lazyloaddata_model extends CI_Model {
     if ($filter_data['selected_price'] != "all") {
       if ($filter_data['selected_price'] == "paid") {
         $this->db->where('is_free_course', null);
-      }elseif ($filter_data['selected_price'] == "free") {
+      } elseif ($filter_data['selected_price'] == "free") {
         $this->db->where('is_free_course', 1);
       }
     }
@@ -37,11 +38,10 @@ class Lazyloaddata_model extends CI_Model {
       $this->db->where('status', $filter_data['selected_status']);
     }
     $query = $this->db->get('course');
-    if($query->num_rows() > 0)
-    return $query->result();
+    if ($query->num_rows() > 0)
+      return $query->result();
     else
-    return null;
-
+      return null;
   }
 
   function course_search($limit, $start, $search, $col, $dir, $filter_data)
@@ -52,7 +52,7 @@ class Lazyloaddata_model extends CI_Model {
     // apply the filter data
     // check if the user is admin. Admin can not see the draft courses
     if (strtolower($this->session->userdata('role')) == 'admin') {
-        $this->db->where("status !=", 'draft');
+      $this->db->where("status !=", 'draft');
     }
     if ($filter_data['selected_category_id'] != 'all') {
       $this->db->where('sub_category_id', $filter_data['selected_category_id']);
@@ -63,7 +63,7 @@ class Lazyloaddata_model extends CI_Model {
     if ($filter_data['selected_price'] != "all") {
       if ($filter_data['selected_price'] == "paid") {
         $this->db->where('is_free_course', null);
-      }elseif ($filter_data['selected_price'] == "free") {
+      } elseif ($filter_data['selected_price'] == "free") {
         $this->db->where('is_free_course', 1);
       }
     }
@@ -72,27 +72,28 @@ class Lazyloaddata_model extends CI_Model {
     }
 
     $query = $this->db->get('course');
-    if($query->num_rows() > 0)
-    return $query->result();
+    if ($query->num_rows() > 0)
+      return $query->result();
     else
-    return null;
+      return null;
   }
 
   function course_search_count($search)
   {
     $query = $this
-    ->db
-    ->like('title', $search)
-    ->get('course');
+      ->db
+      ->like('title', $search)
+      ->get('course');
 
     return $query->num_rows();
   }
 
-  function count_all_courses($filter_data = array()) {
+  function count_all_courses($filter_data = array())
+  {
     // apply the filter data
     // check if the user is admin. Admin can not see the draft courses
     if (strtolower($this->session->userdata('role')) == 'admin') {
-        $this->db->where("status !=", 'draft');
+      $this->db->where("status !=", 'draft');
     }
     if ($filter_data['selected_category_id'] != 'all') {
       $this->db->where('sub_category_id', $filter_data['selected_category_id']);
@@ -104,7 +105,7 @@ class Lazyloaddata_model extends CI_Model {
     if ($filter_data['selected_price'] != "all") {
       if ($filter_data['selected_price'] == "paid") {
         $this->db->where('is_free_course', null);
-      }elseif ($filter_data['selected_price'] == "free") {
+      } elseif ($filter_data['selected_price'] == "free") {
         $this->db->where('is_free_course', 1);
       }
     }

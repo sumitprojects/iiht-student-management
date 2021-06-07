@@ -229,7 +229,7 @@ class Api_model extends CI_Model
 				$system_settings_data[$row['key']] = $row['value'];
 			}
 		}
-		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/'.get_frontend_settings('dark_logo');
+		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/' . get_frontend_settings('dark_logo');
 		return $system_settings_data;
 	}
 
@@ -254,8 +254,8 @@ class Api_model extends CI_Model
 				$system_settings_data[$row['key']] = $row['value'];
 			}
 		}
-		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/'.get_frontend_settings('dark_logo');
-		$system_settings_data['favicon'] = base_url() . 'uploads/system/'.get_frontend_settings('favicon');
+		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/' . get_frontend_settings('dark_logo');
+		$system_settings_data['favicon'] = base_url() . 'uploads/system/' . get_frontend_settings('favicon');
 		return $system_settings_data;
 	}
 
