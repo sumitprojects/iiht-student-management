@@ -33,7 +33,7 @@
               </div>
               <div class="table-responsive mt-4">
                   <?php if (count($enrol_history->result_array()) > 0): ?>
-                      <table id="enrol_history" class="table table-striped table-centered mb-0" data-filter="3,4,7" data-nofilter="8,">
+                      <table id="enrol_history" class="table table-striped table-centered mb-0" data-filter="3,4,7" data-nofilter="8,9">
                           <thead>
                               <tr>
                                   <th><?php echo get_phrase('photo'); ?></th>
@@ -50,11 +50,19 @@
                           </thead>
                           <tbody>
                               <?php foreach ($enrol_history->result_array() as $enrol):
+                                //   var_dump($enrol);
+                                //   die;
+                                  $payment_info = $this->db->select('sum(py.amount) as total_payment')->from('payment py')->where('enrol_id',$enrol['id'])->where('payment_status !=','canceled')->group_by('py.enrol_id')->get()->row_array();
+                                //   var_dump($payment_info);
+                                //   die;
+                                  $amount_due = $enrol['final_price'] - (!empty($payment_info['total_payment']) ? $payment_info['total_payment'] : 0) ;
                                   $user_data = $this->db->get_where('users', array('id' => $enrol['user_id']))->row_array();
                                   $course_data = $this->db->get_where('course', array('id' => $enrol['course_id']))->row_array();?>
                                   <tr class="gradeU">
                                       <td>
-                                          <img src="<?php echo $this->user_model->get_user_image_url($enrol['user_id']); ?>" alt="" height="50" width="50" class="img-fluid rounded-circle img-thumbnail">
+                                          <a href="<?=site_url('admin/users/view/'.$enrol['user_id'])?>">
+                                            <img src="<?php echo $this->user_model->get_user_image_url($enrol['user_id']); ?>" alt="" height="50" width="50" class="img-fluid rounded-circle img-thumbnail">
+                                          </a>
                                       </td>
                                       <td>
                                           <b><?php echo $user_data['first_name'].' '.$user_data['last_name']; ?></b><br>
@@ -64,22 +72,26 @@
                                       </td>
                                       <td><strong><a href="<?php echo site_url('admin/course_form/course_edit/'.$course_data['id']); ?>" target="_blank"><?php echo $course_data['title']; ?></a></strong></td>
                                       <td>
-                                        <?php if($user_data['process_mode'] == 'online'):?>
-                                            <span class="badge badge-primary"><?=get_phrase('online')?></span>  
+                                        <?php if($enrol['is_training'] == '1'):?>
+                                            <span class="badge badge-primary"><?=get_phrase('Non Admission')?></span>  
                                             <?php else:?>
                                           <span class="badge badge-primary"><?php echo ($enrol['is_training'] == 0 ? get_phrase('Admission'):get_phrase('Non Admission')); ?></span>
                                         <?php endif;?>
                                       </td>
                                       <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?></td>
                                       <td><?=$enrol['final_price']?></td>
-                                      <td><?=$enrol['total_payment']??'N/A'?></td>
-                                      <?php if($enrol['amount_due']>0 && $enrol['total_payment']>0):?>
-                                        <td><?=$enrol['amount_due']?></td>
-                                      <?php elseif($enrol['amount_due'] == 0 && $enrol['total_payment']==$enrol['final_price']):?>
-                                        <td><span class="badge badge-info"><?=get_phrase('payment_completed')?></span></td>
-                                      <?php else:?>
-                                        <td><span class="badge badge-danger"><?=get_phrase('payment_pending') . $enrol['total_payment'] . ' - '. $enrol['final_price']?></span></td>
+                                      <td><?=$enrol['is_training'] ? 'N/A' : ($payment_info['total_payment']??'N/A')?></td>
+                                      <td>
+                                      <?php if($amount_due > 0 && $enrol['is_training'] == 0):?>
+                                        <span class="badge badge-danger"><?=$amount_due?></span>
+                                      <?php elseif($amount_due == 0 && $payment_info['total_payment']==$enrol['final_price'] && $enrol['is_training'] != 0):?>
+                                        <span class="badge badge-success"><?=get_phrase('payment_completed')?></span>
+                                      <?php elseif($amount_due > 0):?>
+                                        <span class="badge badge-info">N/A</span>
+                                      <?php elseif($amount_due == 0):?>
+                                        <span class="badge badge-success"><?=get_phrase('payment_completed')?></span>
                                       <?php endif;?>
+                                      </td>
                                       <td><span class="badge badge-info"><?=get_phrase($enrol['enrol_status'])?></span></td>
                                       <td>
                                       <div class="dropright dropright">
@@ -90,10 +102,10 @@
                                                 <?php if($enrol['enrol_status'] != 'disable'):?>
                                                     <li><a class="dropdown-item" href="<?php echo site_url('admin/payments/'.$enrol['id']); ?>"><?=get_phrase('view_payments')?></a></li>                                                        
                                                     <li><a class="dropdown-item" href="javascript::void(0)" onclick="confirm_modal('<?php echo site_url('admin/enrol_history_delete/'.$enrol['id']); ?>');"><?=get_phrase('delete')?></a></li>
-                                                    <?php if($enrol['amount_due'] >= 0 && $enrol['total_payment'] > 0):?>
+                                                    <?php if($enrol['amount_due'] >= 0 && $enrol['total_payment'] > 0 && $amount_due != $enrol['final_price']):?>
                                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/admission_form/'.$enrol['id']); ?>"><?=get_phrase('view_admission_form')?></a></li>                                                        
                                                     <?php endif;?>
-                                                    <?php if(!empty($enrol['amount_due']) || $enrol['amount_due'] == NULL ):?>
+                                                    <?php if(!empty($amount_due) && $amount_due > 0):?>
                                                         <li><a class="dropdown-item" href="<?php echo site_url('admin/add_payment/'.$enrol['id']); ?>"><?=get_phrase('make_payment')?></a></li>
                                                     <?php endif; endif; ?>
                                                 <?php if($enrol['enrol_status'] == 'disable'):?>

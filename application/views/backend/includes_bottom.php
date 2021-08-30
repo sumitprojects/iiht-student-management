@@ -33,7 +33,10 @@
 <script src="<?php echo base_url('assets/backend/js/ui/component.dragula.js'); ?>"></script>
 <script src="https://cdn.datatables.net/searchpanes/1.2.1/js/dataTables.searchPanes.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-
+<script src="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css"></script>
+<link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/rowgroup/1.1.3/js/dataTables.rowGroup.min.js"></script>
 <script src="<?php echo site_url('assets/backend/js/custom.js');?>"></script>
 
 <!-- Dashboard chart's data is coming from this file -->
@@ -65,6 +68,24 @@ function error_required_field() {
   $.NotificationApp.send("<?php echo get_phrase('oh_snap'); ?>!", "<?php echo get_phrase('please_fill_all_the_required_fields'); ?>" ,"top-right","rgba(0,0,0,0.2)","error");
 }
 </script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.datatable').DataTable( {
+        dom: 'Blfrtip',
+        buttons: [
+                {
+                    extend: 'csv',
+                    text: 'Export',
+                    exportOptions: {
+                        columns: ':not(.notexport)'
+                    }
+                }
+            ],
+        "lengthMenu": [[5, 25, 50, -1], [5, 25, 50, "All"]]
+    } );
+} );
+
+</script>
 
 <?php if ($this->session->flashdata('info_message') != ""):?>
 <script type="text/javascript">
@@ -82,4 +103,5 @@ function error_required_field() {
 <script type="text/javascript">
   $.NotificationApp.send("<?php echo get_phrase('congratulations'); ?>!", '<?php echo $this->session->flashdata("flash_message");?>' ,"top-right","rgba(0,0,0,0.2)","success");
 </script>
+
 <?php endif;?>

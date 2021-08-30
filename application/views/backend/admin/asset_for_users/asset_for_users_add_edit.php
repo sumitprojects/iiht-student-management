@@ -76,11 +76,9 @@ if(!empty($param2)){
                         <?php endif;?>
                         <?php if(!empty($asset_for_users)):?>
                         <div class="form-group">
-                            <label for="return_date"><?php echo get_phrase('return_date'); ?><span
-                                    class="required">*</span></label>
+                            <label for="return_date"><?php echo get_phrase('return_date'); ?></label>
                             <input type="date" class="form-control" id="return_date" name="return_date"
-                                value="<?php echo !empty($asset_for_users)?$asset_for_users['return_date']:''?>"
-                                required>
+                                value="<?php echo !empty($asset_for_users)?$asset_for_users['return_date']:''?>">
                         </div>
                         <?php endif; ?>
                         <div class="form-group">
@@ -89,9 +87,9 @@ if(!empty($param2)){
                             <select class="form-control select2" data-toggle="select2" name="returnable" id="returnable"
                                 required>
                                 <option value=""><?php echo get_phrase('select_a_returnable'); ?></option>
-                                <option value="0" <?php if($asset_for_users['returnable'] =='0') echo 'selected';?>>Yes
+                                <option value="1" <?php if($asset_for_users['returnable'] =='1') echo 'selected';?>>Yes
                                 </option>
-                                <option value="1" <?php if($asset_for_users['returnable'] =='1') echo 'selected';?>>No
+                                <option value="0" <?php if($asset_for_users['returnable'] =='0') echo 'selected';?>>No
                                 </option>
                             </select>
                         </div>

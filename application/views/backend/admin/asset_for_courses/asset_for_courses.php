@@ -21,7 +21,7 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($asset_for_courses) > 0): ?>
-                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap"
+                    <table id="assetusers" data-filter="2,3" class="table table-striped dt-responsive nowrap"
                         width="100%" data-page-length='25'>
                         <thead>
                             <tr>
@@ -51,7 +51,7 @@
                                 </td>
 
                                 <td>
-                                    <strong><?php echo date($br['returnable']); ?></strong><br>
+                                    <strong><?php echo ($br['returnable']); ?></strong><br>
                                 </td>
 
                                 <td>

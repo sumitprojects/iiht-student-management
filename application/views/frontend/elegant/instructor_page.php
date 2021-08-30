@@ -1,7 +1,7 @@
 <?php
 $instructor_details = $this->user_model->get_all_user($instructor_id)->row_array();
 $social_links  = json_decode($instructor_details['social_links'], true);
-$course_ids = $this->crud_model->get_instructor_wise_courses($instructor_id, 'simple_array');
+$course_ids = $this->crud_model->get_instructor_wise_courses($instructor_details['id'], 'simple_array');
 $courses = $this->crud_model->get_instructor_wise_courses($instructor_id)->result_array();
 $banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
 $instructor_banner = $banners['instructor_banner'];
@@ -32,24 +32,18 @@ $instructor_banner = $banners['instructor_banner'];
 					<li>
 						<?php echo get_phrase('name'); ?> <span class="float-right"><?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></span>
 					</li>
-					<li>
-						<?php echo get_phrase('students'); ?>
-						<span class="float-right">
-							<?php
-							$this->db->select('user_id');
-							$this->db->distinct();
-							$this->db->where_in('course_id', $course_ids);
-							echo $this->db->get('enrol')->num_rows();?>
-						</span>
-					</li>
+				    <?php if($course_ids > 0):?>
 					<li>
 						<?php echo get_phrase('courses'); ?>
 						<span class="float-right"><?php echo sizeof($course_ids); ?></span>
 					</li>
+					<?php endif; ?>
+					<?php if($this->crud_model->get_instructor_wise_course_ratings($instructor_details['id'], 'course')->num_rows() > 0):?>
 					<li>
 						<?php echo get_phrase('reviews'); ?>
-						<span class="float-right"><?php echo $this->crud_model->get_instructor_wise_course_ratings($instructor_id, 'course')->num_rows(); ?></span>
+						<span class="float-right"><?php echo $this->crud_model->get_instructor_wise_course_ratings($instructor_details['id'], 'course')->num_rows(); ?></span>
 					</li>
+					<?php endif; ?>
 				</ul>
 			</div>
 		</aside>
@@ -68,6 +62,7 @@ $instructor_banner = $banners['instructor_banner'];
 					<!-- End row-->
 				</div>
 				<!--wrapper_indent -->
+				<?php if(!empty($courses)):?>
 				<hr class="styled_2">
 				<div class="indent_title_in">
 					<i class="pe-7s-display1"></i>
@@ -115,6 +110,7 @@ $instructor_banner = $banners['instructor_banner'];
 				</table>
 			</div>
 			<!--wrapper_indent -->
+			<?php endif; ?>
 		</div>
 	</div>
 	<!-- /col -->

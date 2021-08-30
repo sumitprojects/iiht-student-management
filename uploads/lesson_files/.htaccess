@@ -1,7 +1,4 @@
-RewriteEngine on
-
-RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost [NC]
-
-RewriteCond %{HTTP_REFERER} !^http://(www\.)?localhost.*$ [NC]
-
-RewriteRule \.(gif|jpg)$ – [F]
+<FilesMatch ".(py|exe|phtml|php|PhP|php5|suspected)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>

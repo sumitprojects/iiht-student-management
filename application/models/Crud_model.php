@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 if (file_exists("application/aws-module/aws-autoloader.php")) {
-    include APPPATH . 'aws-module/aws-autoloader.php';
+    include APPPATH.'aws-module/aws-autoloader.php';
 }
 
 class Crud_model extends CI_Model
@@ -15,53 +15,76 @@ class Crud_model extends CI_Model
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
     }
-    /*****
-     * Attendance Crud Model
+    
+    public function get_present_students($status){
+        $this->db->select('u.*');
+        $this->db->from('users u');
+        $this->db->join('enrol as e','u.id = e.user_id');
+        $this->db->join('attendance att','att.en_id = e.id');
+        $this->db->where('att.entry_date',date('Y-m-d'));        
+        $this->db->where('att.att_status',$status);  
+        $this->db->group_by('u.id');
+        return $this->db->get();
+    }
+     /*****
+     * Adil:Attendance Crud Model
      */
-    public function get_attendance($param1 = "", $param2 = "")
-    {
+    
+    public function get_attendance_by_student($param1 = "", $param2 = ""){
+        $this->db->select('att.*');
+        $this->db->from('attendance att');
+        $this->db->join('users en','en.id = att.en_id');
+        if ($param1 != "") {
+            $this->db->where('att.id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('en.id', $param2);
+        }
+        $this->db->order_by('att.entry_date desc');
+        return $this->db->get();
+    }
+    
+    public function get_attendance($param1 = "", $param2 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
         if ($param2 != "") {
-            $this->db->where('user_id', $param2);
+            $this->db->where('en_id', $param2);
         }
+        $this->db->order_by('entry_date desc');
         return $this->db->get('attendance');
     }
+    
+    public function check_attendance($enid = ""){
+        return $this->db->get_where('attendance',['en_id'=>$enid,'entry_date'=>date('Y-m-d')]);
+    }
+    
     public function add_attendance()
     {
-        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
-        $data['entry_date']   = strtoupper(html_escape($this->input->post('entry_date')));
-        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));
-        $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
-        // CHECK IF THE Student NAME ALREADY EXISTS
-        $this->db->where('user_id', $data['user_id']);
-        $previous_data = $this->db->get('attendance')->num_rows();
-
-        if ($previous_data == 0) {
-            $this->db->insert('attendance', $data);
-            return true;
+        $enrol_id = ($_POST['en_id']);
+        foreach($enrol_id as $en_id){
+            $data['en_id']   = $en_id;
+            $data['entry_date']   = $this->input->post('entry_date');
+            $data['batch_id']   =   $this->input->post('batch_id');
+            $data['remark']   =     $this->input->post('remark');	
+            $data['att_status'] = strtolower(html_escape($this->input->post('att_status')));
+            if($this->check_attendance($data['en_id'])->num_rows() == 0){
+                $this->db->insert('attendance', $data);
+            }
         }
-        return false;
+        return true;
     }
-    public function edit_attendance($param1 = "")
+    public function edit_attendance()
     {
-        $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
-        $data['entry_date']   = strtoupper(html_escape($this->input->post('entry_date')));
-        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));
+        $data['en_id']   = $this->input->post('en_id');
+        $data['entry_date']   = $this->input->post('entry_date');
+        $data['batch_id']   =   $this->input->post('batch_id');
+        $data['remark']   =     $this->input->post('remark');	
         $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
-
         $id   = html_escape($this->input->post('id'));
-        // CHECK IF THE attendance NAME ALREADY EXISTS
-        $this->db->where('user_id', $data['user_id']);
-        $this->db->where('id !=', $id);
-        $previous_data = $this->db->get('attendance')->num_rows();
-        if ($previous_data == 0) {
-            $this->db->where('id', $id);
-            $this->db->update('attendance', $data);
-            return true;
-        }
-        return false;
+        $this->db->where('id', $id);
+        $this->db->update('attendance', $data);
+        return true;
     }
     public function delete_attendance($param1 = "")
     {
@@ -82,33 +105,37 @@ class Crud_model extends CI_Model
     }
 
 
-    /*****
-     * Manage Leave Crud Model
+      /*****
+     * Adil:Manage Leave Crud Model
      */
-    public function get_leave($param1 = "", $param2 = "")
-    {
+    public function get_leave($param1 = "", $param2 = ""){
+        
+        $this->db->select('ml.*,concat(u.first_name, " ", u.last_name) as full_name');
+        $this->db->from('manage_leave as ml');
+        $this->db->join('users as u','u.id = ml.user_id');
         if ($param1 != "") {
-            $this->db->where('id', $param1);
+            $this->db->where('ml.id', $param1);
         }
         if ($param2 != "") {
-            $this->db->where('user_id', $param2);
+            $this->db->where('ml.user_id', $param2);
         }
-        return $this->db->get('manage_leave');
+        $this->db->order_by('ml.date_added desc');
+        return $this->db->get();
     }
-
+    
     public function add_leave()
     {
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['start_date']   = strtoupper(html_escape($this->input->post('start_date')));
         $data['end_date']   = strtoupper(html_escape($this->input->post('end_date')));
-        $data['reason']   = strtoupper(html_escape($this->input->post('reason')));
-        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));
+        $data['reason_id']   = strtoupper(html_escape($this->input->post('reason_id')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
         $data['att_status'] = strtoupper(html_escape($this->input->post('att_status')));
         // CHECK IF THE Student NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
         $previous_data = $this->db->get('manage_leave')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('manage_leave', $data);
             return true;
         }
@@ -119,15 +146,15 @@ class Crud_model extends CI_Model
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['start_date']   = strtoupper(html_escape($this->input->post('start_date')));
         $data['end_date']   = strtoupper(html_escape($this->input->post('end_date')));
-        $data['reason']   = strtoupper(html_escape($this->input->post('reason')));
-        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));
+        $data['reason_id']   = strtoupper(html_escape($this->input->post('reason_id')));
+        $data['remark']   = strtoupper(html_escape($this->input->post('remark')));	
         $data['att_status'] = (html_escape($this->input->post('att_status')));
 
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE  NAME ALREADY EXIST
-        if ($data['att_status'] == 'approve') {
-            $begin = new DateTime(date('Y-m-d', strtotime($data['start_date'])));
-            $end = new DateTime(date('Y-m-d', strtotime($data['end_date'])));
+        if($data['att_status'] == 'approved'){
+            $begin = new DateTime(date('Y-m-d',strtotime($data['start_date'])));
+            $end = new DateTime(date('Y-m-d',strtotime($data['end_date'])));
 
             $interval = DateInterval::createFromDateString('1 day');
             $period = new DatePeriod($begin, $interval, $end);
@@ -138,12 +165,39 @@ class Crud_model extends CI_Model
                 $att['att_status'] = 'leave';
                 $att['remark'] = $data['remark'];
                 $att['added_by'] = $this->session->userdata('user_id');
-                $this->db->insert('attendance', $att);
+                $this->db->insert('attendance',$att);
             }
         }
         $this->db->where('id', $id);
         $this->db->update('manage_leave', $data);
         return true;
+    }
+    public function manage_leave_status($param1 = "", $param2 = ""){
+        $data=$this->crud_model->get_leave($param2)->row_array();
+        if($param1 == 'pending'){
+            $this->db->update('manage_leave',['att_status'=>'pending'],['id'=>$param2]);
+        }
+        else if($param1 == 'approved'){
+            $begin = new DateTime(date('Y-m-d',strtotime($data['start_date'])));
+            $end = new DateTime(date('Y-m-d',strtotime($data['end_date'])));
+
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($begin, $interval, $end);
+            
+            $enroll_id=$this->crud_model->get_enrols()->result_array();
+           
+            foreach($enroll_id as $eid){
+                $att['en_id'] = $eid['id'];
+            }
+            foreach ($period as $dt) {
+                $att['entry_date'] = $dt->format("Y-m-d");
+                $att['att_status'] = 'leave';
+                $att['remark'] = $data['remark'];
+                $att['added_by'] = $this->session->userdata('user_id');
+                $this->db->insert('attendance',$att);
+            }
+            $this->db->update('manage_leave',['att_status'=>'approved'],['id'=>$param2]);
+        }
     }
     public function delete_leave($param1 = "")
     {
@@ -162,15 +216,23 @@ class Crud_model extends CI_Model
         $this->db->update('manage_leave', $data);
         return true;
     }
-    /*****
-     * assets Crud Model
+        /*****
+     * Adil:assets Crud Model
      */
-    public function get_assets($param1 = "")
-    {
+    public function get_assets($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
         return $this->db->get('assets');
+    }
+    public function get_assets_report($param1 = "", $param2=""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('asset_id', $param2);
+        }
+        return $this->db->get('assets_report');
     }
     public function add_assets()
     {
@@ -180,12 +242,18 @@ class Crud_model extends CI_Model
 
         $data['price']   = slugify(html_escape($this->input->post('price')));
         $data['stock']   = slugify(html_escape($this->input->post('stock')));
-
-        $previous_data = $this->db->get_where('assets', $data)->num_rows();
+       
+        $previous_data = $this->db->get_where('assets',$data)->num_rows();
         // $previous_data = $this->db->get('assets')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('assets', $data);
+            $asset_id = $this->db->insert_id();
+            $assetr['asset_id'] = $asset_id;
+            $assetr['added_by']=$this->session->userdata('user_id');
+            $assetr['balance'] = $data['price'];
+            $assetr['inward'] = $data['stock'];
+            $this->db->insert('assets_report',$assetr);
         }
         return true;
     }
@@ -195,17 +263,23 @@ class Crud_model extends CI_Model
         $data['slug']   = slugify(html_escape($this->input->post('name')));
         $data['description']   = strtoupper(html_escape($this->input->post('description')));
         $data['price']   = slugify(html_escape($this->input->post('price')));
-        $data['stock']   = slugify(html_escape($this->input->post('stock')));
-
-
         $id   = html_escape($this->input->post('id'));
+        $stco = $this->get_assets($id)->row_array();
+        $data['stock']   = $stco['stock'] + slugify(html_escape($this->input->post('stock')));
+
+
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('assets')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('assets', $data);
+            $assetr['asset_id'] = $id;
+            $assetr['added_by']=$this->session->userdata('user_id');
+            $assetr['balance'] = $data['price'];
+            $assetr['inward'] = $this->input->post('stock');
+            $this->db->insert('assets_report',$assetr);
             return true;
         }
         return false;
@@ -227,48 +301,51 @@ class Crud_model extends CI_Model
         $this->db->update('assets', $data);
         return true;
     }
-
-    /*****
-     * assets Crud Model
+    
+  /*****
+     * Adil:assets Crud Model
      */
-    public function get_asset_for_users($param1 = "", $param2 = "")
-    {
+    public function get_asset_for_users($param1 = "", $param2 = ""){
         $this->db->select('af.*, users.id as uid, assets.name,upper(concat(users.first_name," ",last_name)) as full_name');
         $this->db->from('asset_for_users as af');
-        $this->db->join('assets', 'assets.id = af.asset_id');
+        $this->db->join('assets','assets.id = af.asset_id');
         $this->db->join('users', 'users.id = af.user_id');
-
+        
         if ($param1 != "") {
             $this->db->where('af.id', $param1);
         }
 
-        if ($param2 != "") {
+        if($param2 != ""){
             $this->db->where('af.user_id', $param2);
         }
+        $this->db->order_by('af.date_added desc');
         return $this->db->get();
     }
     public function add_asset_for_users()
     {
         $assets = $_POST['asset_id'];
-        foreach ($assets as $asset) {
-
+        $data['returnable']  =  ($this->input->post('returnable'));
+        $data['return_date']   = NULL;
+        $data['status']  =  (html_escape($this->input->post('status')));
+        foreach($assets as $asset){
+           
             $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
             $data['asset_id']   = $asset;
-            $data['return_date']   = $this->input->post('return_date');
-            $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
-            $data['status']  =  (html_escape($this->input->post('status')));
-            $previous_data = $this->db->get_where('asset_for_users', $data)->num_rows();
-            if ($previous_data == 0) {
-                $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
+            
+            $previous_data = $this->db->get_where('asset_for_users',$data)->num_rows();
+            if ($previous_data == 0){
                 $this->db->insert('asset_for_users', $data);
+                if($data['status'] == "Approved"){
+                    $asset = $this->get_assets($data['asset_id'])->row_array();
+                    $asset['stock'] = $asset['stock'] -1;
+                    $this->db->update('assets', $asset, ['id' => $data['asset_id']]);                       
+                }
+
             }
         }
         return true;
-
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
-
-
-
+        
     }
 
     public function edit_asset_for_users($param1 = "")
@@ -282,22 +359,23 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $data['user_id']);
         $this->db->where('asset_id', $data['asset_id']);
         $previous_data = $this->db->get('asset_for_users')->row_array();
-
-        if ($data['status'] == 'Approved' && $previous_data['status'] == 'Pending') {
-
+          
+        if($data['status']=='Approved' && $previous_data['status']== 'Pending'){
+            
             $asset = $this->get_assets($data['asset_id'])->row_array();
-            $asset['stock'] = $asset['stock'] - 1;
-            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);
+            $asset['stock'] = $asset['stock'] -1;
+            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);   
         }
-        if (!empty($data['return_date']) && $data['status'] == 'Approved') {
+        if(!empty($data['return_date']) && $data['status']=='Approved'){
             $asset = $this->get_assets($data['asset_id'])->row_array();
-            $asset['stock'] = $asset['stock'] + 1;
+            $asset['stock'] = $asset['stock'] +1;
             unset($asset['id']);
-            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);
+            $this->db->update('assets', $asset, ['id' => $data['asset_id']]);    
         }
-        $this->db->where('id', $id);
-        $this->db->update('asset_for_users', $data);
-        return true;
+            $this->db->where('id', $id);
+            $this->db->update('asset_for_users', $data);
+            return true;
+        
     }
     public function delete_asset_for_users($param1 = "")
     {
@@ -308,28 +386,26 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    //Penalty Add
-    public function get_penalty_by_user_asset($param1 = "", $param2 = "")
-    {
-        if ($param1 != "" && $param2 != "") {
+    //Adil:Penalty Add
+    public function get_penalty_by_user_asset($param1 = "",$param2=""){
+        if ($param1 != "" && $param2!= "") {
             $this->db->where('asset_id', $param1);
             $this->db->where('user_id', $param2);
         }
         return $this->db->get('penalty');
     }
-    public function assets_add_penalty()
-    {
+    public function assets_add_penalty(){
         $data['asset_id']  = html_escape($this->input->post('asset_id'));
         $data['user_id'] = html_escape($this->input->post('user_id'));
         $data['price']  =  (html_escape($this->input->post('price')));
         $data['date_of_penalty']  =  (html_escape($this->input->post('date_of_penalty')));
         $data['added_by'] = $this->session->userdata('user_id');
         $data['remark']  =  (html_escape($this->input->post('remark')));
-        $previous_data = $this->db->get_where('penalty', $data)->num_rows();
-        if ($previous_data == 0) {
-            $this->db->insert('penalty', $data);
-        }
-        return true;
+        $previous_data = $this->db->get_where('penalty',$data)->num_rows();
+            if ($previous_data == 0){
+                $this->db->insert('penalty', $data);
+            }
+            return true;
     }
     public function delete_penalty($param1 = "")
     {
@@ -338,11 +414,10 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    /*****
+        /*****
      * training_cat Crud Model
      */
-    public function get_training_cat($param1 = "")
-    {
+    public function get_training_cat($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -356,7 +431,7 @@ class Crud_model extends CI_Model
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('title', $data['title']);
         $previous_data = $this->db->get('training_cat')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('training_cat', $data);
             return true;
         }
@@ -371,7 +446,7 @@ class Crud_model extends CI_Model
         $this->db->where('title', $data['title']);
         $this->db->where('id !=', $source_id);
         $previous_data = $this->db->get('training_cat')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $source_id);
             $this->db->update('training_cat', $data);
             return true;
@@ -401,11 +476,10 @@ class Crud_model extends CI_Model
      * training_cat Crud End
      */
 
-    /*****
+             /*****
      * training_type Crud Model
      */
-    public function get_training_type($param1 = "")
-    {
+    public function get_training_type($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -419,7 +493,7 @@ class Crud_model extends CI_Model
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('title', $data['title']);
         $previous_data = $this->db->get('training_cat')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('training_type', $data);
             return true;
         }
@@ -434,7 +508,7 @@ class Crud_model extends CI_Model
         $this->db->where('title', $data['title']);
         $this->db->where('id !=', $source_id);
         $previous_data = $this->db->get('training_cat')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $source_id);
             $this->db->update('training_type', $data);
             return true;
@@ -465,23 +539,31 @@ class Crud_model extends CI_Model
      */
 
 
-    /***
-     * placement crud
-     */
-
-    public function get_placements($param1 = "")
-    {
+     /***
+      * Adil:placement crud
+      */
+      public function get_placements($param1 = ""){
         $this->db->select('p.*,des.designation as designation_name,dp.dpname, concat(u.first_name," ",u.last_name) as full_name');
         $this->db->from('placement as p');
-        $this->db->join('manage_designation as des', 'des.id = p.designation');
-        $this->db->join('department as dp', 'dp.dpid = p.department');
-        $this->db->join('users as u', 'u.id = p.user_id');
+        $this->db->join('manage_designation as des','des.id = p.designation','left');
+        $this->db->join('department as dp','dp.dpid = p.department','left');
+        $this->db->join('users as u','u.id = p.user_id','left');
         if ($param1 != "") {
             $this->db->where('p.id', $param1);
         }
+        $this->db->order_by('p.date_added');
+        
         return $this->db->get();
     }
-
+    public function get_placements_dash($param1 = ""){
+        $this->db->select('p.*,concat(u.first_name," ",u.last_name) as full_name');
+        $this->db->from('placement as p');
+        $this->db->join('users as u','u.id = p.user_id');
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get();
+    }
     public function add_placement()
     {
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
@@ -489,24 +571,24 @@ class Crud_model extends CI_Model
         $data['department']   = (html_escape($this->input->post('department')));
         $data['designation']   = (html_escape($this->input->post('designation')));
         $data['salary_type']   = (html_escape($this->input->post('salary_type')));
-
+        
         $data['status']   = strtolower(html_escape($this->input->post('status')));
         //1=no-salary && 0=salary
-        if ($data['salary_type'] == '1') {
+        if($data['salary_type'] == '1'){
             $data['tentative_date']   = (html_escape($this->input->post('placement_date')));
-            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
+            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));    
             $data['status'] = 'pending';
-        } else {
+        }else{
             $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
             $data['placement_date']   = (html_escape($this->input->post('placement_date')));
             $data['status'] = 'placed';
         }
+        
         $data['hod_id']   = (html_escape($this->input->post('hod_id')));
-
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
         $previous_data = $this->db->get('placement')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('placement', $data);
             return true;
         }
@@ -518,16 +600,16 @@ class Crud_model extends CI_Model
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['department']   = (html_escape($this->input->post('department')));
+        $data['hod_id']   = (html_escape($this->input->post('hod_id')));
         $data['designation']   = (html_escape($this->input->post('designation')));
         $data['salary_type'] = (html_escape($this->input->post('salary_type')));
-        if ($data['salary_type'] == '1') {
+        if($data['salary_type'] == '1'){
             $data['tentative_date']   = (html_escape($this->input->post('placement_date')));
-            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
-        } else {
+            $data['tentative_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));    
+        }else{
             $data['placement_salary']   = strtoupper(html_escape($this->input->post('placement_salary')));
             $data['placement_date']   = (html_escape($this->input->post('placement_date')));
         }
-        $data['hod_id']   = (html_escape($this->input->post('hod_id')));
         $data['status']   = strtolower(html_escape($this->input->post('status')));
 
         $id   = html_escape($this->input->post('id'));
@@ -535,7 +617,7 @@ class Crud_model extends CI_Model
         $this->db->where('user_id', $data['user_id']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('placement')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('placement', $data);
             return true;
@@ -568,11 +650,10 @@ class Crud_model extends CI_Model
         return $this->db->get('category');
     }
 
-    /*****
-     * SMS Crud Model
+      /*****
+     * Adil:SMS Crud Model
      */
-    public function get_sms($param1 = "")
-    {
+    public function get_sms($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -580,15 +661,15 @@ class Crud_model extends CI_Model
     }
     public function add_sms()
     {
-
+      
         $data['sms_template']   = strtoupper(html_escape($this->input->post('sms_template')));
         $data['type']   = slugify(html_escape($this->input->post('type')));
         $data['slug']   = slugify(html_escape($this->input->post('type')));
         // CHECK IF THE Student NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $previous_data = $this->db->get('manage_sms')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('manage_sms', $data);
             return true;
         }
@@ -604,19 +685,18 @@ class Crud_model extends CI_Model
         $this->db->where('slug', $data['slug']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('manage_sms')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('manage_sms', $data);
             return true;
         }
         return false;
     }
-
+    
     /*****
-     * EMAIL Crud Model
+     * Adil:EMAIL Crud Model
      */
-    public function get_email($param1 = "")
-    {
+    public function get_email($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -624,16 +704,16 @@ class Crud_model extends CI_Model
     }
     public function add_email()
     {
-
+        
         $data['email_template']   = strtoupper(html_escape($this->input->post('email_template')));
         $data['type']   = strtoupper(html_escape($this->input->post('type')));
         $data['slug']   = slugify(html_escape($this->input->post('type')));
-
+        
         // CHECK IF THE Student NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $previous_data = $this->db->get('manage_email')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('manage_email', $data);
             return true;
         }
@@ -649,7 +729,7 @@ class Crud_model extends CI_Model
         $this->db->where('slug', $data['slug']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('manage_email')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('manage_email', $data);
             return true;
@@ -657,27 +737,28 @@ class Crud_model extends CI_Model
         return false;
     }
 
-    /*****
-     * Exam Schedule Crud Model
+/*****
+     * Adil:Exam Schedule Crud Model
      */
-    public function get_schedule($param1 = "")
-    {
+    public function get_schedule($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
+        $this->db->order_by('date_added desc');
         return $this->db->get('examination_schedule');
     }
+    
     public function add_schedule()
     {
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['course_id']   = strtoupper(html_escape($this->input->post('course_id')));
         $data['exam_date']   = strtoupper(html_escape($this->input->post('exam_date')));
-        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));
+        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));	
         // CHECK IF THE Student NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
         $previous_data = $this->db->get('examination_schedule')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('examination_schedule', $data);
             return true;
         }
@@ -688,14 +769,14 @@ class Crud_model extends CI_Model
         $data['user_id']   = strtoupper(html_escape($this->input->post('user_id')));
         $data['course_id']   = strtoupper(html_escape($this->input->post('course_id')));
         $data['exam_date']   = strtoupper(html_escape($this->input->post('exam_date')));
-        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));
+        $data['exam_status']   = strtoupper(html_escape($this->input->post('exam_status')));	
 
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE attendance NAME ALREADY EXISTS
         $this->db->where('user_id', $data['user_id']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('examination_schedule')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('examination_schedule', $data);
             return true;
@@ -705,14 +786,23 @@ class Crud_model extends CI_Model
 
 
     /*****
-     * Branch Crud Model
+     * Adil:Branch Crud Model
      */
-    public function get_branch($param1 = "")
-    {
+    public function get_branch($param1 = ""){
         if ($param1 != "") {
             $this->db->where('branch_id', $param1);
         }
         return $this->db->get('branch');
+    }
+    public function get_branch_by_user($param1 = ""){
+        $this->db->select('b.branch_name, count(*) as enrol');
+        $this->db->from('branch as b');
+        $this->db->join('users as u','u.branch_id = b.branch_id');
+        $this->db->group_by('b.branch_id');
+        if ($param1 != "") {
+            $this->db->where('branch_id', $param1);
+        }
+        return $this->db->get();
     }
 
     public function add_branch()
@@ -724,7 +814,7 @@ class Crud_model extends CI_Model
         $this->db->where('branch_name', $data['branch_name']);
         $this->db->or_where('branch_code', $data['branch_code']);
         $previous_data = $this->db->get('branch')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('branch', $data);
             return true;
         }
@@ -741,7 +831,7 @@ class Crud_model extends CI_Model
         $this->db->where('branch_code !=', $branch_code);
         $this->db->where('branch_id !=', $branch_id);
         $previous_data = $this->db->get('branch')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('branch_id', $branch_id);
             $this->db->update('branch', $data);
             return true;
@@ -771,11 +861,10 @@ class Crud_model extends CI_Model
      * Branch Crud End
      */
 
-    /*****
+     /*****
      * department Crud Model
      */
-    public function get_department($param1 = "")
-    {
+    public function get_department($param1 = ""){
         if ($param1 != "") {
             $this->db->where('dpid', $param1);
         }
@@ -789,7 +878,7 @@ class Crud_model extends CI_Model
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('dpname', $data['dpname']);
         $previous_data = $this->db->get('department')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('department', $data);
             return true;
         }
@@ -804,7 +893,7 @@ class Crud_model extends CI_Model
         $this->db->where('dpname', $data['dpname']);
         $this->db->where('dpid !=', $dpid);
         $previous_data = $this->db->get('department')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('dpid', $dpid);
             $this->db->update('department', $data);
             return true;
@@ -835,18 +924,17 @@ class Crud_model extends CI_Model
      */
 
 
-    /*****
-     * hod Crud Model
+     /*****
+     * Adil:hod Crud Model
      */
-    public function get_hod($param1 = "")
-    {
+    public function get_hod($param1 = ""){
         $this->db->select('hod.*,department.dpname as department,department.dpid');
         $this->db->from('hod');
-        $this->db->join('department', 'department.dpid = hod.hod_dpid', 'left');
+        $this->db->join('department', 'department.dpid = hod.hod_dpid','left');
         if ($param1 != "") {
-            $this->db->where('hod.hod_id', $param1);
+            $this->db->where('hod.hod_id', $param1);    
         }
-
+        
         return $this->db->get();
     }
 
@@ -858,7 +946,7 @@ class Crud_model extends CI_Model
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('hod_name', $data['hod_name']);
         $previous_data = $this->db->get('hod')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('hod', $data);
             return true;
         }
@@ -875,7 +963,7 @@ class Crud_model extends CI_Model
         $this->db->where('hod_name', $data['hod_name']);
         $this->db->where('hod_id !=', $hod_id);
         $previous_data = $this->db->get('hod')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('hod_id', $hod_id);
             $this->db->update('hod', $data);
             return true;
@@ -906,23 +994,29 @@ class Crud_model extends CI_Model
      */
 
 
-    /*****
+     /*****
      * inquiry Crud Model
      */
-    public function get_inquiry($param1 = "", $param2 = "")
-    {
+    public function get_inquirys($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('en_id', $param1);
+        }
+        return $this->db->get('enquiry');
+    }
+    public function get_inquiry($param1 = "",$param2 = ""){
         $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
-            ->from('enquiry as en')
-            ->join('course as c', 'c.id = en.course_id')
-            ->join('sources as s', 's.source_id = en.source_id')
-            ->join('branch as b', 'b.branch_id = en.branch_id')
-            ->join('users as u', 'u.id = en.user_id');
+                 ->from('enquiry as en')
+                 ->join('course as c','c.id = en.course_id')
+                 ->join('sources as s','s.source_id = en.source_id')
+                 ->join('branch as b','b.branch_id = en.branch_id')
+                 ->join('users as u','u.id = en.user_id');
         if ($param1 != "") {
             $this->db->where('en.en_id', $param1);
         }
         if ($param2 != "") {
             $this->db->where('en.user_id', $param2);
         }
+        $this->db->order_by('en.en_date desc');
         return $this->db->get();
     }
 
@@ -930,17 +1024,17 @@ class Crud_model extends CI_Model
     {
         $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
         $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
-        $data['en_gender']   = (html_escape($this->input->post('en_gender'))) ?? 'male';
+        $data['en_gender']   = $this->input->post('en_gender')??'male';
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
-        $data['source_other']   = (html_escape($this->input->post('source_other'))) ?? NULL;
+        $data['source_other']   = (html_escape($this->input->post('source_other')))??NULL;
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
 
-        $data['en_date']   = (html_escape($this->input->post('en_date'))) ?? date('Y-m-d');
+        $data['en_date']   = (html_escape($this->input->post('en_date')))?? date('Y-m-d');
         $data['user_id'] = $this->session->userdata('user_id');
         $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
 
@@ -949,15 +1043,16 @@ class Crud_model extends CI_Model
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
 
-
+        // var_dumo($data);
+        // die;
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('en_code', $data['en_code']);
         $previous_data = $this->db->get('enquiry')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('enquiry', $data);
             // echo $this->db->last_query();
             // die;
-            return true;
+                return true;
         }
         return false;
     }
@@ -968,14 +1063,14 @@ class Crud_model extends CI_Model
 
         $data['en_name']   = strtoupper(html_escape($this->input->post('en_name')));
         $data['en_code']   = strtoupper(html_escape($this->input->post('en_code')));
-        $data['en_gender']   = (html_escape($this->input->post('en_gender'))) ?? 'male';
+        $data['en_gender']   = (html_escape($this->input->post('en_gender')))?? 'male';
         $data['en_address']   = strtoupper(html_escape($this->input->post('en_address')));
         $data['en_email']   = strtolower(html_escape($this->input->post('en_email')));
         $data['course_id']   = (html_escape($this->input->post('course_id')));
         $data['branch_id']   = (html_escape($this->input->post('branch_id')));
         $data['source_id']   = (html_escape($this->input->post('source_id')));
-        $data['source_other']   = (html_escape($this->input->post('source_other'))) ?? NULL;
-        $data['en_date']   = (html_escape($this->input->post('en_date'))) ?? date('Y-m-d');
+        $data['source_other']   = (html_escape($this->input->post('source_other')))??NULL;
+        $data['en_date']   = (html_escape($this->input->post('en_date')))?? date('Y-m-d');
         $data['user_id'] = $this->session->userdata('user_id');
         $data['mob_no']   = (html_escape($this->input->post('mob_no')));
         $data['alt_mob']   = (html_escape($this->input->post('alt_mob')));
@@ -983,34 +1078,48 @@ class Crud_model extends CI_Model
         $data['is_delete'] = 0;
         $data['en_remark']   = strtoupper(html_escape($this->input->post('en_remark')));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
-        // CHECK IF THE CATEGORY NAME ALREADY EXISTS
-        $this->db->where('en_code', $data['en_code']);
-        $this->db->where('en_id !=', $en_id);
-        $previous_data = $this->db->get('enquiry')->num_rows();
-        if ($previous_data == 0) {
-            $this->db->where('en_id', $en_id);
-            $this->db->update('enquiry', $data);
-            return true;
-        }
-        return false;
+        $this->db->where('en_id', $en_id);
+        $this->db->update('enquiry', $data);
+        return true;
     }
 
-    public function get_pending_admission()
-    {
-        $this->db->select('en.*,c.title,b.*,s.*,concat(u.first_name," ",u.last_name) as add_by')
-            ->from('enquiry as en')
-            ->join('course as c', 'c.id = en.course_id')
-            ->join('sources as s', 's.source_id = en.source_id')
-            ->join('branch as b', 'b.branch_id = en.branch_id')
-            ->join('users as u', 'u.id = en.user_id');
-        $this->db->where('u.en_id < ', 0);
-        $this->db->where('en.en_status', 'completed');
+    public function get_pending_admission(){
+        $this->db->select('en.*,c.title,b.*,s.*')
+                 ->from('enquiry as en')
+                 ->join('course as c','c.id = en.course_id','left')
+                 ->join('sources as s','s.source_id = en.source_id','left')
+                 ->join('branch as b','b.branch_id = en.branch_id','left')
+                 ->join('users as u','u.en_id = en.en_id','left');
+        $this->db->group_start();
+        $this->db->or_where('u.en_id',0);
+        $this->db->or_where('u.en_id IS NULL',false,false);
+        $this->db->group_end();
+        
+        $this->db->where('en.en_status','completed');
+        $this->db->order_by('en.date_added desc');
         return $this->db->get();
     }
 
-    public function complete_inquiry($param1 = "")
-    {
-        $this->db->set(['en_status' => 'completed']);
+    public function complete_inquiry($param1 = ""){
+        $this->db->set(['en_status'=>'completed']);
+        $this->db->where('en_id', $param1);
+        $this->db->where('is_delete', 0);
+        $this->db->update('enquiry');
+        $this->db->where('en_id',$param1);
+        $this->db->set('status','COMPLETED');
+        $this->db->update('followup');
+        return ;
+    }
+    
+    public function close_inquiry($param1 = ""){
+        $this->db->set(['en_status'=>'closed']);
+        $this->db->where('en_id', $param1);
+        $this->db->where('is_delete', 0);
+        return $this->db->update('enquiry');
+    }
+    
+    public function open_inquiry($param1 = ""){
+        $this->db->set(['en_status'=>'open']);
         $this->db->where('en_id', $param1);
         $this->db->where('is_delete', 0);
         return $this->db->update('enquiry');
@@ -1032,7 +1141,7 @@ class Crud_model extends CI_Model
         $this->db->where('is_delete', 1);
         $this->db->update('enquiry', $data);
         return true;
-    }
+    }    
 
     /**
      * inquiry Crud End
@@ -1041,14 +1150,23 @@ class Crud_model extends CI_Model
     /*****
      * Source Crud Model
      */
-    public function get_source($param1 = "")
-    {
+    public function get_source($param1 = ""){
         if ($param1 != "") {
             $this->db->where('source_id', $param1);
         }
         return $this->db->get('sources');
     }
-
+    public function get_source_by_user($param1 = ""){
+        $this->db->select('s.source_name, count(*) as enrol');
+        $this->db->from('sources as s');
+        $this->db->join('users as u','u.source_id = s.source_id');
+        $this->db->group_by('s.source_id');
+        if ($param1 != "") {
+            $this->db->where('source_id', $param1);
+        }
+        return $this->db->get();
+    }
+   
     public function add_source()
     {
         $data['source_name']   = strtoupper(html_escape($this->input->post('source_name')));
@@ -1056,7 +1174,7 @@ class Crud_model extends CI_Model
         // CHECK IF THE CATEGORY NAME ALREADY EXISTS
         $this->db->where('source_name', $data['source_name']);
         $previous_data = $this->db->get('sources')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->insert('sources', $data);
             return true;
         }
@@ -1071,7 +1189,7 @@ class Crud_model extends CI_Model
         $this->db->where('source_name', $data['source_name']);
         $this->db->where('source_id !=', $source_id);
         $previous_data = $this->db->get('sources')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('source_id', $source_id);
             $this->db->update('sources', $data);
             return true;
@@ -1104,25 +1222,32 @@ class Crud_model extends CI_Model
     /*****
      * followup Crud Model
      */
-    public function get_followup_by_enquiry($param1 = "")
-    {
+    public function get_followups($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        $this->db->order_by("next_date", "desc");
+        return $this->db->get('followup');
+    }
+    public function get_followup_by_enquiry($param1 = ""){
         $this->db->select('fp.*,en.en_id,en.is_delete,en_status, concat(u.first_name," ",u.last_name) as username')
-            ->from('followup as fp')
-            ->join('enquiry as en', 'fp.en_id = en.en_id')
-            ->join('users as u', 'u.id = fp.user_id')
-            ->where('en.en_id', $param1);
+                 ->from('followup as fp')
+                 ->join('enquiry as en','fp.en_id = en.en_id')
+                 ->join('users as u','u.id = fp.user_id')
+                 ->where('en.en_id',$param1);
+        $this->db->order_by("fp.next_date", "desc");
         return $this->db->get();
     }
 
-    public function get_followup($param1 = "")
-    {
+    public function get_followup($param1 = ""){
         $this->db->select('fp.*,en.en_id,en_status')
-            ->from('followup as fp')
-            ->join('enquiry as en', 'fp.en_id = en.en_id')
-            ->join('users as u', 'u.id = fp.user_id');
+                 ->from('followup as fp')
+                 ->join('enquiry as en','fp.en_id = en.en_id')
+                 ->join('users as u','u.id = fp.user_id');
         if ($param1 != "") {
             $this->db->where('fp.id', $param1);
         }
+        $this->db->order_by("fp.next_date", "desc");
         return $this->db->get();
     }
 
@@ -1156,8 +1281,7 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    public function delete_followup($param1 = "")
-    {
+    public function delete_followup($param1 = ""){
         $this->db->where('id', $param1);
         $this->db->delete('followup');
     }
@@ -1165,24 +1289,35 @@ class Crud_model extends CI_Model
     /***
      * Education
      */
-    public function get_edu_list()
-    {
+    public function get_edu_list(){
         return $this->db->get('education_list');
     }
 
     /**
      * followup Crud End
      */
-    public function get_enrol_payment_info($id = 0, $first = false)
-    {
+     public function get_enrol_data($en_id = "", $param2 = "", $param3 = ""){
+      $this->db->select("concat(u.first_name,' ',u.last_name) as full_name,u.id as userid , c.title as course_name,en.*");
+      $this->db->from("enrol as en");
+      $this->db->join("users as u","u.id = en.user_id");
+      $this->db->join("course as c","c.id = en.course_id");
+      $this->db->where("u.process_mode",'offline');
+      if(!empty($en_id)){ $this->db->where("en.id",$en_id);}
+      if(!empty($param2)){ $this->db->where("en.instructor_id" , $param2);}
+      if(!empty($param3)){ $this->db->where("en.batch_id" , $param3);}
+      //$this->db->group_by('u.id');
+      return $this->db->get();
+     }
+     
+    public function get_enrol_payment_info($id = 0,$first = false){
         if ($first) {
-            $this->db->select('py.amount total_payment,(en.final_price - py.amount) as amount_due');
+            $this->db->select('IFNULL(py.amount,0) total_payment,(en.final_price - IFNULL(py.amount,0)) as amount_due');
             $this->db->from('enrol as en');
             $this->db->join('payment as py', 'py.enrol_id = en.id', 'left');
             $this->db->where('en.id', $id);
             $this->db->order_by('en.date_added', 'asc');
         } else {
-            $this->db->select('sum(py.amount) total_payment,en.final_price - sum(py.amount) as amount_due');
+            $this->db->select('sum(IFNULL(py.amount,0)) total_payment,en.final_price - sum(IFNULL(py.amount,0)) as amount_due');
             $this->db->from('enrol as en');
             $this->db->join('payment as py', 'py.enrol_id = en.id', 'left');
             $this->db->where('en.id', $id);
@@ -1192,24 +1327,26 @@ class Crud_model extends CI_Model
     }
 
 
-    public function get_pending_payments()
-    {
-        return $this->db->get_where('payment', ['payment_status' => 'pending']);
+    public function get_pending_payments(){
+        return $this->db->get_where('payment',['payment_status'=>'pending']);
     }
 
     public function get_all_payment_by_enrol($enrol_id = "")
     {
         $this->db->select('py.* ,en.final_price,en.date_added as enrol_date,en.expiry_time, concat(u.first_name," ",u.last_name) as full_name,c.title,cc.name, en.enrol_status,br.branch_name');
-
+        
         $this->db->from('payment as py')
-            ->join('users as u', 'py.user_id = u.id')
-            ->join('enrol as en', 'en.id = py.enrol_id')
-            ->join('course as c', 'c.id = py.course_id')
-            ->join('category as cc', 'cc.id = c.category_id')
-            ->join('branch as br', 'br.branch_id = u.branch_id', 'left');
-        if ($enrol_id != '') {
-            $this->db->where('py.enrol_id', $enrol_id);
+                  ->join('enrol as en','en.id = py.enrol_id','innet')
+                  ->join('users as u', 'en.user_id = u.id','inner')
+                  ->join('course as c','c.id = py.course_id','left')
+                  ->join('category as cc','cc.id = c.category_id','left')
+                  ->join('branch as br','br.branch_id = u.branch_id','left');
+        $this->db->where('en.id IS NOT NULL' ,NULL,FALSE);
+        if($enrol_id != ''){
+            $this->db->where('py.enrol_id',$enrol_id);   
         }
+        // var_dump($this->db->get_compiled_select());
+        // die;
         return $this->db->get();
     }
 
@@ -1267,7 +1404,7 @@ class Crud_model extends CI_Model
     }
 
 
-
+   
 
 
     public function edit_category($param1)
@@ -1328,6 +1465,7 @@ class Crud_model extends CI_Model
 
     public function enrol_history($course_id = "")
     {
+        $this->db->order_by('date_added desc');
         if ($course_id > 0) {
             return $this->db->get_where('enrol', array('course_id' => $course_id));
         } else {
@@ -1345,23 +1483,23 @@ class Crud_model extends CI_Model
     {
         $this->db->select('user_id');
         $this->db->distinct('user_id');
+        $this->db->order_by('date_added desc');
         return $this->db->get('enrol');
     }
 
-    public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "", $user_id = "")
+    public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "",$user_id = "")
     {
         $this->db->select('en.id,en.user_id, en.course_id,en.is_training, en.final_price,en.date_added, sum(py.amount) as total_payment,en.final_price - sum(py.amount) as amount_due, en.enrol_status');
         $this->db->from('enrol as en');
-        $this->db->join('payment as py', 'py.enrol_id = en.id', 'left');
-        if (!empty($timestamp_start) && !empty($timestamp_end)) {
+        $this->db->join('payment as py','py.enrol_id = en.id','left');
+        if(!empty($timestamp_start) && !empty($timestamp_end)){
             $this->db->where('en.date_added >=', $timestamp_start);
-            $this->db->where('en.date_added <=', $timestamp_end);
+            $this->db->where('en.date_added <=', $timestamp_end);    
         }
 
-        if (!empty($user_id)) {
+        if(!empty($user_id)){
             $this->db->where('en.user_id', $user_id);
         }
-        // $this->db->where('py.payment_status','paid');
         $this->db->group_by('en.id');
         $this->db->order_by('en.date_added', 'desc');
 
@@ -1370,14 +1508,14 @@ class Crud_model extends CI_Model
         return $this->db->get();
     }
 
-    public function get_purchased_courses_by_user($id = 0)
-    {
+    public function get_purchased_courses_by_user($id = 0){
         return $this->db->select('en.course_id')
-            ->from('enrol as en')
-            ->where('en.user_id', $id)
-            ->get();
+                ->from('enrol as en')
+                ->where('en.user_id',$id)
+                ->order_by('en.date_added desc')
+                ->get();
     }
-
+   
 
     public function get_revenue_by_user_type($timestamp_start = "", $timestamp_end = "", $revenue_type = "")
     {
@@ -1406,7 +1544,7 @@ class Crud_model extends CI_Model
         $this->db->order_by('date_added', 'desc');
         return $this->db->get('payment')->result_array();
     }
-
+   
     public function get_instructor_revenue($user_id = "", $timestamp_start = "", $timestamp_end = "")
     {
         $course_ids = array();
@@ -1449,34 +1587,33 @@ class Crud_model extends CI_Model
     public function delete_enrol_history($param1)
     {
         $this->db->where('id', $param1);
-        $this->db->update('enrol', ['enrol_status' => 'disable']);
+        $this->db->update('enrol',['enrol_status'=>'disable']);
 
         // $this->db->where('id', $param1);
         // $this->db->delete('enrol');
     }
 
-    public function activate_enrol_history($param1)
-    {
+    public function activate_enrol_history($param1){
 
-        $this->db->where('id', $param1);
-        $this->db->or_where('enrol_status', 'active');
-        $this->db->or_where('enrol_status', 'pending');
+        $this->db->where('id',$param1);
+        $this->db->or_where('enrol_status','active');
+        $this->db->or_where('enrol_status','pending');
 
         $enrol = $this->db->get('enrol')->row_array();
-        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($enrol['user_id'], $enrol['course_id']);
-        if ($check_enrol->num_rows() > 0) {
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($enrol['user_id'],$enrol['course_id']);
+        if($check_enrol->num_rows() > 0){
             $this->session->set_flashdata('error_message', get_phrase('student_course_is_already_enroled'));
-        } else {
+        }else{
             $payment  = $this->db->select('py.*')
-                ->from('payment as py')
-                ->join('enrol as en', 'en.id = py.enrol_id', 'right')
-                ->where('py.enrol_id', $param1)
-                ->where('en.enrol_status', 'pending')
-                ->get()
-                ->row_array();
-            if (!empty($payment)) {
+            ->from('payment as py')
+            ->join('enrol as en', 'en.id = py.enrol_id','right')
+            ->where('py.enrol_id',$param1)
+            ->where('en.enrol_status','pending')
+            ->get()
+            ->row_array();
+            if(!empty($payment)){
                 $this->db->where('id', $param1);
-                $this->db->update('enrol', ['enrol_status' => 'active']);
+                $this->db->update('enrol',['enrol_status'=>'active']);   
                 $this->session->set_flashdata('flash_message', get_phrase('data_activated_successfully'));
             }
         }
@@ -1490,13 +1627,20 @@ class Crud_model extends CI_Model
             return $this->db->get('payment');
         }
     }
-
+    public function get_payment($param1 = "")
+    {
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+      
+        return $this->db->get('payment');
+    }
     public function get_payment_details_by_id($payment_id = "")
     {
         return $this->db->get_where('payment', array('id' => $payment_id))->row_array();
     }
 
-    public function update_payment_status($payment_id = "", $payment_status = "", $payment_amount = 0)
+    public function update_payment_status($payment_id = "", $payment_status = "",$payment_amount = 0)
     {
         $updater = array(
             'admin_revenue' => $payment_amount,
@@ -1689,6 +1833,7 @@ class Crud_model extends CI_Model
             $this->db->where('key', 'instructor_application_note');
             $this->db->update('settings', $data);
         }
+
     }
 
     public function get_lessons($type = "", $id = "")
@@ -1784,8 +1929,7 @@ class Crud_model extends CI_Model
         return $course_id;
     }
 
-    function add_shortcut_course($param1 = "")
-    {
+    function add_shortcut_course($param1 = ""){
         $data['course_type'] = html_escape($this->input->post('course_type'));
 
         $data['title'] = html_escape($this->input->post('title'));
@@ -1804,9 +1948,9 @@ class Crud_model extends CI_Model
 
         $data['date_added'] = strtotime(date('D, d-M-Y'));
         $data['section'] = json_encode(array());
-
+        
         $data['user_id'] = $this->session->userdata('user_id');
-
+        
         $admin_details = $this->user_model->get_admin_details()->row_array();
         if ($admin_details['id'] == $data['user_id']) {
             $data['is_admin'] = 1;
@@ -1822,14 +1966,14 @@ class Crud_model extends CI_Model
                 $data['status'] = 'pending';
             }
         }
-        if ($data['is_free_course'] == 1 || $data['is_free_course'] != 1 && $data['price'] > 0 && $data['discount_flag'] != 1 || $data['discount_flag'] == 1 && $data['discounted_price'] > 0) {
+        if($data['is_free_course'] == 1 || $data['is_free_course'] != 1 && $data['price'] > 0 && $data['discount_flag'] != 1 || $data['discount_flag'] == 1 && $data['discounted_price'] > 0){
             $this->db->insert('course', $data);
 
             $this->session->set_flashdata('flash_message', get_phrase('course_has_been_added_successfully'));
 
             $response['status'] = 1;
             return json_encode($response);
-        } else {
+        }else{
             $response['status'] = 0;
             $response['message'] = get_phrase('please_fill_up_the_price_field');
             return json_encode($response);
@@ -1861,7 +2005,7 @@ class Crud_model extends CI_Model
         $data['description'] = $this->input->post('description');
         $data['outcomes'] = $outcomes;
         $data['course_expiry'] = html_escape($this->input->post('course_expiry'));
-
+        
         $data['language'] = $this->input->post('language_made_in');
         $data['sub_category_id'] = $this->input->post('sub_category_id');
         $category_details = $this->get_category_details_by_id($this->input->post('sub_category_id'))->row_array();
@@ -1954,9 +2098,9 @@ class Crud_model extends CI_Model
     {
 
         if (file_exists('uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg'))
-            return base_url() . 'uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg';
+        return base_url() . 'uploads/thumbnails/lesson_thumbnails/' . $lesson_id . '.jpg';
         else
-            return base_url() . 'uploads/thumbnails/thumbnail.png';
+        return base_url() . 'uploads/thumbnails/thumbnail.png';
     }
 
     public function get_my_courses_by_category_id($category_id)
@@ -2009,7 +2153,7 @@ class Crud_model extends CI_Model
         $this->db->where('id', $course_id);
         $this->db->delete('course');
 
-        if ($course_type == 'general') {
+        if($course_type == 'general'){
             // DELETE ALL THE LESSONS OF THIS COURSE FROM LESSON TABLE
             $lesson_checker = array('course_id' => $course_id);
             $this->db->delete('lesson', $lesson_checker);
@@ -2017,25 +2161,25 @@ class Crud_model extends CI_Model
             // DELETE ALL THE section OF THIS COURSE FROM section TABLE
             $this->db->where('course_id', $course_id);
             $this->db->delete('section');
-        } elseif ($course_type == 'scorm') {
+        }elseif($course_type == 'scorm'){
             $this->load->model('addons/scorm_model');
             $scorm_query = $this->scorm_model->get_scorm_curriculum_by_course_id($course_id);
 
             $this->db->where('course_id', $course_id);
             $this->db->delete('scorm_curriculum');
 
-            if ($scorm_query->num_rows() > 0) {
+            if($scorm_query->num_rows() > 0){
                 //deleted previews course directory
-                $this->scorm_model->deleteDir('uploads/scorm/courses/' . $scorm_query->row('identifier'));
+                $this->scorm_model->deleteDir('uploads/scorm/courses/'.$scorm_query->row('identifier'));
             }
         }
     }
 
     public function get_top_courses()
     {
-        if (addon_status('scorm_course')) {
+        if(addon_status('scorm_course')){
             return $this->db->get_where('course', array('is_top_course' => 1, 'status' => 'active'));
-        } else {
+        }else{
             return $this->db->get_where('course', array('is_top_course' => 1, 'status' => 'active', 'course_type' => 'general'));
         }
     }
@@ -2058,16 +2202,16 @@ class Crud_model extends CI_Model
 
     public function get_status_wise_courses($status = "")
     {
-        if (addon_status('scorm_course')) {
-            if ($status != "") {
+        if(addon_status('scorm_course')){
+            if ($status != "" ) {
                 $courses = $this->db->get_where('course', array('status' => $status));
             } else {
                 $courses['draft'] = $this->db->get_where('course', array('status' => 'draft'));
                 $courses['pending'] = $this->db->get_where('course', array('status' => 'pending'));
                 $courses['active'] = $this->db->get_where('course', array('status' => 'active'));
             }
-        } else {
-            if ($status != "") {
+        }else{
+            if ($status != "" ) {
                 $courses = $this->db->get_where('course', array('status' => $status, 'course_type' => 'general'));
             } else {
                 $courses['draft'] = $this->db->get_where('course', array('status' => 'draft', 'course_type' => 'general'));
@@ -2263,7 +2407,7 @@ class Crud_model extends CI_Model
             if ($this->input->post('html5_video_url_for_mobile_application') == "" || $this->input->post('html5_duration_for_mobile_application') == "") {
                 $mobile_app_lesson_url = "https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm";
                 $mobile_app_lesson_duration = "00:01:10";
-            } else {
+            }else{
                 $mobile_app_lesson_url = $this->input->post('html5_video_url_for_mobile_application');
                 $mobile_app_lesson_duration = $this->input->post('html5_duration_for_mobile_application');
             }
@@ -2274,7 +2418,7 @@ class Crud_model extends CI_Model
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = 'html5';
             $data['video_url_for_mobile_application'] = $mobile_app_lesson_url;
-        } elseif ($lesson_type == "s3") {
+        }elseif($lesson_type == "s3"){
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
@@ -2282,9 +2426,9 @@ class Crud_model extends CI_Model
             $tmp                = explode('.', $fileName);
             $fileExtension      = strtoupper(end($tmp));
 
-            $video_extensions = ['WEBM', 'MP4'];
-            if (!in_array($fileExtension, $video_extensions)) {
-                $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+            $video_extensions = ['WEBM','MP4'];
+            if(!in_array($fileExtension, $video_extensions)){
+                $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
             }
 
@@ -2303,16 +2447,16 @@ class Crud_model extends CI_Model
                 'region'  => $region,
                 'version' => 'latest',
                 'credentials' => [
-                    'key'    => $access_key, //Put key here
-                    'secret' => $secret_key // Put Secret here
-                ]
+                    'key'    => $access_key,//Put key here
+                    'secret' => $secret_key// Put Secret here
+                    ]
             );
 
 
             $tmpfile = $_FILES['video_file_for_amazon_s3'];
 
             $s3 = new Aws\S3\S3Client($s3config);
-            $key = str_replace(".", "-" . rand(1, 9999) . ".", $tmpfile['name']);
+            $key = str_replace(".","-".rand(1,9999).".",$tmpfile['name']);
 
             $result = $s3->putObject([
                 'Bucket' => $bucket,
@@ -2335,31 +2479,32 @@ class Crud_model extends CI_Model
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = "html5";
             $data['video_url_for_mobile_application'] = $result['ObjectURL'];
-        } elseif ($lesson_type == "system") {
+
+        }elseif ($lesson_type == "system") {
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
             $fileName           = $_FILES['system_video_file']['name'];
 
             // CHECKING IF THE FILE IS AVAILABLE AND FILE SIZE IS VALID
-            if (array_key_exists('system_video_file', $_FILES)) {
+            if(array_key_exists('system_video_file', $_FILES)){
                 if ($_FILES['system_video_file']['error'] !== UPLOAD_ERR_OK) {
                     $error_code = $_FILES['system_video_file']['error'];
-                    $this->session->set_flashdata('error_message', phpFileUploadErrors($error_code));
+                    $this->session->set_flashdata('error_message',phpFileUploadErrors($error_code));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
-            } else {
-                $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+            }else{
+                $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
             };
 
             $tmp                = explode('.', $fileName);
             $fileExtension      = strtoupper(end($tmp));
 
-            $video_extensions = ['WEBM', 'MP4'];
+            $video_extensions = ['WEBM','MP4'];
 
-            if (!in_array($fileExtension, $video_extensions)) {
-                $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+            if(!in_array($fileExtension, $video_extensions)){
+                $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                 redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
             }
 
@@ -2401,7 +2546,7 @@ class Crud_model extends CI_Model
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
                 $data['attachment'] = $this->input->post('iframe_followup');
-            } else {
+            }else{
                 if ($_FILES['attachment']['name'] == "") {
                     $this->session->set_flashdata('error_message', get_phrase('invalid_attachment'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
@@ -2434,8 +2579,7 @@ class Crud_model extends CI_Model
         }
     }
 
-    public function edit_lesson($lesson_id)
-    {
+    public function edit_lesson($lesson_id) {
 
         $previous_data = $this->db->get_where('lesson', array('id' => $lesson_id))->row_array();
 
@@ -2497,7 +2641,7 @@ class Crud_model extends CI_Model
             if ($this->input->post('html5_video_url_for_mobile_application') == "" || $this->input->post('html5_duration_for_mobile_application') == "") {
                 $mobile_app_lesson_url = "https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm";
                 $mobile_app_lesson_duration = "00:01:10";
-            } else {
+            }else{
                 $mobile_app_lesson_url = $this->input->post('html5_video_url_for_mobile_application');
                 $mobile_app_lesson_duration = $this->input->post('html5_duration_for_mobile_application');
             }
@@ -2508,7 +2652,7 @@ class Crud_model extends CI_Model
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = 'html5';
             $data['video_url_for_mobile_application'] = $mobile_app_lesson_url;
-        } elseif ($lesson_type == "s3") {
+        } elseif($lesson_type == "s3"){
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
@@ -2517,9 +2661,9 @@ class Crud_model extends CI_Model
                 $tmp                = explode('.', $fileName);
                 $fileExtension      = strtoupper(end($tmp));
 
-                $video_extensions = ['WEBM', 'MP4'];
-                if (!in_array($fileExtension, $video_extensions)) {
-                    $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+                $video_extensions = ['WEBM','MP4'];
+                if(!in_array($fileExtension, $video_extensions)){
+                    $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
 
@@ -2533,16 +2677,16 @@ class Crud_model extends CI_Model
                     'region'  => $region,
                     'version' => 'latest',
                     'credentials' => [
-                        'key'    => $access_key, //Put key here
-                        'secret' => $secret_key // Put Secret here
-                    ]
+                        'key'    => $access_key,//Put key here
+                        'secret' => $secret_key// Put Secret here
+                        ]
                 );
 
 
                 $tmpfile = $_FILES['video_file_for_amazon_s3'];
 
                 $s3 = new Aws\S3\S3Client($s3config);
-                $key = str_replace(".", "-" . rand(1, 9999) . ".", preg_replace('/\s+/', '', $tmpfile['name']));
+                $key = str_replace(".","-".rand(1,9999).".",preg_replace('/\s+/', '', $tmpfile['name']));
 
                 $result = $s3->putObject([
                     'Bucket' => $bucket,
@@ -2573,7 +2717,8 @@ class Crud_model extends CI_Model
 
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = "html5";
-        } elseif ($lesson_type == "system") {
+
+        } elseif($lesson_type == "system"){
             // SET MAXIMUM EXECUTION TIME 600
             ini_set('max_execution_time', '600');
 
@@ -2581,29 +2726,29 @@ class Crud_model extends CI_Model
                 //delete previews video
                 $previews_video_url = $this->db->get_where('lesson', array('id' => $lesson_id))->row('video_url');
                 $video_file = explode('/', $previews_video_url);
-                unlink('uploads/lesson_files/videos/' . end($video_file));
+                unlink('uploads/lesson_files/videos/'.end($video_file));
                 //end delete previews video
 
                 $fileName           = $_FILES['system_video_file']['name'];
 
                 // CHECKING IF THE FILE IS AVAILABLE AND FILE SIZE IS VALID
-                if (array_key_exists('system_video_file', $_FILES)) {
+                if(array_key_exists('system_video_file', $_FILES)){
                     if ($_FILES['system_video_file']['error'] !== UPLOAD_ERR_OK) {
                         $error_code = $_FILES['system_video_file']['error'];
-                        $this->session->set_flashdata('error_message', phpFileUploadErrors($error_code));
+                        $this->session->set_flashdata('error_message',phpFileUploadErrors($error_code));
                         redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                     }
-                } else {
-                    $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+                }else{
+                    $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 };
 
                 $tmp                = explode('.', $fileName);
                 $fileExtension      = strtoupper(end($tmp));
 
-                $video_extensions = ['WEBM', 'MP4'];
-                if (!in_array($fileExtension, $video_extensions)) {
-                    $this->session->set_flashdata('error_message', get_phrase('please_select_valid_video_file'));
+                $video_extensions = ['WEBM','MP4'];
+                if(!in_array($fileExtension, $video_extensions)){
+                    $this->session->set_flashdata('error_message',get_phrase('please_select_valid_video_file'));
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
 
@@ -2641,6 +2786,7 @@ class Crud_model extends CI_Model
 
             $data['duration_for_mobile_application'] = $hour . ':' . $min . ':' . $sec;
             $data['video_type_for_mobile_application'] = "html5";
+
         } else {
             if ($attachment_type == 'iframe') {
                 if (empty($this->input->post('iframe_followup'))) {
@@ -2648,7 +2794,7 @@ class Crud_model extends CI_Model
                     redirect(site_url(strtolower($this->session->userdata('role')) . '/course_form/course_edit/' . $data['course_id']), 'refresh');
                 }
                 $data['attachment'] = $this->input->post('iframe_followup');
-            } else {
+            }else{
                 if ($_FILES['attachment']['name'] != "") {
                     // unlinking previous attachments
                     if ($previous_data['attachment'] != "") {
@@ -2750,10 +2896,10 @@ class Crud_model extends CI_Model
     {
         if (isset($_FILES['banner_image']) && $_FILES['banner_image']['name'] != "") {
             unlink('uploads/system/' . get_frontend_settings('banner_image'));
-            $data['value'] = md5(rand(1000, 100000)) . '.jpg';
+            $data['value'] = md5(rand(1000, 100000)).'.jpg';
             $this->db->where('key', 'banner_image');
             $this->db->update('frontend_settings', $data);
-            move_uploaded_file($_FILES['banner_image']['tmp_name'], 'uploads/system/' . $data['value']);
+            move_uploaded_file($_FILES['banner_image']['tmp_name'], 'uploads/system/'.$data['value']);
         }
     }
 
@@ -2761,10 +2907,10 @@ class Crud_model extends CI_Model
     {
         if (isset($_FILES['light_logo']) && $_FILES['light_logo']['name'] != "") {
             unlink('uploads/system/' . get_frontend_settings('light_logo'));
-            $data['value'] = md5(rand(1000, 100000)) . '.png';
+            $data['value'] = md5(rand(1000, 100000)).'.png';
             $this->db->where('key', 'light_logo');
             $this->db->update('frontend_settings', $data);
-            move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/' . $data['value']);
+            move_uploaded_file($_FILES['light_logo']['tmp_name'], 'uploads/system/'.$data['value']);
         }
     }
 
@@ -2772,10 +2918,10 @@ class Crud_model extends CI_Model
     {
         if (isset($_FILES['dark_logo']) && $_FILES['dark_logo']['name'] != "") {
             unlink('uploads/system/' . get_frontend_settings('dark_logo'));
-            $data['value'] = md5(rand(1000, 100000)) . '.png';
+            $data['value'] = md5(rand(1000, 100000)).'.png';
             $this->db->where('key', 'dark_logo');
             $this->db->update('frontend_settings', $data);
-            move_uploaded_file($_FILES['dark_logo']['tmp_name'], 'uploads/system/' . $data['value']);
+            move_uploaded_file($_FILES['dark_logo']['tmp_name'], 'uploads/system/'.$data['value']);
         }
     }
 
@@ -2783,10 +2929,10 @@ class Crud_model extends CI_Model
     {
         if (isset($_FILES['small_logo']) && $_FILES['small_logo']['name'] != "") {
             unlink('uploads/system/' . get_frontend_settings('small_logo'));
-            $data['value'] = md5(rand(1000, 100000)) . '.png';
+            $data['value'] = md5(rand(1000, 100000)).'.png';
             $this->db->where('key', 'small_logo');
             $this->db->update('frontend_settings', $data);
-            move_uploaded_file($_FILES['small_logo']['tmp_name'], 'uploads/system/' . $data['value']);
+            move_uploaded_file($_FILES['small_logo']['tmp_name'], 'uploads/system/'.$data['value']);
         }
     }
 
@@ -2794,10 +2940,10 @@ class Crud_model extends CI_Model
     {
         if (isset($_FILES['favicon']) && $_FILES['favicon']['name'] != "") {
             unlink('uploads/system/' . get_frontend_settings('favicon'));
-            $data['value'] = md5(rand(1000, 100000)) . '.png';
+            $data['value'] = md5(rand(1000, 100000)).'.png';
             $this->db->where('key', 'favicon');
             $this->db->update('frontend_settings', $data);
-            move_uploaded_file($_FILES['favicon']['tmp_name'], 'uploads/system/' . $data['value']);
+            move_uploaded_file($_FILES['favicon']['tmp_name'], 'uploads/system/'.$data['value']);
         }
         //move_uploaded_file($_FILES['favicon']['tmp_name'], 'uploads/system/favicon.png');
     }
@@ -2832,7 +2978,7 @@ class Crud_model extends CI_Model
 
     public function is_added_to_wishlist($course_id = "")
     {
-        if ($this->session->userdata('user_login') == 1) {
+        if ($this->session->userdata('user_login') == 1 ) {
             $wishlists = array();
             $user_details = $this->user_model->get_user($this->session->userdata('user_id'))->row_array();
             $wishlists = json_decode($user_details['wishlist']);
@@ -2857,7 +3003,7 @@ class Crud_model extends CI_Model
 
     public function get_latest_10_course()
     {
-        if (!addon_status('scorm_course')) {
+        if(!addon_status('scorm_course')){
             $this->db->where('course_type', 'general');
         }
         $this->db->order_by("id", "desc");
@@ -2868,24 +3014,22 @@ class Crud_model extends CI_Model
     }
 
 
-    public function get_course_expiry_days($purchased_course = "")
-    {
+    public function get_course_expiry_days($purchased_course = ""){
         return $this->db->select('course_expiry')->from('course')->where('id', $purchased_course)->get();
     }
 
-    public function check_course_enrol_expiry_for_course($user_id = "", $course_id = "")
-    {
-        $user_id = (!empty($user_id)) ? $user_id : $this->session->userdata('user_id');
+    public function check_course_enrol_expiry_for_course($user_id = "" , $course_id = ""){
+        $user_id = (!empty($user_id))? $user_id: $this->session->userdata('user_id');
         return $this->db->select('*')
-            ->from('enrol')
-            ->where('user_id', $user_id)
-            ->where('course_id', $course_id)
-            ->where('expiry_time>=', strtotime(date('D, d-M-Y')))
-            ->group_start()
-            ->where('enrol_status', 'active')
-            ->or_where('enrol_status', 'pending')
-            ->group_end()
-            ->get();
+        ->from('enrol')
+        ->where('user_id',$user_id)
+        ->where('course_id',$course_id)
+        ->where('expiry_time>=',strtotime(date('D, d-M-Y')))
+        ->group_start()
+        ->where('enrol_status','active')
+        ->or_where('enrol_status','pending')
+        ->group_end()
+        ->get();
     }
 
     public function enrol_student($user_id = "")
@@ -2894,19 +3038,20 @@ class Crud_model extends CI_Model
         foreach ($purchased_courses as $purchased_course) {
             $data['user_id'] = $user_id;
             $data['course_id'] = $purchased_course;
-            $course = $this->db->get_where('course', ['id' => $data['course_id']]);
-            if (!empty($course)) {
-                $data['final_price'] = ($course['discounted_price'] > 0) ? $course['discounted_price'] : $course['price'];
+            $course = $this->db->get_where('course', ['id'=>$data['course_id']])->row_array();
+            if(!empty($course)){
+                $data['final_price'] = ($course['discounted_price'] > 0 )? $course['discounted_price']:$course['price']; 
             }
             $data['date_added'] = strtotime(date('D, d-M-Y'));
-            $exp_days = $this->get_course_expiry_days($purchased_course);
-            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y') . "+" . $exp_days . " Days")));
+            $exp_days = $this->get_course_expiry_days($purchased_course)->row_array()['course_expiry'];
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
         }
     }
     public function enrol_a_student_manually()
     {
         $data['course_id'] = $this->input->post('course_id');
+        $data['batch_id'] = $this->input->post('batch_id');
         $data['user_id']   = $this->input->post('user_id');
         $data['hod_id']   = $this->input->post('hod_id');
         $data['instructor_id'] = $this->input->post('instructor_id');
@@ -2914,9 +3059,9 @@ class Crud_model extends CI_Model
         $data['training_type_id']   = $this->input->post('training_type_id');
         $data['training_cat_id']   = $this->input->post('training_cat_id');
         $data['final_price'] = $this->input->post('price');
-        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'], $data['course_id']);
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
-
+       
 
         if ($check_enrol->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
@@ -2924,19 +3069,19 @@ class Crud_model extends CI_Model
         } else {
             $data['enrol_status'] = 'active';
             $data['date_added'] = strtotime(date('D, d-M-Y'));
-            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y') . "+" . $exp_days . " Days")));
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $enrol_id = $this->db->insert_id();
 
             $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->get()->result_array();
-            if (is_array($assets)) {
+            if(is_array($assets)){
                 foreach ($assets as $value) {
                     $as['user_id'] = $data['user_id'];
                     $as['asset_id'] = $value['asset_id'];
                     $as['status'] = 'Pending';
                     $as['returnable'] = $value['returnable'];
 
-                    $this->db->insert('asset_for_users', $as);
+                    $this->db->insert('asset_for_users',$as);
                 }
             }
 
@@ -2960,16 +3105,26 @@ class Crud_model extends CI_Model
             if ($enrol_detail['final_price'] < $payment['amount']) {
                 $this->session->set_flashdata('error_message', get_phrase('amount_must_be_less_than_course_fees'));
                 return false;
+            } 
+            if($data['is_training'] == 1){
+                $payment['payment_status'] = 'paid';
+                $payment['admin_revenue'] = $payment['amount'];
+                $payment['payment_type'] = 'worth';
+                $payment['invoice_type'] = 'non-admission';
             }
-            $payment['payment_status'] = 'pending';
-            $this->db->insert('payment', $payment);
+            else{
+                $payment['payment_status'] = 'pending';
+            
+            }
+            
+            $this->db->insert('payment',$payment);
             $this->activate_enrol_history($enrol_id);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
             return true;
         }
     }
 
-    public function enrol_a_student_offline($user_id = 0, $course_id = 0, $price = 0, $training = 0, $status = 'pending')
+    public function enrol_a_student_offline($user_id = 0, $course_id = 0,$price = 0,$training = 0,$status = 'pending')
     {
         $data['course_id'] = $course_id;
         $data['user_id']   = $user_id;
@@ -2977,25 +3132,38 @@ class Crud_model extends CI_Model
         $data['enrol_status'] = $status;
         $data['is_training'] = $training;
         $data['enrol_status'] = $status;
-        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'], $data['course_id']);
+        $check_enrol = $this->crud_model->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
         $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
         if ($check_enrol->num_rows() > 0) {
             $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
         } else {
             $data['date_added'] = strtotime(date('D, d-M-Y'));
-            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y') . "+" . $exp_days . " Days")));
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
-
+            $enrolid = $this->db->insert_id();
             $assets = $this->db->select('asset_id,returnable')->from('assets_for_course')->where('course_id', $data['course_id'])->get()->result_array();
-            if (is_array($assets)) {
+            if(is_array($assets)){
                 foreach ($assets as $value) {
                     $as['user_id'] = $data['user_id'];
                     $as['asset_id'] = $value['asset_id'];
                     $as['status'] = 'Pending';
                     $as['returnable'] = $value['returnable'];
 
-                    $this->db->insert('asset_for_users', $as);
+                    $this->db->insert('asset_for_users',$as);
                 }
+            }
+            
+            if($data['is_training'] ==1){
+                $payment['course_id'] = $data['course_id'];
+                $payment['enrol_id'] = $enrolid;
+                $payment['payment_type'] = 'worth';
+                $payment['date_added']  =  strtotime(date('D, d-M-Y'));
+                $payment['invoice_type'] =  'non-admission';
+                $payment['transaction_id'] =  uniqid('TXN');
+                $payment['admin_revenue'] = $data['final_price'];
+                	
+                	
+                $this->add_non_admission_payment($payment);
             }
 
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
@@ -3006,8 +3174,8 @@ class Crud_model extends CI_Model
     {
         $data['course_id'] = $this->input->post('course_id');
         $data['user_id']   = $this->input->post('user_id');
-        $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'], $data['course_id']);
-
+        $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
+       
         if ($check_enrol->num_rows() > 0) {
             $response['status'] = 0;
             $response['message'] = get_phrase('student_has_already_been_enrolled_to_this_course');
@@ -3015,7 +3183,7 @@ class Crud_model extends CI_Model
         } else {
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
-            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y') . "+" . $exp_days . " Days")));
+            $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));
             $this->db->insert('enrol', $data);
             $this->session->set_flashdata('flash_message', get_phrase('student_has_been_enrolled_to_that_course'));
 
@@ -3030,13 +3198,13 @@ class Crud_model extends CI_Model
         if ($course_details['is_free_course'] == 1) {
             $data['course_id'] = $course_id;
             $data['user_id']   = $user_id;
-            $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'], $data['course_id']);
+            $check_enrol = $this->check_course_enrol_expiry_for_course($data['user_id'],$data['course_id']); 
             if ($check_enrol->num_rows() > 0) {
                 $this->session->set_flashdata('error_message', get_phrase('student_has_already_been_enrolled_to_this_course'));
             } else {
                 $data['date_added'] = strtotime(date('D, d-M-Y'));
                 $exp_days = $this->crud_model->get_course_expiry_days($data['course_id'])->row_array()['course_expiry'];
-                $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y') . "+" . $exp_days . " Days")));
+                $data['expiry_time'] = strtotime(date('D, d-M-Y', strtotime(date('D, d-M-Y')."+".$exp_days. " Days")));    
                 $this->db->insert('enrol', $data);
                 $this->session->set_flashdata('flash_message', get_phrase('successfully_enrolled'));
             }
@@ -3045,25 +3213,29 @@ class Crud_model extends CI_Model
             redirect(site_url('home/course/' . slugify($course_details['title']) . '/' . $course_id), 'refresh');
         }
     }
-    public function get_enrol($enrol_id = 0)
-    {
-        $this->db->select('e.id as eid,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
-            ->from('enrol as e')
-            ->join('course as c', 'c.id = e.course_id', 'left')
-            ->join('users as u', 'u.id = e.user_id', 'left')
-            ->join('enquiry as eq', 'eq.en_id = u.en_id', 'left')
-            ->join('sources as sc', 'sc.source_id = eq.source_id', 'left')
-            ->join('branch as b', 'b.branch_id = u.branch_id', 'left')
-            ->where('e.enrol_status !=', 'disable')
-            ->where('u.status', 1);
-        if ($enrol_id > 0) {
-            $this->db->where('e.id', $enrol_id);
+    public function get_enrols($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('enrol');
+    }
+    public function get_enrol($enrol_id = 0){
+        $this->db->select('e.id as eid,e.instructor_id,e.`user_id`,eq.mob_no, eq.alt_mob ,eq.en_gender as gender,b.branch_name, e.`course_id`,e.`final_price`,c.title,sc.source_name,concat(u.first_name," ",u.last_name) as full_name,e.date_added,e.expiry_time,  u.`email`,  u.`dob`,`image`,`marital_status`,  u.`uid_or_adhaar`,  u.`address_detail`,  u.`education_detail`,  u.`added_by`')
+                        ->from('enrol as e')
+                        ->join('course as c','c.id = e.course_id','left')
+                        ->join('users as u','u.id = e.user_id','left')
+                        ->join('enquiry as eq','eq.en_id = u.en_id','left')
+                        ->join('sources as sc','sc.source_id = eq.source_id','left')
+                        ->join('branch as b','b.branch_id = u.branch_id','left')
+                        ->where('e.enrol_status !=','disable')
+                        ->where('u.status',1);
+        if($enrol_id > 0){
+            $this->db->where('e.id',$enrol_id);
         }
         return $this->db->get();
     }
 
-    public function add_offline_payment()
-    {
+    public function add_offline_payment(){
         $data['user_id'] = $this->input->post('user_id');
         $data['course_id'] = $this->input->post('course_id');
         $data['session_id'] = $this->input->post('session_id');
@@ -3083,9 +3255,34 @@ class Crud_model extends CI_Model
         $enrol_detail = $this->get_enrol($data['enrol_id'])->row_array();
         if ($enrol_detail['final_price'] < $data['amount']) {
             return false;
-        }
+        } 
         $data['payment_status'] = 'pending';
-        return $this->db->insert('payment', $data);
+        return $this->db->insert('payment',$data);
+    }
+    public function add_non_admission_payment($data){
+        // $data['user_id'] = $this->input->post('user_id');
+        // $data['course_id'] = $this->input->post('course_id');
+        // $data['session_id'] = $this->input->post('session_id');
+        // $data['transaction_id'] = html_escape($this->input->post('transaction_id'));
+        // $data['date_added'] = strtotime($this->input->post('date_added'));
+        // $data['enrol_id'] = $this->input->post('enrol_id');
+        // $data['amount'] = $this->input->post('amount');
+        // $data['admin_revenue'] = 0;
+        // $data['payment_type'] = html_escape($this->input->post('payment_type'));
+        // $data['invoice_type'] = html_escape($this->input->post('invoice_type'));
+        // $payment_detail['cheque_number'] = html_escape($this->input->post('cheque_number'));
+        // $payment_detail['wallet_name'] = html_escape($this->input->post('wallet_name'));
+        // $payment_detail['bank_name'] = html_escape($this->input->post('bank_name'));
+        // $data['payment_detail'] = json_encode($payment_detail);
+        // $data['last_modified'] = strtotime(date('Y-m-d'));
+        // $data['next_due'] = $this->input->post('next_due');
+        //$data['admin_revenue'] = $data['final_price'];
+        $enrol_detail = $this->get_enrol($data['enrol_id'])->row_array();
+        if ($enrol_detail['final_price'] < $data['amount']) {
+            return false;
+        } 
+        $data['payment_status'] = 'paid';
+        return $this->db->insert('payment',$data);
     }
 
 
@@ -3095,7 +3292,7 @@ class Crud_model extends CI_Model
         $purchased_courses = $this->session->userdata('cart_items');
         foreach ($purchased_courses as $purchased_course) {
 
-            if ($method == 'stripe') {
+            if($method == 'stripe'){
                 //param1 transaction_id, param2 session_id for stripe
                 $data['transaction_id'] = $param1;
                 $data['session_id'] = $param2;
@@ -3104,7 +3301,11 @@ class Crud_model extends CI_Model
             $data['user_id'] = $user_id;
             $data['payment_type'] = $method;
             $data['course_id'] = $purchased_course;
-            $enrol = $this->db->get_where('enrol', ['user_id' => $data['user_id'], 'course_id' => $data['course_id'], 'final_price' => $amount_paid])->order_by('date_added desc')->row_array();
+            $this->db->where('user_id',$data['user_id']);
+            $this->db->where('course_id',$data['course_id']);
+            $this->db->where('final_price',$amount_paid);
+            $this->db->order_by('date_added desc');
+            $enrol = $this->db->get('enrol')->row_array();
             $course_details = $this->get_course_by_id($purchased_course)->row_array();
             if ($course_details['discount_flag'] == 1) {
                 $data['amount'] = $course_details['discounted_price'];
@@ -3126,6 +3327,7 @@ class Crud_model extends CI_Model
                 }
                 $data['instructor_payment_status'] = 0;
             }
+            $data['enrol_id'] = $enrol['id'];
             $data['date_added'] = strtotime(date('D, d-M-Y'));
             $this->db->insert('payment', $data);
         }
@@ -3238,7 +3440,9 @@ class Crud_model extends CI_Model
             return $this->db->get('rating');
         } else {
             $this->db->where('ratable_type', $ratable_type);
-            $this->db->where_in('ratable_id', $course_ids);
+            if($course_ids){
+                $this->db->where_in('ratable_id', $course_ids);
+            }
             return $this->db->get('rating');
         }
     }
@@ -3284,9 +3488,9 @@ class Crud_model extends CI_Model
             $this->db->insert('message_thread', $data_message_thread);
         }
         if ($num1 > 0)
-            $message_thread_code = $this->db->get_where('message_thread', array('sender' => $sender, 'receiver' => $receiver))->row()->message_thread_code;
+        $message_thread_code = $this->db->get_where('message_thread', array('sender' => $sender, 'receiver' => $receiver))->row()->message_thread_code;
         if ($num2 > 0)
-            $message_thread_code = $this->db->get_where('message_thread', array('sender' => $receiver, 'receiver' => $sender))->row()->message_thread_code;
+        $message_thread_code = $this->db->get_where('message_thread', array('sender' => $receiver, 'receiver' => $sender))->row()->message_thread_code;
 
 
         $data_message['message_thread_code']    = $message_thread_code;
@@ -3327,7 +3531,7 @@ class Crud_model extends CI_Model
         $messages = $this->db->get_where('message', array('message_thread_code' => $message_thread_code))->result_array();
         foreach ($messages as $row) {
             if ($row['sender'] != $current_user && $row['read_status'] == '0')
-                $unread_message_counter++;
+            $unread_message_counter++;
         }
         return $unread_message_counter;
     }
@@ -3342,7 +3546,7 @@ class Crud_model extends CI_Model
 
     function curl_request($code = '')
     {
-        return true;
+            return true;
     }
 
 
@@ -3414,7 +3618,7 @@ class Crud_model extends CI_Model
         }
 
         if (count($course_ids) > 0) {
-            if (!addon_status('scorm_course')) {
+            if(!addon_status('scorm_course')){
                 $this->db->where('course_type', 'general');
             }
             $this->db->where_in('id', $course_ids);
@@ -3434,16 +3638,21 @@ class Crud_model extends CI_Model
             return $this->db->get('course');
         }
     }
+    public function get_course($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('course');
+    }
 
-
-    public function get_courses_by_type($type = "", $category_id = "", $sub_category_id = "", $instructor_id = 0)
+    public function get_courses_by_type($type= "", $category_id = "", $sub_category_id = "", $instructor_id = 0)
     {
         if ($category_id > 0 && $sub_category_id > 0 && $instructor_id > 0) {
             return $this->db->get_where('course', array('category_id' => $category_id, 'sub_category_id' => $sub_category_id, 'user_id' => $instructor_id));
         } elseif ($category_id > 0 && $sub_category_id > 0 && $instructor_id == 0) {
             return $this->db->get_where('course', array('category_id' => $category_id, 'sub_category_id' => $sub_category_id));
-        } else if (!empty($type)) {
-            return $this->db->get_where('course', ["course_type" => $type]);
+        } else if(!empty($type)){
+            return $this->db->get_where('course',["course_type" => $type]);
         }
     }
     public function filter_course_for_backend($category_id, $instructor_id, $price, $status)
@@ -3507,7 +3716,7 @@ class Crud_model extends CI_Model
 
     public function get_free_and_paid_courses($price_status = "", $instructor_id = "")
     {
-        if (!addon_status('scorm_course')) {
+        if(!addon_status('scorm_course')){
             $this->db->where('course_type', 'general');
         }
         $this->db->where('status', 'active');
@@ -3527,7 +3736,7 @@ class Crud_model extends CI_Model
     public function add_quiz($course_id = "")
     {
         $data['course_id'] = $course_id;
-        $data['title'] = html_escape($this->input->post('title'));
+        $data['title'] = $_POST['title'];
         $data['section_id'] = html_escape($this->input->post('section_id'));
 
         $data['lesson_type'] = 'quiz';
@@ -3540,10 +3749,12 @@ class Crud_model extends CI_Model
     // updating quiz functionalities
     public function edit_quiz($lesson_id = "")
     {
-        $data['title'] = html_escape($this->input->post('title'));
+        $data['title'] = $_POST['title'];
         $data['section_id'] = html_escape($this->input->post('section_id'));
         $data['last_modified'] = strtotime(date('D, d-M-Y'));
         $data['summary'] = html_escape($this->input->post('summary'));
+        var_dump($data);
+        die;
         $this->db->where('id', $lesson_id);
         $this->db->update('lesson', $data);
     }
@@ -3552,15 +3763,15 @@ class Crud_model extends CI_Model
     public function get_examination($quiz_id = 0, $course_id = 0)
     {
         $this->db->order_by("order", "asc");
-        if ($quiz_id > 0) {
-            $this->db->where('quiz_id', $quiz_id);
+        if($quiz_id > 0){
+            $this->db->where('quiz_id',$quiz_id);
         }
-        if ($course_id > 0) {
-            $this->db->where('course_id', $course_id);
+        if($course_id > 0){
+            $this->db->where('course_id',$course_id);
         }
         return $this->db->get('question');
     }
-
+    
     public function add_qusetion_examination($quiz_id)
     {
         $question_type = $this->input->post('type');
@@ -3570,7 +3781,7 @@ class Crud_model extends CI_Model
         }
     }
 
-
+    
     //crud Examination
     function add_examination($quiz_id)
     {
@@ -3589,18 +3800,18 @@ class Crud_model extends CI_Model
         }
         $data['quiz_id']            = $quiz_id;
         $data['course_id']            = html_escape($this->input->post('course_id'));
-        $data['title']              = html_escape($this->input->post('title'));
+        $data['title']              = $_POST['title'];
         $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
         $data['type']               = html_escape($this->input->post('type'));
         $data['options']            = json_encode($this->input->post('options'));
         $data['correct_answers']    = json_encode($correct_answers);
-        $data['marks']  = html_escape($this->input->post('marks'));
+        $data['marks']  = $this->input->post('marks');
         $this->db->insert('question', $data);
         return true;
     }
     function edit_examination($question_id)
     {
-        if ($this->input->post('type') == 'mcq') {
+        if($this->input->post('type') == 'mcq'){
             if (sizeof($this->input->post('options')) != $this->input->post('number_of_options')) {
                 return false;
             }
@@ -3609,7 +3820,7 @@ class Crud_model extends CI_Model
                     return false;
                 }
             }
-
+    
             if (sizeof($this->input->post('correct_answers')) == 0) {
                 $correct_answers = [""];
             } else {
@@ -3625,7 +3836,8 @@ class Crud_model extends CI_Model
         $data['course_id']            = html_escape($this->input->post('course_id'));
         $data['title']              = html_escape($this->input->post('title'));
         $data['type']               =  html_escape($this->input->post('type'));
-        $data['marks']  = html_escape($this->input->post('marks'));
+        $data['marks']  = $this->input->post('marks');
+        
         $this->db->where('id', $question_id);
         $this->db->update('question', $data);
         return true;
@@ -3681,11 +3893,12 @@ class Crud_model extends CI_Model
             $correct_answers = $this->input->post('correct_answers');
         }
         $data['quiz_id']            = $quiz_id;
-        $data['title']              = html_escape($this->input->post('title'));
+        $data['title']              = $_POST['title'];
         $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
         $data['type']               = html_escape($this->input->post('type'));
         $data['options']            = json_encode($this->input->post('options'));
         $data['correct_answers']    = json_encode($correct_answers);
+        $data['marks']    = $this->input->post('marks');
         $this->db->insert('question', $data);
         return true;
     }
@@ -3707,11 +3920,12 @@ class Crud_model extends CI_Model
             $correct_answers = $this->input->post('correct_answers');
         }
 
-        $data['title']              = html_escape($this->input->post('title'));
+        $data['title']              = $_POST['title'];
         $data['number_of_options']  = html_escape($this->input->post('number_of_options'));
         $data['type']               = 'multiple_choice';
         $data['options']            = json_encode($this->input->post('options'));
         $data['correct_answers']    = json_encode($correct_answers);
+        $data['marks']    = $this->input->post('marks');
         $this->db->where('id', $question_id);
         $this->db->update('question', $data);
         return true;
@@ -3724,8 +3938,7 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    function get_application_details()
-    {
+    function get_application_details() {
         // $purchase_code = get_settings('purchase_code');
         // $returnable_array = array(
         //     'purchase_code_status' => get_phrase('not_found'),
@@ -3801,7 +4014,7 @@ class Crud_model extends CI_Model
         return $returnable_array;
     }
 
-    // Version 2.2 codes
+                    // Version 2.2 codes
 
     // This function is responsible for retreving all the language file from language folder
     function get_all_languages()
@@ -3883,7 +4096,7 @@ class Crud_model extends CI_Model
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
                     if (filetype($dir . "/" . $object) == "dir")
-                        $this->remove_files_and_folders($dir . "/" . $object);
+                    $this->remove_files_and_folders($dir . "/" . $object);
                     else unlink($dir . "/" . $object);
                 }
             }
@@ -3954,37 +4167,33 @@ class Crud_model extends CI_Model
 
 
     //FOR MOBILE
-    function enrol_to_free_course_mobile($course_id = "", $user_id = "")
-    {
+    function enrol_to_free_course_mobile($course_id = "", $user_id = ""){
         $data['course_id'] = $course_id;
         $data['user_id']   = $user_id;
         $data['date_added'] = strtotime(date('D, d-M-Y'));
-        if ($this->db->get_where('course', array('id' => $course_id))->row('is_free_course') == 1) :
+        if($this->db->get_where('course', array('id' => $course_id))->row('is_free_course') == 1):
             $this->db->insert('enrol', $data);
         endif;
     }
 
-    function check_course_enrolled($course_id = "", $user_id = "")
-    {
+    function check_course_enrolled($course_id = "", $user_id = ""){
         return $this->db->get_where('enrol', array('course_id' => $course_id, 'user_id' => $user_id))->num_rows();
     }
 
 
     // GET PAYOUTS
-    public function get_payouts($id = "", $type = "")
-    {
+    public function get_payouts($id = "", $type = "") {
         $this->db->order_by('id', 'DESC');
         if ($id > 0 && $type == 'user') {
             $this->db->where('user_id', $id);
-        } elseif ($id > 0 && $type == 'payout') {
+        }elseif ($id > 0 && $type == 'payout') {
             $this->db->where('id', $id);
         }
         return $this->db->get('payout');
     }
 
     // GET COMPLETED PAYOUTS BY DATE RANGE
-    public function get_completed_payouts_by_date_range($timestamp_start = "", $timestamp_end = "")
-    {
+    public function get_completed_payouts_by_date_range($timestamp_start = "", $timestamp_end = "") {
         $this->db->order_by('id', 'DESC');
         $this->db->where('date_added >=', $timestamp_start);
         $this->db->where('date_added <=', $timestamp_end);
@@ -3993,16 +4202,14 @@ class Crud_model extends CI_Model
     }
 
     // GET PENDING PAYOUTS BY DATE RANGE
-    public function get_pending_payouts()
-    {
+    public function get_pending_payouts() {
         $this->db->order_by('id', 'DESC');
         $this->db->where('status', 0);
         return $this->db->get('payout');
     }
 
     // GET TOTAL PAYOUT AMOUNT OF AN INSTRUCTOR
-    public function get_total_payout_amount($id = "")
-    {
+    public function get_total_payout_amount($id = "") {
         $checker = array(
             'user_id' => $id,
             'status'  => 1
@@ -4017,8 +4224,7 @@ class Crud_model extends CI_Model
     }
 
     // GET TOTAL REVENUE AMOUNT OF AN INSTRUCTOR
-    public function get_total_revenue($id = "")
-    {
+    public function get_total_revenue($id = "") {
         $revenues = $this->get_instructor_revenue($id);
         $total_amount = 0;
         foreach ($revenues as $key => $revenue) {
@@ -4028,8 +4234,7 @@ class Crud_model extends CI_Model
     }
 
     // GET TOTAL PENDING AMOUNT OF AN INSTRUCTOR
-    public function get_total_pending_amount($id = "")
-    {
+    public function get_total_pending_amount($id = "") {
         $total_revenue = $this->get_total_revenue($id);
         $total_payouts = $this->get_total_payout_amount($id);
         $total_pending_amount = $total_revenue - $total_payouts;
@@ -4037,8 +4242,7 @@ class Crud_model extends CI_Model
     }
 
     // GET REQUESTED WITHDRAWAL AMOUNT OF AN INSTRUCTOR
-    public function get_requested_withdrawal_amount($id = "")
-    {
+    public function get_requested_withdrawal_amount($id = "") {
         $requested_withdrawal_amount = 0;
         $checker = array(
             'user_id' => $id,
@@ -4053,8 +4257,7 @@ class Crud_model extends CI_Model
     }
 
     // GET REQUESTED WITHDRAWALS OF AN INSTRUCTOR
-    public function get_requested_withdrawals($id = "")
-    {
+    public function get_requested_withdrawals($id = "") {
         $requested_withdrawal_amount = 0;
         $checker = array(
             'user_id' => $id,
@@ -4066,8 +4269,7 @@ class Crud_model extends CI_Model
     }
 
     // ADD NEW WITHDRAWAL REQUEST
-    public function add_withdrawal_request()
-    {
+    public function add_withdrawal_request() {
         $user_id = $this->session->userdata('user_id');
         $total_pending_amount = $this->get_total_pending_amount($user_id);
 
@@ -4079,14 +4281,14 @@ class Crud_model extends CI_Model
             $data['status']     = 0;
             $this->db->insert('payout', $data);
             $this->session->set_flashdata('flash_message', get_phrase('withdrawal_requested'));
-        } else {
+        }else{
             $this->session->set_flashdata('error_message', get_phrase('invalid_withdrawal_amount'));
         }
+
     }
 
     // DELETE WITHDRAWAL REQUESTS
-    public function delete_withdrawal_request()
-    {
+    public function delete_withdrawal_request(){
         $checker = array(
             'user_id' => $this->session->userdata('user_id'),
             'status' => 0
@@ -4096,14 +4298,13 @@ class Crud_model extends CI_Model
             $this->db->where($checker);
             $this->db->delete('payout');
             $this->session->set_flashdata('flash_message', get_phrase('withdrawal_deleted'));
-        } else {
+        }else{
             $this->session->set_flashdata('error_message', get_phrase('withdrawal_not_found'));
         }
     }
 
     // get instructor wise total enrolment. this function return the number of enrolment for a single instructor
-    public function instructor_wise_enrolment($instructor_id)
-    {
+    public function instructor_wise_enrolment($instructor_id) {
         $course_ids = $this->crud_model->get_instructor_wise_courses($instructor_id, 'simple_array');
         if (!count($course_ids) > 0) {
             return false;
@@ -4113,41 +4314,38 @@ class Crud_model extends CI_Model
         return $this->db->get('enrol');
     }
 
-    public function check_duplicate_payment_for_stripe($transaction_id = "", $stripe_session_id = "", $user_id = "")
-    {
-        if ($user_id == "") {
+    public function check_duplicate_payment_for_stripe($transaction_id = "", $stripe_session_id = "", $user_id = "") {
+        if($user_id == ""){
             $user_id = $this->session->userdata('user_id');
         }
-
+        
         $query = $this->db->get_where('payment', array('user_id' => $user_id, 'transaction_id' => $transaction_id, 'session_id' => $stripe_session_id));
-        if ($query->num_rows() > 0) {
+        if($query->num_rows() > 0){
             return true;
-        } else {
+        }else{
             return false;
         }
     }
 
-    public function get_course_by_course_type($type = "")
-    {
-        if ($type != "") {
+    public function get_course_by_course_type($type = ""){
+        if($type != ""){
             $this->db->where('course_type', $type);
         }
         return $this->db->get('course');
     }
 
-    public function check_recaptcha()
-    {
+    public function check_recaptcha(){
         if (isset($_POST["g-recaptcha-response"])) {
             $url = 'https://www.google.com/recaptcha/api/siteverify';
             $data = array(
                 'secret' => get_frontend_settings('recaptcha_secretkey'),
                 'response' => $_POST["g-recaptcha-response"]
             );
-            $query = http_build_query($data);
-            $options = array(
-                'http' => array(
-                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
-                        "Content-Length: " . strlen($query) . "\r\n" .
+                $query = http_build_query($data);
+                $options = array(
+                'http' => array (
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
+                        "Content-Length: ".strlen($query)."\r\n".
                         "User-Agent:MyAgent/1.0\r\n",
                     'method' => 'POST',
                     'content' => $query
@@ -4166,38 +4364,39 @@ class Crud_model extends CI_Model
         }
     }
 
-    function get_course_by_user($user_id = "", $course_type = "")
-    {
-        if ($course_type != "") {
+    function get_course_by_user($user_id = "", $course_type = ""){
+        if($course_type != ""){
             $this->db->where('course_type', $course_type);
         }
         $this->db->where('user_id', $user_id);
         return $this->db->get('course');
     }
+    
     /*****
      * adil:Manage evaluation Crud Model
      */
-    public function get_evaluation($param1 = "")
-    {
+    public function get_evaluation($param1 = "",$param2=""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
+        }
+        if ($param2 != "") {
+            $this->db->where('user_id', $param2);
         }
         return $this->db->get('evaluation');
     }
     public function evaluation_edit($param1 = "")
     {
-        $data['marks_gain']   = strtoupper(html_escape($this->input->post('marks_gain')));
+        $data['marks_gain']   = html_escape($this->input->post('marks_gain'));
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE  NAME ALREADY EXIST
         $this->db->where('id', $id);
         $this->db->update('evaluation', $data);
         return true;
     }
-    /*****
-     * designation Crud Model
+     /*****
+     * Adil:designation Crud Model
      */
-    public function get_designation($param1 = "")
-    {
+    public function get_designation($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -4207,13 +4406,13 @@ class Crud_model extends CI_Model
     {
         $data['designation']   = strtoupper(html_escape($this->input->post('designation')));
         $data['slug']   = slugify(html_escape($this->input->post('designation')));
-
+        
 
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
         $previous_data = $this->db->get('manage_designation')->num_rows();
-
-        if ($previous_data == 0) {
+        
+        if ($previous_data == 0){
             $this->db->insert('manage_designation', $data);
             return true;
         }
@@ -4229,7 +4428,7 @@ class Crud_model extends CI_Model
         $this->db->where('slug', $data['slug']);
         $this->db->where('id !=', $id);
         $previous_data = $this->db->get('manage_designation')->num_rows();
-        if ($previous_data == 0) {
+        if ($previous_data == 0){
             $this->db->where('id', $id);
             $this->db->update('manage_designation', $data);
             return true;
@@ -4254,57 +4453,68 @@ class Crud_model extends CI_Model
         return true;
     }
     /*****
-     * Event Shedule Crud Model
+     * Adil:Event Shedule Crud Model
      */
-    public function get_event_schedule($param1 = "")
-    {
+    public function get_event_schedule($param1 = "",$all=false){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
+        if(!$all) $this->db->where('event_date >=', date('Y-m-d'));
+        $this->db->order_by('event_date', 'desc');
         return $this->db->get('event_schedule');
     }
     public function add_event_schedule()
     {
-
+        $description=$_POST['event_description'];
+        
         $data['slug']   = slugify(html_escape($this->input->post('event_title')));
         $data['event_title']   = strtoupper(html_escape($this->input->post('event_title')));
-        $data['event_presentor']   = strtoupper(html_escape($this->input->post('event_presentor')));
-        $data['event_link']   = strtoupper(html_escape($this->input->post('event_link')));
-        $data['event_date']   = strtoupper(html_escape($this->input->post('event_date')));
-        $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
+        $data['event_description']   =$description;
+        $data['event_presentor']   = ((html_escape($this->input->post('event_presentor'))));
+        $data['event_link']   =  $this->input->post('event_link');
+        $data['event_date']   = $this->input->post('event_date');
+        $data['event_time']   =  $this->input->post('event_time');
         $data['status']   = strtoupper(html_escape($this->input->post('status')));
-
-        // CHECK IF THE ASSETS NAME ALREADY EXISTS
-        $this->db->where('slug', $data['slug']);
-        $previous_data = $this->db->get('event_schedule')->num_rows();
-
-        if ($previous_data == 0) {
-            $this->db->insert('event_schedule', $data);
-            return true;
+       
+        
+        if (isset($_FILES['event_image']) && $_FILES['event_image']['name'] != "") {
+            unlink('uploads/event/' . get_frontend_settings('event_image'));
+            $data['event_image'] = md5(rand(1000, 100000)).'.jpg';
+            move_uploaded_file($_FILES['event_image']['tmp_name'], 'uploads/event/'.$data['event_image']);
         }
-        return false;
+        $this->db->insert('event_schedule', $data);
+        return true;
+       
     }
     public function edit_event_schedule($param1 = "")
     {
+        $description=$_POST['event_description'];
+        
         $data['slug']   = slugify(html_escape($this->input->post('event_title')));
         $data['event_title']   = strtoupper(html_escape($this->input->post('event_title')));
-        $data['event_presentor']   = strtoupper(html_escape($this->input->post('event_presentor')));
-        $data['event_link']   = strtoupper(html_escape($this->input->post('event_link')));
-        $data['event_date']   = strtoupper(html_escape($this->input->post('event_date')));
-        $data['event_time']   = strtoupper(html_escape($this->input->post('event_time')));
+        $data['event_description']   =$description;
+        $data['event_presentor']   = ((html_escape($this->input->post('event_presentor'))));
+        $data['event_link']   =  $this->input->post('event_link');
+        $data['event_date']   = $this->input->post('event_date');
+        $data['event_time']   =  $this->input->post('event_time');
         $data['status']   = strtoupper(html_escape($this->input->post('status')));
-
+        
+        // var_dump($data['event_presentor']);die;
+        
+        if (isset($_FILES['event_image']) && $_FILES['event_image']['name'] != "") {
+            unlink('uploads/event/' . get_frontend_settings('event_image'));
+            $data['event_image'] = md5(rand(1000, 100000)).'.jpg';
+            move_uploaded_file($_FILES['event_image']['tmp_name'], 'uploads/event/'.$data['event_image']);
+        }
+        
         $id   = html_escape($this->input->post('id'));
         // CHECK IF THE ASSETS NAME ALREADY EXISTS
         $this->db->where('slug', $data['slug']);
-        $this->db->where('id !=', $id);
-        $previous_data = $this->db->get('event_schedule')->num_rows();
-        if ($previous_data == 0) {
+        
             $this->db->where('id', $id);
             $this->db->update('event_schedule', $data);
             return true;
-        }
-        return false;
+    
     }
     public function delete_event_schedule($param1 = "")
     {
@@ -4322,10 +4532,9 @@ class Crud_model extends CI_Model
         return true;
     }
 
-    //assets for courses 
-
-    public function get_asset_courses($param1 = "")
-    {
+    //Adil:assets for courses 
+    
+    public function get_asset_courses($param1 = ""){
         if ($param1 != "") {
             $this->db->where('id', $param1);
         }
@@ -4334,39 +4543,479 @@ class Crud_model extends CI_Model
     public function add_asset_courses()
     {
         $assets = $_POST['asset_id'];
-
-        foreach ($assets as $asset) {
+       
+        foreach($assets as $asset){
             $data['asset_id']   = $asset;
             $data['course_id']   = html_escape($this->input->post('course_id'));
-
-            $previous_data = $this->db->get_where('assets_for_course', $data)->num_rows();
-            if ($previous_data == 0) {
+            
+            $previous_data = $this->db->get_where('assets_for_course',$data)->num_rows();
+            if ($previous_data == 0){
                 $data['returnable']  =  strtoupper(html_escape($this->input->post('returnable')));
                 $this->db->insert('assets_for_course', $data);
             }
         }
-
+        
         return true;
     }
     public function edit_asset_courses($param1 = "")
     {
-        $asset_id   = html_escape($this->input->post('asset_id'));
-        $course_id = html_escape($this->input->post('course_id'));
-        $data['returnable']  =  (html_escape($this->input->post('returnable')));
-
-        $id   = html_escape($this->input->post('id'));
-
-        $this->db->where('id', $id);
-        $this->db->where('asset_id', $asset_id);
-        $this->db->where('course_id', $course_id);
-        $this->db->update('assets_for_course', $data);
-
-        return true;
+            $asset_id   = html_escape($this->input->post('asset_id'));
+            $course_id = html_escape($this->input->post('course_id'));
+            $data['returnable']  =  (html_escape($this->input->post('returnable')));
+          
+            $id   = html_escape($this->input->post('id'));
+           
+            $this->db->where('id', $id);
+            $this->db->where('asset_id', $asset_id);
+            $this->db->where('course_id', $course_id);
+            $this->db->update('assets_for_course', $data);
+    
+       return true;
     }
     public function delete_asset_course($param1 = "")
     {
         $this->db->where('id', $param1);
         $this->db->delete('assets_for_course');
         return true;
+    }
+
+
+    /*****
+     * adil:Bank Details Crud Model
+     */
+    public function get_bank_info($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('bank_info');
+    }
+    public function add_bank_info()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('bank_name')));
+        $data['ifsc']   = strtoupper(html_escape($this->input->post('ifsc')));
+        $data['bank_name']   = strtoupper(html_escape($this->input->post('bank_name')));
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $data['added_by']   = $this->session->userdata('user_id');
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('bank_info')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('bank_info', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_bank_info($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('bank_name')));
+        $data['ifsc']   = strtoupper(html_escape($this->input->post('ifsc')));
+        $data['bank_name']   = strtoupper(html_escape($this->input->post('bank_name')));
+        $data['branch_name']   = strtoupper(html_escape($this->input->post('branch_name')));
+        $data['added_by']   = $this->session->userdata('user_id');
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('bank_info')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('bank_info', $data);
+            return true;
+        }
+        return false;
+    }
+    public function delete_bank_info($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('bank_info');
+        return true;
+    }
+
+    public function activate_bank_status($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('bank_info', $data);
+        return true;
+    }
+    public function pending_bank_status($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('bank_info', $data);
+        return true;
+    }
+    
+
+        /*****
+     * adil:Leave Reason Crud Model
+     */
+    public function get_leave_reason($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('	leave_reason');
+    }
+    public function add_leave_reason()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['reasons']   = strtoupper(html_escape($this->input->post('reasons')));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('leave_reason')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('leave_reason', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_leave_reason($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['reasons']   = strtoupper(html_escape($this->input->post('reasons')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('leave_reason')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('leave_reason', $data);
+            return true;
+        }
+        return false;
+    }
+    public function activate_leave_reason($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('leave_reason', $data);
+        return true;
+    }
+    public function pending_leave_reason($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('leave_reason', $data);
+        return true;
+    }
+    
+    public function delete_leave_reason($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('leave_reason');
+        return true;
+    }
+
+
+    /*****
+     * adil:Payment Gateway Crud Model
+     */
+    public function get_payment_gateway($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('	payment_gateway');
+    }
+    public function add_payment_gateway()
+    {
+        
+        $data['slug']   = slugify(html_escape($this->input->post('name')));
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $previous_data = $this->db->get('payment_gateway')->num_rows();
+        
+        if ($previous_data == 0){
+            $this->db->insert('payment_gateway', $data);
+            return true;
+        }
+        return false;
+    }
+    public function edit_payment_gateway($param1 = "")
+    {
+        $data['slug']   = slugify(html_escape($this->input->post('reasons')));
+        $data['name']   = strtoupper(html_escape($this->input->post('name')));
+
+        $id   = html_escape($this->input->post('id'));
+        // CHECK IF THE ASSETS NAME ALREADY EXISTS
+        $this->db->where('slug', $data['slug']);
+        $this->db->where('id !=', $id);
+        $previous_data = $this->db->get('payment_gateway')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('payment_gateway', $data);
+            return true;
+        }
+        return false;
+    }
+    public function activate_payment_gateway($param1 = "")
+    {
+        $data['status']   = 1;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 0);
+        $this->db->update('payment_gateway', $data);
+        return true;
+    }
+    public function pending_payment_gateway($param1 = "")
+    {
+        $data['status']   = 0;
+        $this->db->where('id', $param1);
+        $this->db->where('status', 1);
+        $this->db->update('payment_gateway', $data);
+        return true;
+    }
+    
+    public function delete_payment_gateway($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('payment_gateway');
+        return true;
+    }
+
+   
+
+
+
+        /*****
+     * Adil:Customer Crud Model
+     */
+    public function get_asset_for_customer($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('asset_to_customer');
+    }
+    
+    public function add_customer()
+    {
+            $assets = $_POST['asset_id'];
+        
+            $data['customer_name']   = strtoupper(html_escape($this->input->post('customer_name')));
+        
+            $data['customer_email']   = html_escape($this->input->post('customer_email'));
+
+            $data['customer_contact']   = html_escape($this->input->post('customer_contact'));
+
+            $data['customer_type']   = html_escape($this->input->post('customer_type'));
+            
+            $data['asset_id']   = $assets;
+        
+            $data['price']   = html_escape($this->input->post('price'));
+
+            $data['added_by']   = $this->session->userdata('user_id');
+            
+            $data['remark']   = html_escape($this->input->post('remark'));
+            $this->db->insert('asset_to_customer', $data);
+                        
+            $assets = $this->get_assets($data['asset_id'])->row_array();
+
+            $assets['stock'] = $assets['stock'] -1;
+
+            $this->db->update('assets', $assets, ['id' => $data['asset_id']]);
+
+            return true;
+    }
+    public function edit_customer($param1 = "")
+    {
+        $data['customer_name']   = strtoupper(html_escape($this->input->post('customer_name')));
+        $data['customer_email']   = html_escape($this->input->post('customer_email'));
+        $data['customer_contact']   = html_escape($this->input->post('customer_contact'));
+        $data['customer_type']   = html_escape($this->input->post('customer_type'));
+        $data['asset_id']   = html_escape($this->input->post('asset_id'));
+        $data['price']   = html_escape($this->input->post('price'));
+        $data['added_by']   = $this->session->userdata('user_id');
+        $data['remark']   = html_escape($this->input->post('remark'));
+
+        $id   = html_escape($this->input->post('id'));
+        $this->db->where('id !=', $id);
+        
+        $previous_data = $this->db->get('asset_to_customer')->num_rows();
+        if ($previous_data == 0){
+            $this->db->where('id', $id);
+            $this->db->update('asset_to_customer', $data);
+            return true;
+        }   
+        return false;
+    }
+    public function delete_customer($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('asset_to_customer');
+        return true;
+    }
+    
+    
+    
+      /*****
+     * adil:Batch Reason Crud Model
+     */
+    public function get_batch($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('id', $param1);
+        }
+        return $this->db->get('batch');
+    }
+    
+    public function get_batch_for_att($param1 = ""){
+        $this->db->select('count(*) as total');
+        $this->db->from('attendance att');
+        if ($param1 != "") {
+            $this->db->where('att.batch_id', $param1);
+        }
+        $this->db->where('att.entry_date',date('Y-m-d'));
+        return $this->db->get();
+    }
+    public function add_batch()
+    {
+        $data['batch_name']   = $this->input->post('batch_name');
+        $data['user_id']    =   $this->session->userdata('user_id');
+        $this->db->insert('batch', $data);
+        return true;
+        
+    }
+    public function edit_batch($param1 = "")
+    {
+        
+        $data['batch_name']   = $this->input->post('batch_name');
+        $data['user_id']    =   $this->session->userdata('user_id');
+        $id=$this->input->post('id');
+        $this->db->where('id', $id);
+        $this->db->update('batch', $data);
+        return true;
+    }
+    public function delete_batch($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('batch');
+        return true;
+    }
+
+
+
+
+     /*****
+     * adil:Batch For Student Crud Model
+     */
+    public function get_batch_for_student($param1 = ""){
+        if ($param1 != "") {
+            $this->db->where('batch_id', $param1);
+        }
+        return $this->db->get('batch_for_students');
+    }
+    
+    public function add_multiple_student()
+    {
+        
+        $student_id=$_POST['user_id'];
+        foreach($student_id as $u_id){
+            $data['user_id']   = $u_id;
+            $data['batch_id']   = strtoupper(html_escape($this->input->post('batch_id')));
+            $this->db->insert('batch_for_students', $data);
+        }
+       
+        return true;
+        
+    }
+    
+    
+   public function add_student()
+    {
+        $data['user_id']   = $this->input->post('user_id');
+        $data['batch_id']   =  $this->input->post('batch_id');
+        $num=$this->db->get_where('batch_for_students',['user_id'=>$this->input->post('user_id')])->num_rows();
+        if($num==0){
+            $this->db->insert('batch_for_students', $data);
+            return true;
+        }
+    }
+    public function delete_student($param1 = "")
+    {
+        $this->db->where('id', $param1);
+        $this->db->delete('batch_for_students');
+        return true;
+    }
+    public function get_certificate($param1 = ""){
+		if ($param1 != "") {
+            $this->db->where('id', $param1);
+		}
+        return $this->db->get('certificates');
+	}
+   
+   public function get_payment_by_user(){
+       $this->db->select('u.id,upper(u.first_name) as first_name,upper(u.last_name) as last_name');
+       $this->db->from('payment as p');
+       $this->db->join('enrol as e','e.id = p.enrol_id');
+       $this->db->join('users as u','u.id = e.user_id');
+       $this->db->where('p.payment_status','paid');
+       $this->db->group_by('u.id');
+       return $this->db->get();
+   }
+   
+   public function get_applications($param1 = "",$param2 = ""){
+       
+       if($param1 != ""){
+           $this->db->where('email',$param1);
+       }
+       
+        if($param2 != ""){
+           $this->db->where('mob_no',$param2);
+       }
+       
+       $this->db->order_by('date_added desc');
+       return $this->db->get('career');
+   }
+   
+    // APPLY FOR KGK
+    public function post_application() {
+        // GET PREVIOUS DATA FROM APPLICATION TABLE
+        $previous_data = $this->get_applications($this->input->post('email'),$this->input->post('mob_no'))->num_rows();
+        // CHECK IF THE USER HAS SUBMITTED FORM BEFORE
+        if($previous_data > 0) {
+            $this->session->set_flashdata('error_message', get_phrase('already_submitted'));
+            redirect(site_url('career'), 'refresh');
+        }
+        $data['first_name'] = $this->input->post('first_name');
+        $data['last_name'] = $this->input->post('last_name');
+        $data['mob_no'] = $this->input->post('mob_no');
+        $data['email'] = $this->input->post('email');
+        if (isset($_FILES['document']) && $_FILES['document']['name'] != "") {
+            if (!file_exists('uploads/document')) {
+                mkdir('uploads/document', 0777, true);
+            }
+            $accepted_ext = array('doc', 'docs', 'pdf');
+            $path = $_FILES['document']['name'];
+            $ext = pathinfo($path, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), $accepted_ext)) {
+                $document_custom_name = random(15).'.'.$ext;
+                $data['document'] = $document_custom_name;
+                move_uploaded_file($_FILES['document']['tmp_name'], 'uploads/document/'.$document_custom_name);
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('invalide_file'));
+                redirect(site_url('home/career'), 'refresh');
+            }
+
+        }
+        $this->db->insert('career', $data);
+        $this->session->set_flashdata('flash_message', get_phrase('application_submitted_successfully'));
+        redirect(site_url('home/career'), 'refresh');
+    }
+
+    public function delete_applications($id){
+        if($id > 0){
+            $this->db->update('career',['status' => 0],['id'=>$id]);
+            $this->session->set_flashdata('flash_message', get_phrase('deleted_successfully'));
+        }
+        
     }
 }

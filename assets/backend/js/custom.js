@@ -17,7 +17,7 @@ function initDataTable(tableIds, length) {
 }
 
 function initDataTableWithPanes() {
-    var ids = "#payment-datatable,#payment-datatable,#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable,#invoicesdata,#attendance-datatable,#assetusers,#leave-datatable".split(",");
+    var ids = "#payment-datatable,#enrol_history,#course-datatable,#branch-datatable,#source-datatable,#inquiry-datatable,#followup-datatable,#invoicesdata,#attendance-datatable,#assetusers,#leave-datatable".split(",");
 
     for (let i = 0; i < ids.length; i++) {
         const element = ids[i];
@@ -49,10 +49,19 @@ function initDataTableWithPanes() {
                 targets: targetColomns2,
             });
         }
+        
+        // var groupId = $(element).attr('data-group');
+       
 
         // console.log(element);
         // console.log(targetColomns, targetColomns2);
         var datatables = $(element).DataTable({
+            buttons: [
+                {
+                    extend: 'csv',
+                    text: 'Export',
+                }
+            ],
             keys: !0,
             language: {
                 paginate: {
@@ -70,10 +79,14 @@ function initDataTableWithPanes() {
                 },
             },
             columnDefs: columnDefns,
-            dom: 'Plfrtip',
+            dom: 'BPlfrtip',
             drawCallback: function() {
                 $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-            }
+            },
+            // order: [[groupId, 'asc']],
+            // rowGroup: {
+            //     dataSrc: groupId
+            // }
         });
     }
 

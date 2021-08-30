@@ -4,7 +4,7 @@ $paymenttype = array(
 );
 
 $invoicetypes = array(
-    'token','partial-payment'
+    'token','partial-payment','full-payment'
 );
 
 $payment_details = $this->crud_model->get_enrol_payment_info($purchase_history['eid'])->row_array();
@@ -15,6 +15,9 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
 }else{
     $amount_due = $purchase_history['final_price']/2;
 }
+
+$user = $this->user_model->get_user($purchase_history['user_id'])->row_array();
+
 ?>
 <!-- start page title -->
 <div class="row ">
@@ -42,7 +45,11 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                         <input type="hidden" name="course_id" value="<?=$purchase_history['course_id']?>">
                         <input type="hidden" name="session_id" value="<?=session_id()?>">
                         <input type="hidden" class="form-control" name="date_added" value="<?php echo date('Y-m-d'); ?>" readonly>
-
+                        <div class="form-group mb-3">
+                            <label class="" for="course_id"><?php echo get_phrase('student_name'); ?><span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control" disabled value="<?=$user['first_name']?> <?=$user['last_name']?>">
+                        </div>
                         <?php if(!empty($payment_details['amount_due'])):?>
                             <input type="hidden" name="amount_due" value="<?=$payment_details['amount_due']?>">
                         <?php endif;?> 
@@ -110,12 +117,12 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
                         <div class="form-group mb-3">
                             <label class="amount"><?php echo get_phrase('amount'); ?><span class="required">*</span></label>
                             <input type="number" class="form-control" id="amount" name="amount" required min="0" max="<?=$amount_due?>">
-                            <?php if(!empty($amount_due)):?><p class="text-danger"><?=get_phrase('amount_due')?>: <?=$amount_due?></p><?php endif;?>
+                            <?php if(!empty($amount_due)):?><p class="text-danger amount_due"><?=get_phrase('amount_due')?>: <?=$amount_due?></p><?php endif;?>
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
                             <label class=""><?php echo get_phrase('transaction_id'); ?><span class="required">*</span></label>
-                            <input type="text" class="form-control" name="transaction_id" placeholder="Please, Enter transaction number" required min="0">
+                            <input type="text" class="form-control" name="transaction_id" placeholder="Please, Enter transaction number" required min="0" value="<?php echo uniqid('TXN') ?>">
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
@@ -131,6 +138,49 @@ if(!empty($payment_details) && $payment_details['amount_due'] < $purchase_histor
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+<!--<script type="text/javascript">-->
+<!--if ($('select').hasClass('select2') == true) {-->
+<!--    $('div').attr('tabindex', "");-->
+<!--    $(function() {-->
+<!--        $(".select2").select2()-->
+<!--    });-->
+<!--}-->
+<!--jQuery(document).ready(function() {-->
+<!--    jQuery('#amount').on('blur', function() {-->
+<!--        if(jQuery('[name="amount_due"]').length > 0){-->
+<!--            parseFloat(jQuery('[name="amount_due"]').val()) < parseFloat(jQuery(this).val()) ? jQuery(this).val(jQuery('[name=amount_due]').val()):'';-->
+<!--        }else if(parseFloat(jQuery('[name="final_price"]').val()) < parseFloat(jQuery(this).val())) {-->
+<!--            jQuery(this).val(jQuery('[name=final_price]').val()/2);-->
+<!--        }-->
+<!--    });-->
+<!--    jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);-->
+<!--    jQuery('#wallet_name,#bank_name, #cheque_number').parent('.form-group').hide();-->
+<!--    jQuery('#payment_type').on('change',function(){-->
+<!--        if( jQuery(this).val() == 'cash' ){-->
+<!--            jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);-->
+<!--            jQuery('#wallet_name, #bank_name, #cheque_number').removeAttr('required');-->
+<!--            jQuery('#wallet_name, #bank_name, #cheque_number').parent('.form-group').hide();-->
+<!--        }else if( jQuery(this).val() == 'cheque' ){-->
+<!--            jQuery('#wallet_name').attr('disabled',true);-->
+<!--            jQuery('#wallet_name').parent('.form-group').hide();-->
+<!--            jQuery('#bank_name, #cheque_number').parent('.form-group').show();-->
+
+<!--            jQuery('#bank_name, #cheque_number').removeAttr('disabled');-->
+<!--            jQuery('#bank_name, #cheque_number').attr('required',true);-->
+<!--        }else if( jQuery(this).val() == 'wallet' ){-->
+<!--            jQuery('#bank_name, #cheque_number').removeAttr('required');-->
+<!--            jQuery('#bank_name, #cheque_number').attr('disabled',true);-->
+<!--            jQuery('#bank_name, #cheque_number').parent('.form-group').hide();-->
+<!--            jQuery('#wallet_name').removeAttr('disabled');-->
+<!--            jQuery('#wallet_name').attr('required',true);-->
+<!--            jQuery('#wallet_name').parent('.form-group').show();-->
+
+<!--        }-->
+<!--    });-->
+
+<!--});-->
+<!--</script>-->
+
 <script type="text/javascript">
 if ($('select').hasClass('select2') == true) {
     $('div').attr('tabindex', "");
@@ -139,37 +189,93 @@ if ($('select').hasClass('select2') == true) {
     });
 }
 jQuery(document).ready(function() {
-    jQuery('#amount').on('blur', function() {
-        if(jQuery('[name="amount_due"]').length > 0){
-            parseFloat(jQuery('[name="amount_due"]').val()) < parseFloat(jQuery(this).val()) ? jQuery(this).val(jQuery('[name=amount_due]').val()):'';
-        }else if(parseFloat(jQuery('[name="final_price"]').val()) < parseFloat(jQuery(this).val())) {
-            jQuery(this).val(jQuery('[name=final_price]').val()/2);
+    jQuery('#course_id').on('change', function() {
+        jQuery('[name=price]').val(jQuery(this).select2('data')[0].element.dataset.price);
+    });
+    jQuery('#course_id option:not(:first-child)').removeAttr('disabled');
+    jQuery('#user_id').on('change', function() {
+        jQuery('#course_id option:not(:first-child)').removeAttr('disabled');
+        let course = (jQuery(this).select2('data')[0].element.dataset.courses);
+        if (course.indexOf(',') > 0) {
+            let course_list = course.split(',');
+            console.log(course_list);
+            course_list.forEach(function(element) {
+                jQuery('#course_id option[value="' + element + '"]').attr('disabled', true);
+            });
+            jQuery('#course_id').select2();
+        } else {
+            jQuery('#course_id option[value="' + course + '"]').attr('disabled', true);
+            jQuery('#course_id').select2();
         }
     });
-    jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+    
+    jQuery('#amount').removeAttr('readonly');
+    jQuery('#invoice_type').on('change', function() {
+        if (jQuery(this).val() == 'full-payment') {
+            jQuery('#amount').val(jQuery('[name="price"]').val());
+            jQuery('#amount').attr('readonly', true);
+            jQuery('.amount_due').hide();
+        } else {
+            jQuery('#amount').removeAttr('readonly');
+            jQuery('.amount_due').show();
+        }
+    });
+    jQuery('#amount').on('blur', function() {
+        if (parseFloat(jQuery('[name="price"]').val()) < parseFloat(jQuery(this).val())) {
+            jQuery(this).val(jQuery('[name=price]').val() / 2);
+        }
+    });
+    jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled', true);
     jQuery('#wallet_name,#bank_name, #cheque_number').parent('.form-group').hide();
-    jQuery('#payment_type').on('change',function(){
-        if( jQuery(this).val() == 'cash' ){
-            jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled',true);
+    jQuery('#payment_type').on('change', function() {
+        if (jQuery(this).val() == 'cash') {
+            jQuery('#wallet_name, #bank_name, #cheque_number').attr('disabled', true);
             jQuery('#wallet_name, #bank_name, #cheque_number').removeAttr('required');
             jQuery('#wallet_name, #bank_name, #cheque_number').parent('.form-group').hide();
-        }else if( jQuery(this).val() == 'cheque' ){
-            jQuery('#wallet_name').attr('disabled',true);
+        } else if (jQuery(this).val() == 'cheque') {
+            jQuery('#wallet_name').attr('disabled', true);
             jQuery('#wallet_name').parent('.form-group').hide();
             jQuery('#bank_name, #cheque_number').parent('.form-group').show();
 
             jQuery('#bank_name, #cheque_number').removeAttr('disabled');
-            jQuery('#bank_name, #cheque_number').attr('required',true);
-        }else if( jQuery(this).val() == 'wallet' ){
+            jQuery('#bank_name, #cheque_number').attr('required', true);
+        } else if (jQuery(this).val() == 'wallet') {
             jQuery('#bank_name, #cheque_number').removeAttr('required');
-            jQuery('#bank_name, #cheque_number').attr('disabled',true);
+            jQuery('#bank_name, #cheque_number').attr('disabled', true);
             jQuery('#bank_name, #cheque_number').parent('.form-group').hide();
             jQuery('#wallet_name').removeAttr('disabled');
-            jQuery('#wallet_name').attr('required',true);
+            jQuery('#wallet_name').attr('required', true);
             jQuery('#wallet_name').parent('.form-group').show();
 
         }
     });
 
+});
+</script>
+<script>
+$(function() {
+    $('#hod').hide();
+    $('#training_cat').hide();
+    $('#training_type').hide();
+   
+    $('#admission_type').on('change', function() {
+        if(this.value == "0") {
+            $('#hod').show();
+            $('#training_cat').hide();
+            $('#training_type').hide();
+            jQuery('#invoice_type').show();
+            jQuery('#payment_type').show();
+        } else {
+            jQuery('#invoice_type').val('full-payment');
+            jQuery('#invoice_type').trigger('change');
+            jQuery('#payment_type').val('cash');
+            jQuery('#payment_type').trigger('change');
+            jQuery('#invoice_type,.payment_div,invoice_div').hide();
+            jQuery('#payment_type').hide();
+            $('#hod').show();
+            $('#training_cat,payment_div,invoice_div').show();
+            $('#training_type').show();
+        }
+    });
 });
 </script>

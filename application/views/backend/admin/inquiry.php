@@ -17,7 +17,7 @@
                 <h4 class="mb-3 header-title"><?php echo get_phrase('inquiry_list'); ?></h4>
                  <div class="table-responsive-sm mt-4">
                 <?php if (count($inquiry) > 0): ?>
-                    <table id="inquiry-datatable" class="table table-striped dt-responsive nowrap" data-filter="3,4,5" data-nofilter="6,7," width="100%" data-page-length='25'>
+                    <table id="inquiry-datatable" class="table table-striped dt-responsive nowrap" data-filter="3,4,5" data-nofilter="6,7,12" width="100%" data-page-length='25'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -27,7 +27,12 @@
                                 <th><?php echo get_phrase('inquiry_source'); ?></th>
                                 <th><?php echo get_phrase('inquiry_branch'); ?></th>
                                 <th><?php echo get_phrase('inquiry_status'); ?></th>
-                                <th><?php echo get_phrase('actions'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('email'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('gender'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('mobile'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('alternate_mobile'); ?></th>
+                                <th style="display:none;"><strong><?php echo get_phrase('remark'); ?></strong><br></td>
+                                <th class="notexport"><?php echo get_phrase('actions'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,6 +50,7 @@
                                     </td>
                                     <td>
                                         <strong><?php echo ellipsis($br['source_name']); ?></strong><br>
+                                        <strong><?php echo ellipsis($br['source_other']); ?></strong><br>
                                     </td>
                                     <td>
                                         <strong><?php echo ellipsis($br['branch_name']); ?></strong><br>
@@ -60,7 +66,23 @@
                                             <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_email']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_gender']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['mob_no']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['alt_mob']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_remark']); ?></strong><br>
+                                    </td>
+                                    <td class="notexport">
                                         <div class="dropright dropright">
                                           <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="mdi mdi-dots-vertical"></i>
@@ -68,12 +90,14 @@
                                           <ul class="dropdown-menu">
                                                 <?php if($br['is_delete'] == 0 && $br['en_status'] != 'completed'): ?>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/inquiry_add_edit/'.$br['en_id']); ?>"><?php echo get_phrase('edit_this_inquiry');?></a></li>
-                                                    <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/complete/'.$br['en_id']); ?>"><?php echo get_phrase('make_admission');?></a></li>
-                                                    <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
+                                                    <?php if ($br['en_status'] != 'closed'): ?>
+                                                        <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/complete/'.$br['en_id']); ?>"><?php echo get_phrase('make_admission');?></a></li>
+                                                        <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
+                                                    <?php endif;?>
                                                     <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
                                                     <?php if($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 3 || $this->session->userdata('role_id') == 4):?>
-                                                    <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
-                                                    <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>
+                                                    <!--<li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>-->
+                                                    <!--<li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>-->
                                                     <?php endif;?>
                                                 <?php elseif($br['is_delete'] == 1): ?>
                                                   <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>

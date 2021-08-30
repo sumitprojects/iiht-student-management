@@ -3,7 +3,7 @@ require APPPATH . '/libraries/JWT.php';
 class TokenHandler
 {
    //////////The function generate token/////////////
-   PRIVATE $key = "academy-lms-api-token-handler";
+   PRIVATE $key = "techeasify-token-generator";
    public function GenerateToken($data)
    {
        $jwt = JWT::encode($data, $this->key);

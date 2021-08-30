@@ -36,7 +36,7 @@ $placement = isset($placement)? $placement : null;
                                 <?php foreach ($user_list as $user): ?>
                                 <option value="<?php echo $user['id']; ?>"
                                     <?php echo !empty($placement)? (($placement['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].$user['last_name']; ?></option>
+                                    <?php echo $user['first_name']." ".$user['last_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -74,7 +74,7 @@ $placement = isset($placement)? $placement : null;
                             <label for="placement_date"><?php echo get_phrase('tentative_date'); ?><span
                                     class="required">*</span></label>
                             <input type="date" class="form-control" id="tentative_date" name="tentative_date"
-                                value="<?php echo !empty($placement)?$placement['tentative_date']:''?>" required readonly>
+                                value="<?php echo !empty($placement)?$placement['tentative_date']:''?>" max="<?=date('Y-m-d')?>" required readonly>
                         </div>
                         <?php endif;?>
 
@@ -88,13 +88,12 @@ $placement = isset($placement)? $placement : null;
                         <div class="form-group" id="pd">
                             <label for="placement_date"><?php echo get_phrase('placement_date'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control" id="placement_date" name="placement_date"
+                            <input type="date" class="form-control" id="placement_date" name="placement_date" max="<?=date('Y-m-d')?>"
                                 value="<?php echo !empty($placement)?$placement['placement_date']:''?>" required>
                         </div>
-                        <div class="form-group">
-                            <label for="hod_id"><?php echo get_phrase('hod'); ?><span class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="hod_id" id="hod_id"
-                                required>
+                        <div class="form-group" id="hod_x">
+                            <label for="hod_id"><?php echo get_phrase('hod'); ?></label>
+                            <select class="form-control select2" data-toggle="select2" name="hod_id" id="hod_id">
                                 <option value=""><?php echo get_phrase('select_a_hod'); ?></option>
                                 <?php foreach ($hod_list as $hod): ?>
                                 <option value="<?php echo $hod['hod_id']; ?>"
@@ -103,11 +102,9 @@ $placement = isset($placement)? $placement : null;
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="department"><?php echo get_phrase('department'); ?><span
-                                    class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="department" id="department"
-                                required>
+                        <div class="form-group" id="department_x">
+                            <label for="department"><?php echo get_phrase('department'); ?></label>
+                            <select class="form-control select2" data-toggle="select2" name="department" id="department">
                                 <option value=""><?php echo get_phrase('select_a_department'); ?></option>
                                 <?php foreach ($department_list as $department): ?>
                                 <option value="<?php echo $department['dpid']; ?>"
@@ -150,3 +147,21 @@ $placement = isset($placement)? $placement : null;
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+
+<script type="text/javascript">
+var blank_outcome = jQuery('#blank_outcome_field').html();
+var blank_requirement = jQuery('#blank_requirement_field').html();
+jQuery(document).ready(function() {
+    jQuery('#type').change(function(){
+        if(jQuery(this).val()== 'other'){
+            jQuery('#hod_x').hide();
+            jQuery('#department_x').hide();
+        }
+        else{
+            jQuery('#hod_x').show();
+            jQuery('#department_x').show();
+        }
+    })
+  
+});
+</script>

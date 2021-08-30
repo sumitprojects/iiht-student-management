@@ -26,9 +26,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('full_name'); ?></th>
                                 <th><?php echo get_phrase('start_date'); ?></th>
                                 <th><?php echo get_phrase('end_date'); ?></th>
-                              
+                                
                                 <th><?php echo get_phrase('remark'); ?></th>
                                 <th><?php echo get_phrase('att_status'); ?></th>
                                 <th><?php echo get_phrase('status'); ?></th>
@@ -39,6 +40,9 @@
                             <?php foreach ($leave as $key => $br):?>
                             <tr>
                                 <td><?php echo ++$key; ?></td>
+                                <td>
+                                    <a href="<?=site_url('admin/users/view/'.$br['user_id'])?>"><strong><?php echo ellipsis($br['full_name']); ?></strong><br>
+                                </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['start_date']); ?></strong><br>
                                 </td>
@@ -78,10 +82,11 @@
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_leave/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a>
                                             </li>
-                                            <?php endif; ?>
+                                            <?php else: ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_leave/activate/'.$br['id']); ?>');"><?php echo get_phrase('activate'); ?></a>
                                             </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>

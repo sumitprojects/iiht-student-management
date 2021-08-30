@@ -2,6 +2,7 @@
 $banners = themeConfiguration(get_frontend_settings('theme'), 'banners');
 $about_us_banner = $banners['about_us_banner'];
 $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
+
 ?>
 <section id="hero_in" class="general">
 	<div class="banner-img" style="background: url(<?php echo base_url($about_us_banner); ?>) center center no-repeat;"></div>
@@ -18,7 +19,7 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
             <div class="card-body">
                 <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i>
                     <?php echo get_phrase('leave_apply'); ?>
-                    <a href="<?php echo site_url('home/leave_apply/request/'.$u_id); ?>"
+                    <a href="<?php echo site_url('home/leave_apply/request/'.$u_id); ?>" style="float:right;"
                         class="btn btn-outline-primary btn-rounded alignToTitle"><i
                             class="mdi mdi-plus"></i><?php echo get_phrase('leave_apply'); ?></a>
                 </h4>
@@ -39,6 +40,7 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student'); ?></th>
                                 <th><?php echo get_phrase('start_date'); ?></th>
                                 <th><?php echo get_phrase('end_date'); ?></th>
                                 <th><?php echo get_phrase('reason'); ?></th>
@@ -51,8 +53,8 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
-                                <?php $user = $this->user_model->get_user()->row_array();?>
-                                <strong><?php echo ellipsis($user['first_name'].' '.$user['last_name']); ?></strong><br>
+                                <?php $user = $this->user_model->get_user($br['user_id'])->row_array();?>
+                                <strong><?php echo strtoupper(ellipsis($user['first_name'].' '.$user['last_name'])); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['start_date']); ?></strong><br>
@@ -61,8 +63,9 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                                     <strong><?php echo ellipsis($br['end_date']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['reason']); ?></strong><br>
-                                </td>
+                                <?php $reasons = $this->crud_model->get_leave_reason($br['reason_id'])->row_array();?>
+                                        <strong><?php echo ellipsis($reasons['reasons']); ?></strong><br>
+                                    </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['att_status']); ?></strong><br>
                                 </td>
@@ -75,7 +78,7 @@ $apply_leave= $this->crud_model->get_leave('',$u_id)->result_array();
                     <?php if (count($apply_leave) == 0): ?>
                     <div class="img-fluid w-100 text-center">
                         <img style="opacity: 1; width: 100px;"
-                            src="<?php echo base_url('apply_leave/backend/images/file-search.svg'); ?>"><br>
+                            src="<?php echo base_url('assets/backend/images/file-search.svg'); ?>"><br>
                         <?php echo get_phrase('no_data_found'); ?>
                     </div>
                     <?php endif; ?>

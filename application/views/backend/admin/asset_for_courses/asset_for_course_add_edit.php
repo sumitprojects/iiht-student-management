@@ -75,9 +75,9 @@ if(!empty($param2)){
                             <select class="form-control select2" data-toggle="select2" name="returnable" id="returnable"
                                 required>
                                 <option value=""><?php echo get_phrase('select_a_returnable'); ?></option>
-                                <option value="0" <?php if($asset_for_courses['returnable'] =='0') echo 'selected';?>>
+                                <option value="yes" <?php if($asset_for_courses['returnable'] =='yes') echo 'selected';?>>
                                     Yes</option>
-                                <option value="1" <?php if($asset_for_courses['returnable'] =='1') echo 'selected';?>>No
+                                <option value="no" <?php if($asset_for_courses['returnable'] =='no') echo 'selected';?>>No
                                 </option>
                             </select>
                         </div>

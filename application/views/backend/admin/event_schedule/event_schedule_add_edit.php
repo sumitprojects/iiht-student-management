@@ -1,7 +1,7 @@
 <?php
 $event_schedule = null; 
 if(!empty($param2)){
-    $event_schedule = $this->crud_model->get_event_schedule($param2)->row_array();
+    $event_schedule = $this->crud_model->get_event_schedule($param2,true)->row_array();
 }
 
 ?>
@@ -20,7 +20,7 @@ if(!empty($param2)){
                     </h4>
                     <form class="required-form"
                         action="<?php echo site_url('admin/event_schedule/'.(!empty($event_schedule)?'event_schedule_edit_form':'event_schedule_add_form')); ?>"
-                        method="post">
+                        method="post" enctype="multipart/form-data">
                         <?php if(!empty($event_schedule)):?>
                         <input type="hidden" class="form-control" id="id" name="id"
                             value="<?php echo $event_schedule['id']; ?>" readonly>
@@ -34,14 +34,13 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="event_presentor"><?php echo get_phrase('event_presentor'); ?><span
                                     class="required">*</span></label>
-                            <select name="event_presentor" id="returnevent_presentorable" class="form-control">
-                                <option value=""><?php echo get_phrase('select_a_presentor'); ?></option>
-                                <?php foreach ($user_list as $user): ?>
-                                <option value="<?php echo $user['id']; ?>"
-                                    <?php echo !empty($event_schedule)? (($event_schedule['event_presentor'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].' ' .$user['last_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <?php $pres = ($event_schedule['event_presentor']); ?>
+                             <input type="text" class="form-control" id="event_presentor" name="event_presentor"
+                                value="<?php echo !empty($event_schedule)?$event_schedule['event_presentor']:''?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event_description"><?php echo get_phrase('event_description'); ?></label>
+                            <textarea class="form-control" id="event_description" name="event_description"><?php echo !empty($event_schedule)?$event_schedule['event_description']:''?></textarea>
                         </div>
                         <div class="form-group">
                             <label for="event_link"><?php echo get_phrase('event_link'); ?><span
@@ -53,13 +52,19 @@ if(!empty($param2)){
                             <label for="event_date"><?php echo get_phrase('event_date'); ?><span
                                     class="required">*</span></label>
                             <input type="date" class="form-control" id="event_date" name="event_date"
-                                value="<?php echo !empty($event_schedule)?$event_schedule['event_date']:''?>" required>
+                                value="<?php echo !empty($event_schedule)?$event_schedule['event_date']:''?>" min="<?=date('Y-m-d')?>" required>
                         </div>
                         <div class="form-group">
                             <label for="event_time"><?php echo get_phrase('event_time'); ?><span
                                     class="required">*</span></label>
                             <input type="time" class="form-control" id="	event_date" name="event_time"
                                 value="<?php echo !empty($event_schedule)?$event_schedule['event_time']:''?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event_image"><?php echo get_phrase('event_image'); ?></label>
+
+                            <input type="file" class="form-control" id="event_image" name="event_image"
+                                value="<?php echo !empty($event_schedule)?$event_schedule['event_image']:''?>">
                         </div>
                         <div class="form-group">
                             <label for="status"><?php echo get_phrase('status'); ?><span
@@ -80,3 +85,8 @@ if(!empty($param2)){
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+ <script type="text/javascript">
+  $(document).ready(function () {
+    initSummerNote(['#event_description']);
+  });
+</script>

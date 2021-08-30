@@ -21,7 +21,7 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($asset_for_users) > 0): ?>
-                    <table id="assetusers"  data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
+                    <table id="assetusers"  data-filter="1,2,3" data-group="1" data-nofilter="5," class="table table-striped dt-responsive nowrap" width="100%"
                         data-page-length='25'>
                         <thead>
                             <tr>
@@ -47,9 +47,9 @@
                                     <strong><?php echo date($br['asset_date']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <?php if($br['returnable']=='0' && !empty($br['return_date'])):?>
-                                        <strong><?php echo date($br['asset_date']); ?></strong>
-                                    <?php elseif($br['returnable']=='1' && empty($br['return_date'])): ?>
+                                    <?php if($br['returnable']=='0'):?>
+                                        <span class="badge badge-info-lighten"><?php echo get_phrase('NA'); ?></span>
+                                    <?php elseif($br['returnable']=='1' && empty($br['returnable'])): ?>
                                         <span class="badge badge-danger-lighten"><?php echo get_phrase('asset_not_retuned'); ?></span>
                                     <?php else: ?>
                                         <span class="badge badge-info-lighten"><?php echo get_phrase('NA'); ?></span>
@@ -65,7 +65,7 @@
                                             <i class="mdi mdi-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                <?php if($br['returnable']=='1' && empty($br['return_date'] && $br['return_date']=='NA')): ?>
+                                <?php if($br['returnable']=='1' && (empty($br['return_date']))): ?>
 
                                             <li><a class="dropdown-item"
                                                     href="<?php echo site_url('admin/manage_asset_for_users/asset_for_users_add_edit/'.$br['id']); ?>"><?php echo get_phrase('edit_this_asset_for_users');?></a>

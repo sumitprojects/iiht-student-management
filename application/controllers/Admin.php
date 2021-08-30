@@ -7,8 +7,7 @@ class Admin extends CI_Controller {
         parent::__construct();
 
         $this->load->database();
-        
-
+        $this->load->model('addons/certificate_model');
         /*cache control*/
         $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
         $this->output->set_header('Pragma: no-cache');
@@ -16,8 +15,9 @@ class Admin extends CI_Controller {
             $this->session->set_userdata('cart_items', array());
         }
         $permission = $this->user_model->user_permission($this->session->userdata('user_id'))->result_array();
-        $permission = !empty($permission) ? array_column($permission,'name') : $permission;
+        // $permission = !empty($permission) ? array_column($permission,'name') : $permission;
         $this->session->set_userdata('permission',$permission);
+       
     }
 
     public function index() {
@@ -27,6 +27,8 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
     }
+    
+    
     public function dashboard() {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
@@ -35,17 +37,28 @@ class Admin extends CI_Controller {
         $page_data['page_title'] = get_phrase('dashboard');
         $this->load->view('backend/index', $page_data);
     }
+    
+    public function followup_list() {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        
+        check_permission('followup-read');
+
+        $page_data['page_name'] = 'followup_list';
+        $page_data['page_title'] = get_phrase('followup_list');
+        $this->load->view('backend/index', $page_data);
+    }
 
     public function categories($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+        
+         check_permission('category-list');
 
         if ($param1 == 'add') {
+            check_permission('category-add');
             $response = $this->crud_model->add_category();
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -55,6 +68,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/categories'), 'refresh');
         }
         elseif ($param1 == "edit") {
+            check_permission('category-edit');
             $response = $this->crud_model->edit_category($param2);
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -64,6 +78,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/categories'), 'refresh');
         }
         elseif ($param1 == "delete") {
+            check_permission('category-delete');
             $this->crud_model->delete_category($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
             redirect(site_url('admin/categories'), 'refresh');
@@ -78,16 +93,15 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
 
         if ($param1 == "add_category") {
+            check_permission('category-add');
             $page_data['page_name'] = 'category_add';
             $page_data['categories'] = $this->crud_model->get_categories()->result_array();
             $page_data['page_title'] = get_phrase('add_category');
         }
         if ($param1 == "edit_category") {
+            check_permission('category-edit');
             $page_data['page_name'] = 'category_edit';
             $page_data['page_title'] = get_phrase('edit_category');
             $page_data['categories'] = $this->crud_model->get_categories()->result_array();
@@ -102,11 +116,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
+        
         if($param1 == 'email_add_edit'){
             $page_data['page_name'] = 'manage_email/email_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_email');
@@ -118,7 +128,7 @@ class Admin extends CI_Controller {
         else if($param1 == "send_email"){
             $page_data['page_name'] = 'manage_email/send_email';
             $page_data['page_title'] = get_phrase('send_email');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->user_model->get_user_by_email_sms();
             $page_data['email_template_list'] =$this->user_model->get_email()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
@@ -160,11 +170,6 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
 
         if($param1 == 'sms_add_edit'){
             $page_data['page_name'] = 'manage_sms/sms_add_edit';
@@ -177,7 +182,7 @@ class Admin extends CI_Controller {
         else if($param1 == "send_sms"){
             $page_data['page_name'] = 'manage_sms/send_sms';
             $page_data['page_title'] = get_phrase('send_sms');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->user_model->get_user_by_email_sms();
             $page_data['sms_template_list'] =$this->user_model->get_message()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
@@ -211,18 +216,16 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
     }
+    
     //manage Examination
     public function manage_examination($param1 = "", $param2 = "", $param3=""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
+        //check_permission('exam-read');
 
         if($param1 == 'examination_add_edit'){
+            
             $page_data['page_name'] = 'examination/examination_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_examintaion');
            
@@ -235,6 +238,7 @@ class Admin extends CI_Controller {
             }
             $this->load->view('backend/index', $page_data);   
         }else if($param1 == "add_examination"){
+            //check_permission('exam-add');
             $response= $this->crud_model->add_examination($param2);
            if ($response) {
             $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -246,6 +250,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/manage_examination/'.$course_id), 'refresh');
         }
         else if($param1 == "edit_examination"){
+            //check_permission('exam-edit');
             $id=$this->input->post('id');
             $response = $this->crud_model->edit_examination($id);
             if ($response) {
@@ -255,17 +260,20 @@ class Admin extends CI_Controller {
             }
             redirect(site_url('admin/manage_examination'), 'refresh');
          }
-        else if ($param1 == "delete" ){
-            $this->crud_model->delete_attendance($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
-            redirect(site_url('admin/manage_examination'), 'refresh');
-        }
-        else if ($param1 == "activate" ){
-            $this->crud_model->activate_attendance($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
-            redirect(site_url('admin/manage_examination'), 'refresh');
-        }
+        // else if ($param1 == "delete" ){
+        //     //check_permission('exam-delete');
+        //     $this->crud_model->delete_attendance($param2);
+        //     $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+        //     redirect(site_url('admin/manage_examination'), 'refresh');
+        // }
+        // else if ($param1 == "activate" ){
+        //     //check_permission('exam-activate');
+        //     $this->crud_model->activate_attendance($param2);
+        //     $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+        //     redirect(site_url('admin/manage_examination'), 'refresh');
+        // }
         else{
+            //check_permission('exam-read');
             $page_data['page_name'] = 'examination/examination';
             $page_data['page_title'] = get_phrase('examination');
             $page_data['course_id'] =$param1;
@@ -278,22 +286,17 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
-        
         if($param1 == 'schedule_add_edit'){
             $page_data['page_name'] = 'exam_schedule/schedule_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_schedule');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
             $page_data['course_list'] =$this->user_model->get_course()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
             $this->load->view('backend/index', $page_data);   
         }else if($param1 == "add_schedule"){
+            check_permission('exam-add');
             $response= $this->crud_model->add_schedule();
            if ($response) {
             $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -304,6 +307,7 @@ class Admin extends CI_Controller {
             redirect(site_url('admin/manage_schedule'), 'refresh');
         }
         else if($param1 == "edit_schedule"){
+            check_permission('exam-edit');
             $response = $this->crud_model->edit_schedule($param2);
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_update_successfully'));
@@ -312,17 +316,20 @@ class Admin extends CI_Controller {
             }
             redirect(site_url('admin/manage_schedule'), 'refresh');
          }
-        else if ($param1 == "delete" ){
-            $this->crud_model->delete_schedule($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
-            redirect(site_url('admin/manage_schedule'), 'refresh');
-        }
-        else if ($param1 == "activate" ){
-            $this->crud_model->activate_attendance($param2);
-            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
-            redirect(site_url('admin/manage_attendance'), 'refresh');
-        }
+        // else if ($param1 == "delete" ){
+        //     check_permission('exam-edit');
+        //     $this->crud_model->delete_schedule($param2);
+        //     $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+        //     redirect(site_url('admin/manage_schedule'), 'refresh');
+        // }
+        // else if ($param1 == "activate" ){
+        //     check_permission('exam-edit');
+        //     $this->crud_model->activate_attendance($param2);
+        //     $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+        //     redirect(site_url('admin/manage_schedule'), 'refresh');
+        // }
         else{
+            check_permission('exam-read');
             $page_data['page_name'] = 'exam_schedule/schedule';
             $page_data['page_title'] = get_phrase('schedule');
             $page_data['schedule'] = $this->crud_model->get_schedule($param2)->result_array();
@@ -335,25 +342,26 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if($param1 == 'attendance_add_edit'){
             $page_data['page_name'] = 'attendance/attendance_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_attendance');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['en_list'] =$this->crud_model->get_enrol_data()->result_array();
+            
+            // var_dump($page_data['en_list']);
+            // die;
+            $page_data['batch'] =$this->crud_model->get_batch()->result_array();
+           
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
             $this->load->view('backend/index', $page_data);   
         }else if($param1 == "add_attendance"){
-            $response= $this->crud_model->add_attendance();
+           $response= $this->crud_model->add_attendance();
            if ($response) {
             $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
             
             }else{
-                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+                $this->session->set_flashdata('error_message', get_phrase('student_already_exists'));
             }
             redirect(site_url('admin/manage_attendance'), 'refresh');
         }
@@ -389,14 +397,10 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if($param1 == 'leave_add_edit'){
             $page_data['page_name'] = 'leave/leave_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_leave');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
@@ -439,19 +443,15 @@ class Admin extends CI_Controller {
     }
     
     //Assets Controll
-    public function manage_assets($param1 = "", $param2 = ""){
+    public function manage_assets($param1 = "", $param2 = "" ,$param3 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
-
         if($param1 == 'assets_add_edit'){
             $page_data['page_name'] = 'assets/assets_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_assets');
+            
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
@@ -499,15 +499,11 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if($param1 == 'asset_for_users_add_edit'){
             $page_data['page_name'] = 'asset_for_users/asset_for_users_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_asset_for_users');
             
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
             $page_data['asset_list'] =$this->user_model->get_asset()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
@@ -547,7 +543,7 @@ class Admin extends CI_Controller {
         }
    
     }
-
+    
     //penalty
     public function manage_asset_for_penalty($param1 = "", $param2 = "",$param3 = "")
     {
@@ -586,15 +582,11 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if($param1 == 'placement_add_edit'){
             $page_data['page_name'] = 'placement/placement_add_edit';
             $page_data['page_title'] = get_phrase('placements');
            
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
             $page_data['department_list']=$this->crud_model->get_department()->result_array();
             $page_data['designation_list']=$this->crud_model->get_designation()->result_array();
             $page_data['hod_list']=$this->crud_model->get_hod()->result_array();
@@ -641,11 +633,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
-
         if($param1 == 'training_cat_add_edit'){
             $page_data['page_name'] = 'training_cat_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_category');
@@ -680,10 +667,12 @@ class Admin extends CI_Controller {
             $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
             redirect(site_url('admin/training'), 'refresh');
         }
+        else{
         $page_data['page_name'] = 'training_cat';
         $page_data['page_title'] = get_phrase('training_category');
         $page_data['source'] = $this->crud_model->get_training_cat($param2)->result_array();
         $this->load->view('backend/index', $page_data);
+        }
     }
 
         //Training Controll
@@ -692,18 +681,14 @@ class Admin extends CI_Controller {
                 redirect(site_url('login'), 'refresh');
             }
     
-            if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-                redirect(site_url('admin/dashboard'), 'refresh');
-            }
-    
-    
             if($param1 == 'training_type_add_edit'){
                 $page_data['page_name'] = 'training/training_type_add_edit';
                 $page_data['page_title'] = get_phrase('edit_this_category');
                 if($param2 != ""){
                     $page_data['param2'] = $param2;
                 }
-                $this->load->view('backend/index', $page_data);    
+                $this->load->view('backend/index', $page_data);
+                  
             }else if ($param1 == 'add') {
                 $response = $this->crud_model->add_training_type();
                 if ($response) {
@@ -731,16 +716,20 @@ class Admin extends CI_Controller {
                 $this->session->set_flashdata('flash_message', get_phrase('data_activated'));
                 redirect(site_url('admin/training_type'), 'refresh');
             }
+            else{
             $page_data['page_name'] = 'training/training_type';
             $page_data['page_title'] = get_phrase('training_type');
             $page_data['source'] = $this->crud_model->get_training_type($param2)->result_array();
             $this->load->view('backend/index', $page_data);
-        }
+            }
+                
+            }
 
     public function admission_form($id = 0){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
+        
         $page_data['title'] = 'Admission Form';
         $page_data['enrol'] = $this->crud_model->get_enrol($id)->row_array();
         $this->load->view('backend/admin/admission_form', $page_data);
@@ -755,10 +744,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
+        
         if($param1 == 'branch_add_edit'){
             $page_data['page_name'] = 'branch_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_branch');
@@ -810,11 +796,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('department', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
-
         if($param1 == 'department_add_edit'){
             $page_data['page_name'] = 'department/department_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_department');
@@ -864,11 +845,6 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-
-        if(!in_array('department', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
 
         if($param1 == 'hod_add_edit'){
             $page_data['page_name'] = 'department/hod_add_edit';
@@ -920,9 +896,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('source', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         if($param1 == 'source_add_edit'){
             $page_data['page_name'] = 'source_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_source');
@@ -972,17 +946,13 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-        
         if($param1 == 'inquiry_add_edit'){
             $page_data['page_name'] = 'inquiry_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_inquiry');
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
-            $this->load->view('backend/index', $page_data);    
+            $this->load->view('backend/index', $page_data);
         }else if ($param1 == 'add') {
             $response = $this->crud_model->add_inquiry();
             if ($response) {
@@ -991,8 +961,7 @@ class Admin extends CI_Controller {
                 $this->session->set_flashdata('error_message', get_phrase('inquiry_already_exists'));
             }
             redirect(site_url('admin/inquiry'), 'refresh');
-        }
-        elseif ($param1 == "edit") {
+        }elseif ($param1 == "edit") {
             $response = $this->crud_model->edit_inquiry($param2);
             if ($response) {
                 $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
@@ -1000,8 +969,7 @@ class Admin extends CI_Controller {
                 $this->session->set_flashdata('error_message', get_phrase('inquiry_already_exists'));
             }
             redirect(site_url('admin/inquiry'), 'refresh');
-        }
-        elseif ($param1 == "delete") {
+        }elseif ($param1 == "delete") {
             $this->crud_model->delete_inquiry($param2);
             $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
             redirect(site_url('admin/inquiry'), 'refresh');
@@ -1013,8 +981,15 @@ class Admin extends CI_Controller {
             $this->crud_model->complete_inquiry($param2);
             $this->session->set_flashdata('flash_message', get_phrase('sent_for_admission'));
             redirect(site_url('admin/inquiry'), 'refresh');
-        }
-        else{
+        }else if($param1 == 'close'){
+            $this->crud_model->close_inquiry($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('sent_for_admission'));
+            redirect(site_url('admin/inquiry'), 'refresh');
+        }else if($param1 == 'open'){
+            $this->crud_model->open_inquiry($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('sent_for_admission'));
+            redirect(site_url('admin/inquiry'), 'refresh');
+        }else{
             $page_data['page_name'] = 'inquiry';
             $page_data['page_title'] = get_phrase('inquiry');
             $page_data['inquiry'] = $this->crud_model->get_inquiry($param2)->result_array();
@@ -1027,10 +1002,6 @@ class Admin extends CI_Controller {
     public function pending_admission(){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         $page_data['page_name'] = 'pending_admission';
@@ -1048,11 +1019,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
         
-        
-        if(!in_array('inquiry', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if($param1 == 'followup_add_edit'){
             $page_data['page_name'] = 'followup_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_followup');
@@ -1123,9 +1089,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('categories', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $category_id = $this->input->post('category_id');
         redirect(site_url("admin/sub_categories/$category_id"), 'refresh');
     }
@@ -1133,10 +1097,6 @@ class Admin extends CI_Controller {
     public function sub_category_form($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('categories', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         if ($param1 == 'add_sub_category') {
@@ -1155,10 +1115,6 @@ class Admin extends CI_Controller {
     public function instructors($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('instructors', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         if($param1 == "add"){
@@ -1184,9 +1140,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('instructors', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         if ($param1 == 'add_instructor_form') {
             $page_data['page_name'] = 'instructor_add';
             $page_data['page_title'] = get_phrase('instructor_add');
@@ -1203,10 +1157,6 @@ class Admin extends CI_Controller {
     public function users($param1 = "", $param2 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         $page_data['page_name'] = 'users';
@@ -1234,7 +1184,7 @@ class Admin extends CI_Controller {
             $page_data['invoices'] = $this->crud_model->purchase_history($param2)->result_array();
           
             $page_data['assets'] = $this->crud_model->get_asset_for_users('',$param2)->result_array();
-            $page_data['attendance'] = $this->crud_model->get_attendance('',$param2)->result_array();
+            $page_data['attendance'] = $this->crud_model->get_attendance_by_student('',$param2)->result_array();
             $page_data['leave'] = $this->crud_model->get_leave('',$param2)->result_array();
             $page_data['page_name'] = 'admission/view_admission';
         }
@@ -1249,10 +1199,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('system_user', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         
         if ($param1 == 'add_edit_user') {
             $page_data['page_name'] = 'user_add_edit';
@@ -1262,7 +1208,9 @@ class Admin extends CI_Controller {
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             if($param2 > 0){
                 $page_data['user'] = $this->user_model->get_system_user($param2)->row_array();
-                $page_data['user_permission'] = array_column($this->user_model->user_permission($param2)->result_array(),'pm_id');
+                $per = $this->user_model->user_permission($param2)->row_array();
+                $per = (array) json_decode($per['permissions']);
+                $page_data['user_permission'] = $per;
             }
             $this->load->view('backend/index', $page_data);
         }else if ($param1 == 'add_edit') {
@@ -1286,10 +1234,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if ($param1 == 'add_user_form') {
             $page_data['page_name'] = 'user_add';
             $page_data['page_title'] = get_phrase('student_add');
@@ -1311,6 +1255,7 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod()->result_array();
+            
             $page_data['training'] = $this->crud_model->get_training_cat()->result_array();
             $page_data['training_type'] = $this->crud_model->get_training_type()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
@@ -1324,6 +1269,7 @@ class Admin extends CI_Controller {
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['branch'] = $this->crud_model->get_branch()->result_array();
             $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+            $page_data['batch'] = $this->crud_model->get_batch()->result_array();
             $page_data['edu_list'] = $this->crud_model->get_edu_list()->result_array();
             $page_data['sources'] = $this->crud_model->get_source()->result_array();
             $page_data['hod'] = $this->crud_model->get_hod()->result_array();
@@ -1377,9 +1323,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('payment_list', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         if($param1 == 'invoice' && $param2){
             $page_data['page_name'] = 'student_invoice';
             $page_data['payment'] = $this->crud_model->get_payment_details_by_id($param2);
@@ -1422,9 +1366,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('payment_list', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $page_data['page_name'] = 'payment_list';
         $page_data['payments'] = $this->crud_model->get_all_payment_by_enrol()->result_array();
         $page_data['page_title'] = get_phrase('payment_list');
@@ -1436,15 +1378,13 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
         if ($param1 == 'enrol') {
             $enroled = $this->crud_model->enrol_a_student_manually();
             ($enroled)?redirect(site_url('admin/enrol_history'), 'refresh'):'';
         }
         $page_data['page_name'] = 'enrol_student';
         $page_data['courses'] = $this->crud_model->get_courses()->result_array();
+        $page_data['batch'] = $this->crud_model->get_batch()->result_array();
         $page_data['page_title'] = get_phrase('enrol_a_student');
         $this->load->view('backend/index', $page_data);
     }
@@ -1452,10 +1392,6 @@ class Admin extends CI_Controller {
     public function admin_revenue($param1 = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('admin_revenue', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         if ($param1 != "") {
@@ -1482,9 +1418,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('admin_revenue', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $page_data['page_name'] = 'instructor_revenue';
         $page_data['payment_history'] = $this->crud_model->get_revenue_by_user_type("", "", 'instructor_revenue');
         $page_data['page_title'] = get_phrase('instructor_revenue');
@@ -1495,9 +1429,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('invoice', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $page_data['page_name'] = 'invoice';
         $page_data['payout_id'] = $payout_id;
         $page_data['page_title'] = get_phrase('invoice');
@@ -1511,9 +1443,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('payment_list', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
         $this->crud_model->delete_payment_history($param1);
         $this->session->set_flashdata('flash_message', get_phrase('data_deleted_successfully'));
         redirect(site_url('admin/'.$redirect_to), 'refresh');
@@ -1523,9 +1452,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $this->crud_model->delete_enrol_history($param1);
         $this->session->set_flashdata('flash_message', get_phrase('data_deleted_successfully'));
         redirect(site_url('admin/enrol_history'), 'refresh');
@@ -1535,9 +1462,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $this->crud_model->activate_enrol_history($param1);
         redirect(site_url('admin/enrol_history'), 'refresh');
     }
@@ -1546,9 +1471,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('enrol_history', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         if($param1 == ""){
             $inserted = $this->crud_model->add_offline_payment();
             if($inserted){
@@ -1572,9 +1495,7 @@ class Admin extends CI_Controller {
             
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('payment_list', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $page_data['page_name'] = 'purchase_history';
         $page_data['purchase_history'] = $this->crud_model->purchase_history();
         $page_data['page_title'] = get_phrase('purchase_history');
@@ -1774,9 +1695,6 @@ class Admin extends CI_Controller {
     public function courses() {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         $page_data['selected_category_id']   = isset($_GET['category_id']) ? $_GET['category_id'] : "all";
@@ -2001,10 +1919,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
         if ($param1 == 'add_course') {
             $page_data['languages'] = $this->crud_model->get_all_languages();
             $page_data['categories'] = $this->crud_model->get_categories();
@@ -2031,9 +1945,6 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
 
         $course_details = $this->crud_model->get_course_by_id($course_id)->row_array();
         if ($course_details['status'] == 'draft') {
@@ -2046,9 +1957,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $course_id = $this->input->post('course_id');
         $category_id = $this->input->post('category_id');
         $instructor_id = $this->input->post('instructor_id');
@@ -2068,9 +1977,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $this->crud_model->change_course_status($updated_status, $course_id);
         $this->session->set_flashdata('flash_message', get_phrase('course_status_updated'));
         redirect(site_url('admin/courses?category_id='.$category_id.'&status='.$status.'&instructor_id='.$instructor_id.'&price='.$price), 'refresh');
@@ -2103,9 +2010,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         if ($param1 == 'add') {
             $this->crud_model->add_lesson();
             $this->session->set_flashdata('flash_message', get_phrase('lesson_has_been_added_successfully'));
@@ -2336,14 +2241,26 @@ class Admin extends CI_Controller {
         redirect(site_url('admin/courses'), 'refresh');
     }
     
+    //adil
+    public function preview_quiz($course_id = '') {
+        if ($this->session->userdata('admin_login') != 1)
+        redirect(site_url('login'), 'refresh');
+
+        $this->is_drafted_course($course_id);
+        if ($course_id > 0) {
+            $courses = $this->crud_model->get_course_by_id($course_id);
+            if ($courses->num_rows() > 0) {
+                $course_details = $courses->row_array();
+                redirect(site_url('home/exams_quiz/'.rawurlencode(slugify($course_details['title'])).'/'.$course_details['id']), 'refresh');
+            }
+        }
+        redirect(site_url('admin/courses'), 'refresh');
+    }
+    
     // Manage Quizes
     public function quizes($course_id = "", $action = "", $quiz_id = "") {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         if ($action == 'add') {
@@ -2366,9 +2283,7 @@ class Admin extends CI_Controller {
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
         }
-        if(!in_array('courses', $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
+
         $quiz_details = $this->crud_model->get_lessons('lesson', $quiz_id)->row_array();
 
         if ($action == 'add') {
@@ -2594,9 +2509,6 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
         if($param1 == 'edit_evaluation'){
             $page_data['page_name'] = 'evaluation/edit_evaluation';
             $page_data['page_title'] = get_phrase('edit_this_email');
@@ -2627,10 +2539,6 @@ class Admin extends CI_Controller {
     public function manage_designation($param1 = "", $param2 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
 
@@ -2683,15 +2591,10 @@ class Admin extends CI_Controller {
             redirect(site_url('login'), 'refresh');
         }
 
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
-        }
-
 
         if($param1 == 'event_schedule_add_edit'){
             $page_data['page_name'] = 'event_schedule/event_schedule_add_edit';
             $page_data['page_title'] = get_phrase('edit_this_event_schedule');
-            $page_data['user_list'] =$this->user_model->get_user()->result_array();
             if($param2 != ""){
                 $page_data['param2'] = $param2;
             }
@@ -2731,7 +2634,7 @@ class Admin extends CI_Controller {
         else{
             $page_data['page_name'] = 'event_schedule/event_schedule';
             $page_data['page_title'] = get_phrase('event_schedule');
-            $page_data['event_schedule'] = $this->crud_model->get_event_schedule($param2)->result_array();
+            $page_data['event_schedule'] = $this->crud_model->get_event_schedule($param2,true)->result_array();
             $this->load->view('backend/index', $page_data);     
         }
     }
@@ -2752,10 +2655,6 @@ class Admin extends CI_Controller {
     public function manage_asset_for_course($param1 = "", $param2 = ""){
         if ($this->session->userdata('admin_login') != true) {
             redirect(site_url('login'), 'refresh');
-        }
-
-        if(!in_array($this->uri->segment(2), $this->session->userdata('permission')) && $this->session->userdata('role_id') != 1){
-            redirect(site_url('admin/dashboard'), 'refresh');
         }
 
         if($param1 == 'asset_for_course_add_edit'){
@@ -2798,5 +2697,478 @@ class Admin extends CI_Controller {
             $this->load->view('backend/index', $page_data);     
         }
    
+    }
+
+    //adil:Bank Controll
+    public function manage_bank($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'bank_info_add_edit'){
+            $page_data['page_name'] = 'manage_bank/bank_info_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_bank_info');
+            // $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "bank_info_add_form"){
+            $response= $this->crud_model->add_bank_info();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else if($param1 == "bank_info_edit_form"){
+            $response = $this->crud_model->edit_bank_info($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_bank'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_bank_info($param2);
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_bank_status($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_bank_status($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
+            redirect(site_url('admin/manage_bank'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'manage_bank/bank';
+            $page_data['page_title'] = get_phrase('bank');
+            $page_data['bank_info'] = $this->crud_model->get_bank_info($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
+     //adil:Leave Reason Controll
+     public function leave_reason($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'leave_reason_add_edit'){
+            $page_data['page_name'] = 'leave_reason/leave_reason_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_leave_reason');
+            $page_data['user_list'] =$this->crud_model->get_payment_by_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "leave_reason_add_form"){
+            $response= $this->crud_model->add_leave_reason();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else if($param1 == "leave_reason_edit_form"){
+            $response = $this->crud_model->edit_leave_reason($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/leave_reason'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_leave_reason($param2);
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_leave_reason($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_leave_reason($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
+            redirect(site_url('admin/leave_reason'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'leave_reason/leave_reason_view';
+            $page_data['page_title'] = get_phrase('leave_reason_view');
+            $page_data['leave_reason'] = $this->crud_model->get_leave_reason($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
+     //adil:Payment Gateway  Controll
+     public function payment_gateway($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'payment_gateway_add_edit'){
+            $page_data['page_name'] = 'payment_gateway/payment_gateway_add_edit';
+            $page_data['page_title'] = get_phrase('edit_this_payment_gateway');
+            $page_data['user_list'] =$this->user_model->get_user()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "payment_gateway_add_form"){
+            $response= $this->crud_model->add_payment_gateway();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if($param1 == "payment_gateway_edit_form"){
+            $response = $this->crud_model->edit_payment_gateway($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+         }
+         else if ($param1 == "delete" ){
+            $this->crud_model->delete_payment_gateway($param2);
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if ($param1 == "activate" ){
+            $this->crud_model->activate_payment_gateway($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_activate'));
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else if ($param1 == "pending" ){
+            $this->crud_model->pending_payment_gateway($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_pending'));
+            redirect(site_url('admin/payment_gateway'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'payment_gateway/payment_gateway_view';
+            $page_data['page_title'] = get_phrase('payment_gateway_view');
+            $page_data['payment_gateway'] = $this->crud_model->get_payment_gateway($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+
+
+
+    //Assets For Customer Controll
+    public function manage_assets_for_customer($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'asset_for_customer_add_edit'){
+            $page_data['page_name'] = 'asset_for_users/asset_for_customer_add_edit';
+            $page_data['page_title'] = get_phrase('asset_for_customer');
+            
+            $page_data['asset_list'] =$this->user_model->get_asset()->result_array();
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+            
+        }else if($param1 == "add_asset_for_customer"){
+            $response= $this->crud_model->add_customer();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_assets_for_customer'), 'refresh');
+        }
+        else if($param1 == "edit_asset_for_customer"){
+            $response = $this->crud_model->edit_customer($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_assets_for_customer'), 'refresh');
+         }
+        else if ($param1 == "delete" ){
+            $this->crud_model->delete_customer($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_assets_for_customer'), 'refresh');
+        }
+       
+        else{
+            $page_data['page_name'] = 'asset_for_users/asset_for_customer';
+            $page_data['page_title'] = get_phrase('asset_for_customer');
+            $page_data['assets_for_customers'] = $this->crud_model->get_asset_for_customer($param2)->result_array();
+            $this->load->view('backend/index', $page_data);     
+        }
+   
+    }
+    
+    //adil:Batch Controll
+     public function batch($param1 = "", $param2 = ""){
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        if($param1 == 'add_edit_batch'){
+            $page_data['page_name'] = 'batch/add_edit_batch';
+            $page_data['page_title'] = get_phrase('edit_this_batch');
+            if($param2 != ""){
+                $page_data['param2'] = $param2;
+            }
+            $this->load->view('backend/index', $page_data);   
+        }
+        else if($param1 == "add_batch"){
+            $response= $this->crud_model->add_batch();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/batch'), 'refresh');
+        }
+        else if($param1 == "edit_batch"){
+            $response = $this->crud_model->edit_batch($param2);
+            if ($response) {
+                $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/batch'), 'refresh');
+         }
+        else if($param1 == "add_batch_for_student"){
+            $page_data['page_name'] = 'batch/add_batch_for_student';
+            $page_data['page_title'] = get_phrase('add_batch_for_student');
+            $page_data['user_list']  = $this->crud_model->get_payment_by_user()->result_array();
+            $page_data['batch_lst']  = $this->crud_model->get_batch()->result_array();
+             $this->load->view('backend/index', $page_data);  
+        }
+        elseif($param1 == 'add_multiple_student'){
+             $response= $this->crud_model->add_multiple_student();
+          if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/batch'), 'refresh');
+        }
+        else{
+            $page_data['page_name'] = 'batch/batch';
+            $page_data['page_title'] = get_phrase('batch_list');
+            $page_data['batch_list'] = $this->crud_model->get_batch()->result_array();
+           
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+    
+    //adil manage batch
+    public function manage_batch($param1 = "", $param2 = "")
+    {
+        if($param1 == 'add_student'){
+            $page_data['page_name'] = 'batch/add_student';
+            $page_data['page_title'] = get_phrase('add_student');
+            $page_data['user_list']  = $this->crud_model->get_payment_by_user()->result_array();
+            $page_data['batch_lst']  = $this->crud_model->get_batch()->result_array();
+            
+            $this->load->view('backend/index', $page_data); 
+        }
+        elseif($param1== 'add'){
+            $response= $this->crud_model->add_student();
+           if ($response) {
+            $this->session->set_flashdata('flash_message', get_phrase('data_added_successfully'));
+            }else{
+                $this->session->set_flashdata('error_message', get_phrase('title_already_exists'));
+            }
+            redirect(site_url('admin/manage_batch'), 'refresh');
+        }
+        elseif($param1 == 'delete'){
+            $this->crud_model->delete_student($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('data_deleted'));
+            redirect(site_url('admin/manage_batch'), 'refresh');
+        }
+        else{
+            
+            $page_data['page_name'] = 'batch/student_view';
+            $page_data['page_title'] = get_phrase('view_batch');
+            $page_data['batch_wise_student_list'] = $this->crud_model->get_batch_for_student($param2)->result_array();
+           
+            $this->load->view('backend/index', $page_data);     
+        }
+    }
+    
+    
+    //adil generate certificate
+    
+     public function certificate() {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        $page_data['page_name'] = 'certificate';
+        $page_data['certificate'] = $this->crud_model->get_certificate()->result_array();
+        $page_data['page_title'] = get_phrase('certificate');
+        $this->load->view('backend/index', $page_data);
+    }
+    
+    public function generate_certificate($param1 = ""){
+         if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+        
+        if($param1 == 'generate'){
+        
+            $user_id= $_POST['student_id'];
+            $course_id= $_POST['course_id'];
+       
+            $certificate_identifier = substr(sha1($user_id.'-'.$course_id.'-'.date('d-M-Y')), 0, 10);
+			$certificate_link = base_url('uploads/certificates/'.$certificate_identifier.'.jpg');
+			
+			$data['student_id'] = $this->input->post('student_id');
+			$data['course_id'] = $this->input->post('course_id');
+			$data['shareable_url'] = $certificate_identifier.'.jpg';
+		
+			$result=$this->db->get_where('certificates',array('student_id'=>$data['student_id'], 'course_id'=> $data['course_id']))->num_rows();
+			if ($result==0) {
+			    $this->certificate_model->create_certificate($user_id, $course_id, $certificate_identifier);
+                $this->db->insert('certificates', $data);
+                $this->session->set_flashdata('flash_message', get_phrase('registered_successfully'));
+                }else{
+                    $this->session->set_flashdata('error_message', get_phrase('already_generated'));
+                }
+                redirect(site_url('admin/certificate'), 'refresh');
+        } 
+        
+        $page_data['page_name'] = 'student_certificate';
+        $page_data['page_title'] = get_phrase('generate_certificate');
+        $page_data['user_list'] = $this->user_model->get_user()->result_array();
+        $page_data['course_list'] = $this->crud_model->get_course()->result_array();
+        $this->load->view('backend/index', $page_data);
+     }
+     
+     public function reports(){
+        $page_data['page_name'] = 'pivot_reports';
+        $page_data['page_title'] = get_phrase('admin_reports');
+        $this->load->view('backend/index', $page_data);
+     }
+     
+     public function reports_apis($type = ""){
+         if($type == "admission"){
+             $data = $this->api_model->get_all_admission()->result_array();
+             $final['attrArray'] = array_keys($data[0]);
+             $indArr = array();
+
+            // loop through source
+            foreach($data as $val) {
+        
+                // if the element is array call the recursion
+                if(is_array($val)) {
+        
+                    $indArr[] = array_values($val);
+        
+                // else add the value to destination array
+                } else {
+        
+                    $indArr[] = $val;
+                }
+            }
+             $final['dataArray'] = $indArr;
+             echo json_encode($final);
+             exit();
+         }else if($type == "enquiry"){
+             $data = $this->api_model->get_all_inquiry()->result_array();
+             $final['attrArray'] = array_keys($data[0]);
+             $indArr = array();
+
+            // loop through source
+            foreach($data as $val) {
+        
+                // if the element is array call the recursion
+                if(is_array($val)) {
+        
+                    $indArr[] = array_values($val);
+        
+                // else add the value to destination array
+                } else {
+        
+                    $indArr[] = $val;
+                }
+            }
+             $final['dataArray'] = $indArr;
+             echo json_encode($final);
+             exit();
+         }else if($type == "assetsbyuser"){
+             $data = $this->api_model->get_all_asset_report()->result_array();
+             $final['attrArray'] = array_keys($data[0]);
+             $indArr = array();
+
+            // loop through source
+            foreach($data as $val) {
+        
+                // if the element is array call the recursion
+                if(is_array($val)) {
+        
+                    $indArr[] = array_values($val);
+        
+                // else add the value to destination array
+                } else {
+        
+                    $indArr[] = $val;
+                }
+            }
+             $final['dataArray'] = $indArr;
+             echo json_encode($final);
+             exit();
+         }else if($type == "assetreport"){
+             $data = $this->api_model->get_all_asset_stock_report()->result_array();
+             $final['attrArray'] = array_keys($data[0]);
+             $indArr = array();
+
+            // loop through source
+            foreach($data as $val) {
+        
+                // if the element is array call the recursion
+                if(is_array($val)) {
+        
+                    $indArr[] = array_values($val);
+        
+                // else add the value to destination array
+                } else {
+        
+                    $indArr[] = $val;
+                }
+            }
+             $final['dataArray'] = $indArr;
+             echo json_encode($final);
+             exit(); 
+         }else if($type == "accounts"){
+             
+         }else if($type == "attendance"){
+             
+         }
+     }
+
+    public function manage_careers($param1 = "",$param2 = ""){
+        
+        if($param1 == 'delete'){
+            $this->crud_model->delete_applications($param2);
+            redirect(site_url('admin/manage_careers'),'refresh');
+            // die;
+        }
+        
+        $page_data['page_name'] = 'manage_careers';
+        $page_data['page_title'] = get_phrase('manage_careers');
+        $page_data['applications'] = $this->crud_model->get_applications()->result_array();
+        $this->load->view('backend/index', $page_data);
+
     }
 }

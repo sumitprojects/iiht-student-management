@@ -229,7 +229,7 @@ class Api_model extends CI_Model
 				$system_settings_data[$row['key']] = $row['value'];
 			}
 		}
-		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/' . get_frontend_settings('dark_logo');
+		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/'.get_frontend_settings('dark_logo');
 		return $system_settings_data;
 	}
 
@@ -254,8 +254,8 @@ class Api_model extends CI_Model
 				$system_settings_data[$row['key']] = $row['value'];
 			}
 		}
-		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/' . get_frontend_settings('dark_logo');
-		$system_settings_data['favicon'] = base_url() . 'uploads/system/' . get_frontend_settings('favicon');
+		$system_settings_data['thumbnail'] = base_url() . 'uploads/system/'.get_frontend_settings('dark_logo');
+		$system_settings_data['favicon'] = base_url() . 'uploads/system/'.get_frontend_settings('favicon');
 		return $system_settings_data;
 	}
 
@@ -698,5 +698,57 @@ class Api_model extends CI_Model
 		}
 
 		return $response;
+	}
+	
+	public function get_all_admission(){
+	    $this->db->select("upper(u.first_name) as first_name,upper(u.last_name) as last_name, u.marital_status, u.gender,b.branch_name,u.gender, s.source_name, u.source_other,c.title as course_name,enrol_status as admission_status, case WHEN e.is_training = 1 then 'non_admission' else 'admission' END as admission_type, final_price, cc.name as category");
+	    $this->db->from('enrol as e');
+	    $this->db->join('users as u','u.id = e.user_id');
+	    $this->db->join('branch as b','b.branch_id = u.branch_id');
+	    $this->db->join('sources as s','s.source_id = u.source_id');
+	    $this->db->join('course as c','c.id = e.course_id');
+	    $this->db->join('category as cc','cc.id = c.category_id');
+	    $this->db->order_by('e.date_added');
+	    return $this->db->get();
+	}
+	
+	public function get_all_inquiry(){
+	    $this->db->select("upper(e.en_name) as full_name,c.title as course_name,e.en_status,b.branch_name, s.source_name, e.en_gender as gender,e.source_other as other_source, cc.name as category");
+	    $this->db->from('enquiry as e');
+	    $this->db->join('branch as b','b.branch_id = e.branch_id');
+	    $this->db->join('sources as s','s.source_id = e.source_id');
+	    $this->db->join('course as c','c.id = e.course_id');
+	    $this->db->join('category as cc','cc.id = c.category_id');
+	    $this->db->order_by('e.date_added');
+	    return $this->db->get();
+	}
+	
+	
+	public function get_all_asset_report(){
+	    $this->db->select("upper(u.first_name) as first_name,upper(u.last_name) as last_name, u.gender,b.branch_name,u.gender, s.source_name, u.source_other,e.name as 'asset_name', e.price as asset_price, case when au.returnable = 1 then 'Returnable' else 'Non Returnable' END as returnable, au.status");
+	    $this->db->from('assets as e');
+	    $this->db->join('asset_for_users as au','au.asset_id = e.id');
+	    $this->db->join('users as u','u.id = au.user_id');
+	    $this->db->join('branch as b','b.branch_id = u.branch_id');
+	    $this->db->join('sources as s','s.source_id = u.source_id');
+	    $this->db->order_by('e.date_added');
+	    return $this->db->get();
+	}
+	
+	public function get_all_asset_stock_report(){
+	    $this->db->select("upper(u.first_name) as first_name,upper(u.last_name) as last_name,e.name as 'asset_name', e.price as asset_price,au.inward,e.stock,au.balance");
+	    $this->db->from('assets as e');
+	    $this->db->join('assets_report as au','au.asset_id = e.id');
+	    $this->db->join('users as u','u.id = au.added_by');
+	    $this->db->order_by('e.date_added');
+	    return $this->db->get();   
+	}
+	
+	public function get_all_payment_report(){
+	    $this->db->select("e.name as 'asset_name', e.price as asset_price,au.inward,e.stock,au.balance");
+	    $this->db->from('assets as e');
+	    $this->db->join('assets_report as au','au.asset_id = e.id');
+	    $this->db->order_by('e.date_added');
+	    return $this->db->get();   
 	}
 }

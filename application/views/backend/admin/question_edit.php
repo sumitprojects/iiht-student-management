@@ -16,11 +16,12 @@
     <input type="hidden" name="type" value="<?= $question_details['type']; ?>">
     <div class="form-group">
         <label for="title"><?php echo get_phrase('question_title'); ?></label>
-        <input class="form-control" type="text" name="title" id="title" value="<?php echo $question_details['title']; ?>" required>
+        <textarea name="title" id = "title" class="form-control"><?php echo $question_details['title']; ?></textarea>
+        
     </div>
     <div class="form-group">
     <label for="type"><?php echo get_phrase('type'); ?></label>
-    <input type="text" class="form-control" disabled value="<?= $question_details['type']; ?>">
+    <input type="text" class="form-control" name="type" id = "type" disabled value="<?= $question_details['type']; ?>">
     </div>
 <?php if($question_details['type']=='multiple_choice'): ?>
     <div class="form-group" id='multiple_choice_question'>
@@ -54,6 +55,11 @@
         <button class = "btn btn-success" id = "submitButton" type="button" name="button" data-dismiss="modal"><?php echo get_phrase('submit'); ?></button>
     </div>
 </form>
+<script type="text/javascript">
+  $(document).ready(function () {
+    initSummerNote(['#title']);
+  });
+</script>
 <script type="text/javascript">
 function showOptions(number_of_options){
     $.ajax({

@@ -148,7 +148,29 @@ $offline = !empty($offline) ? $offline : false;
                                                 </select>
                                             </div>
                                         </div>
-
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label"
+                                                for="branch_id"><?php echo get_phrase('gender'); ?><span
+                                                    class="required">*</span></label>
+                                            <div class="col-md-9">
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                         <input type="radio" class="custom-control-input" id="male_radio" value="male" name="gender" required
+                                                        <?php  echo !empty($enquiry) && $enquiry['en_gender'] == 'male'?'checked':''; ?>>
+                                                        <label class="custom-control-label" for="male_radio"><?php echo get_phrase('male'); ?></label> 
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input" id="female_radio" value="female" name="gender" required
+                                                        <?php  echo !empty($enquiry) && $enquiry['en_gender'] == 'female'?'checked':''; ?>>
+                                                        <label class="custom-control-label" for="female_radio"><?php echo get_phrase('female'); ?></label>                            
+                                                </div>
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input" id="other_radio" value="other" name="gender" required
+                                                        <?php  echo !empty($enquiry) && $enquiry['en_gender'] == 'other'?'checked':''; ?>>
+                                                        <label class="custom-control-label" for="other_radio"><?php echo get_phrase('other'); ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label"
                                                 for="user_image"><?php echo get_phrase('user_image'); ?></label>
@@ -214,6 +236,8 @@ $offline = !empty($offline) ? $offline : false;
                                                         <?php echo get_phrase('widowed') ?></option>
                                                     <option value="divorced">
                                                         <?php echo get_phrase('divorced') ?></option>
+                                                     <option value="separated">
+                                                        <?php echo get_phrase('separated') ?></option>
                                                 </select>
                                                 <small><?php echo get_phrase("required_for_admission"); ?></small>
                                             </div>
@@ -293,7 +317,7 @@ $offline = !empty($offline) ? $offline : false;
                                                 <select class="form-control select2" required data-toggle="select2"
                                                     name="source_id" data-init-plugin="select2" id="source_id">
                                                     <?php foreach($sources as $key => $val):?>
-                                                    <option value="<?=$val['source_id']?>">
+                                                    <option value="<?=$val['source_id']?>"<?=$enquiry?($enquiry['source_id']==$val['source_id']?'selected':''):''?>>
                                                         <?php echo $val['source_name']; ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
@@ -307,7 +331,7 @@ $offline = !empty($offline) ? $offline : false;
                                                     class="required">*</span></label>
                                             <div class="col-md-9">
                                                 <input type="text" class="form-control" id="source_other"
-                                                    name="source_other">
+                                                    name="source_other" value="<?=$enquiry?$enquiry['source_other']:''?>">
                                             </div>
                                         </div>
                                     </div> <!-- end col -->
@@ -319,7 +343,7 @@ $offline = !empty($offline) ? $offline : false;
                                         <div class="paid-course-stuffs">
 
                                             <?php if($intern): ?>
-                                            <div class="form-group row mb-3">
+                                            <div class="form-group row mb-3 d-none">
                                                 <label class="col-md-2 col-form-label"
                                                     for="hod_id"><?php echo get_phrase('hod'); ?></label>
                                                 <div class="col-md-10">
@@ -334,13 +358,14 @@ $offline = !empty($offline) ? $offline : false;
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group row mb-3">
+                                            <div class="form-group row mb-3 d-none">
                                                 <label class="col-md-2 col-form-label"
                                                     for="instructor_id"><?php echo get_phrase('instructor'); ?><span
                                                         class="required">*</span></label>
                                                 <div class="col-md-10">
-                                                    <select class="form-control select2" data-toggle="select2" required
-                                                        name="instructor_id" id="instructor_id">
+                                                    <!--name="instructor_id"-->
+                                                    <select class="form-control select2" data-toggle="select2"
+                                                         id="instructor_id">
                                                         <option value="">
                                                             <?php echo get_phrase('select_a_instructor'); ?>
                                                         </option>
@@ -348,7 +373,7 @@ $offline = !empty($offline) ? $offline : false;
                                                         $instructors=$this->user_model->get_instructor()->result_array();
                                                         foreach ($instructors as $inst):
                                                          ?>
-                                                        <option value="<?php echo $inst['is_instructor']; ?>">
+                                                        <option value="<?php echo $inst['id']; ?>">
                                                             <?php echo $inst['first_name'].' '.$inst['last_name']; ?>
                                                         </option>
                                                         <?php endforeach; ?>
@@ -390,7 +415,7 @@ $offline = !empty($offline) ? $offline : false;
                                                 </div>
                                             </div>
                                             <?php else: ?>
-                                            <div class="form-group row mb-3">
+                                            <div class="form-group row mb-3 d-none">
                                                 <label class="col-md-2 col-form-label"
                                                     for="hod_id"><?php echo get_phrase('hod'); ?></label>
                                                 <div class="col-md-10">
@@ -427,9 +452,9 @@ $offline = !empty($offline) ? $offline : false;
                                                     </select>
                                                 </div>
                                             </div>
+                                            
                                             <div class="form-group row mb-3">
-                                                <label class="col-md-2 col-form-label"
-                                                    for="price"><?php echo get_phrase('course_price').' ('.currency_code_and_symbol().')'; ?></label>
+                                                <label class="col-md-2 col-form-label" for="price"><?php echo  ($intern)? get_phrase('worth'): get_phrase('course').' ('.currency_code_and_symbol().')'; ?></label>
                                                 <div class="col-md-10">
                                                     <input type="number" class="form-control" tabindex="0" id="price"
                                                         readonly name="price"
@@ -516,6 +541,7 @@ function calculateDiscountPercentage(discounted_price) {
 
 
 jQuery(document).ready(function() {
+    
     jQuery('#course_id').on('change', function() {
         let selectedCourses = (jQuery(this).select2('data'));
         let prices = 0;
@@ -526,12 +552,12 @@ jQuery(document).ready(function() {
         }
         jQuery('[name=price]').val(prices);
     });
-
+    
     jQuery('#discount_flag').on('change', function() {
         // jQuery('#discounted_price').attr('disabled',true);
         priceChecked($(this));
     })
-
+    
     jQuery('#same_as_perm').on('change', function() {
         if ($(this).is(':checked')) {
             $('[name="permanent_address"]').val($('[name="present_address"]').val());
@@ -539,7 +565,6 @@ jQuery(document).ready(function() {
             $('[name="permanent_address"]').val();
         }
     });
-
     jQuery('#source_id').trigger('change');
     if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
         jQuery('#source_other').removeAttr('disabled');

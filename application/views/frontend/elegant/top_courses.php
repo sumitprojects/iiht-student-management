@@ -1,10 +1,10 @@
-<div class="container-fluid margin_120_0">
+<div class="container-fluid my-5">
   <div class="main_title_2">
     <span><em></em></span>
     <h2><?php echo get_phrase('top_courses'); ?></h2>
     <p><?php echo get_phrase('pick_according_to_your_choice'); ?>.</p>
   </div>
-  <div class="owl-carousel-div owl-carousel owl-theme">
+  <div class="owl-carousel-div owl-carousel owl-theme" id="top-courses">
     <?php $top_courses = $this->crud_model->get_top_courses()->result_array();
     $cart_items = $this->session->userdata('cart_items');
     foreach ($top_courses as $top_course):?>

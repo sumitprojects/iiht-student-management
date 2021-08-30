@@ -3,18 +3,22 @@
     $number_of_courses = $status_wise_courses['pending']->num_rows() + $status_wise_courses['active']->num_rows();
     $number_of_lessons = $this->crud_model->get_lessons()->num_rows();
     $number_of_enrolment = $this->crud_model->enrol_history()->num_rows();
-    $number_of_students = $this->user_model->get_user()->num_rows();
+    $number_of_students = $this->crud_model->get_payment_by_user()->num_rows();
+    
+    $number_of_present_students = $this->crud_model->get_present_students('present')->num_rows();
+    $number_of_absent_students = $this->crud_model->get_present_students('absent')->num_rows();
+    $number_of_pending_students= $number_of_students - ($number_of_present_students+$number_of_absent_students);
 ?>
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i> <?php echo get_phrase('dashboard'); ?></h4>
+                <h4 class="page-title"> <i class="mdi mdi-apple-keyboard-command title_icon"></i>
+                    <?php echo get_phrase('dashboard'); ?></h4>
             </div> <!-- end card body-->
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
-
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
@@ -29,7 +33,52 @@
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+<div class="row">
+    <div class="col-12">
+        <div class="card widget-inline">
+            <div class="card-body p-0">
+                <div class="row no-gutters">
+                    <div class="col-sm-6 col-xl-4">
+                        <a href="<?php echo site_url('admin/manage_attendance'); ?>" class="text-secondary">
+                            <div class="card shadow-none m-0">
+                                <div class="card-body text-center">
+                                    <i class="dripicons-archive text-muted" style="font-size: 24px;"></i>
+                                    <h3><span><?php echo $number_of_present_students; ?></span></h3>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('present_students'); ?></p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
 
+                    <div class="col-sm-6 col-xl-4">
+                        <a href="<?php echo site_url('admin/manage_attendance'); ?>" class="text-secondary">
+                            <div class="card shadow-none m-0 border-left">
+                                <div class="card-body text-center">
+                                    <i class="dripicons-archive text-muted" style="font-size: 24px;"></i>
+                                    <h3><span><?php echo $number_of_absent_students; ?></span></h3>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('absent_students'); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 col-xl-4">
+                        <a href="<?php echo site_url('admin/manage_attendance'); ?>" class="text-secondary">
+                            <div class="card shadow-none m-0 border-left">
+                                <div class="card-body text-center">
+                                    <i class="dripicons-archive text-muted" style="font-size: 24px;"></i>
+                                    <h3><span><?php echo $number_of_pending_students; ?></span></h3>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('pending_students'); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div> <!-- end row -->
+            </div>
+        </div> <!-- end card-box-->
+    </div> <!-- end col-->
+</div>
 <div class="row">
     <div class="col-12">
         <div class="card widget-inline">
@@ -53,7 +102,8 @@
                                 <div class="card-body text-center">
                                     <i class="dripicons-camcorder text-muted" style="font-size: 24px;"></i>
                                     <h3><span><?php echo $number_of_lessons; ?></span></h3>
-                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_lessons'); ?></p>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_lessons'); ?>
+                                    </p>
                                 </div>
                             </div>
                         </a>
@@ -65,7 +115,8 @@
                                 <div class="card-body text-center">
                                     <i class="dripicons-network-3 text-muted" style="font-size: 24px;"></i>
                                     <h3><span><?php echo $number_of_enrolment; ?></span></h3>
-                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_enrolment'); ?></p>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_enrolment'); ?>
+                                    </p>
                                 </div>
                             </div>
                         </a>
@@ -77,7 +128,8 @@
                                 <div class="card-body text-center">
                                     <i class="dripicons-user-group text-muted" style="font-size: 24px;"></i>
                                     <h3><span><?php echo $number_of_students; ?></span></h3>
-                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_student'); ?></p>
+                                    <p class="text-muted font-15 mb-0"><?php echo get_phrase('number_of_student'); ?>
+                                    </p>
                                 </div>
                             </div>
                         </a>
@@ -88,7 +140,7 @@
         </div> <!-- end card-box-->
     </div> <!-- end col-->
 </div>
-<div class="row">
+<div class="row d-none">
     <div class="col-xl-4">
         <div class="card">
             <div class="card-body">
@@ -116,10 +168,11 @@
         </div>
     </div>
     <div class="col-xl-8">
-        <div class="card" id = 'unpaid-instructor-revenue'>
+        <div class="card" id='unpaid-instructor-revenue'>
             <div class="card-body">
                 <h4 class="header-title mb-3"><?php echo get_phrase('requested_withdrawal'); ?>
-                    <a href="<?php echo site_url('admin/instructor_payout'); ?>" class="alignToTitle" id ="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                    <a href="<?php echo site_url('admin/instructor_payout'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
                 </h4>
                 <div class="table-responsive">
                     <table class="table table-centered table-hover mb-0">
@@ -132,12 +185,18 @@
                             ?>
                             <tr>
                                 <td>
-                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></a></h5>
-                                    <small><?php echo get_phrase('email'); ?>: <span class="text-muted font-13"><?php echo $instructor_details['email']; ?></span></small>
+                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body"
+                                            style="cursor: auto;"><?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></a>
+                                    </h5>
+                                    <small><?php echo get_phrase('email'); ?>: <span
+                                            class="text-muted font-13"><?php echo $instructor_details['email']; ?></span></small>
                                 </td>
                                 <td>
-                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body" style="cursor: auto;"><?php echo currency($pending_payout['amount']); ?></a></h5>
-                                    <small><span class="text-muted font-13"><?php echo get_phrase('requested_withdrawal_amount'); ?></span></small>
+                                    <h5 class="font-14 my-1"><a href="javascript:void(0);" class="text-body"
+                                            style="cursor: auto;"><?php echo currency($pending_payout['amount']); ?></a>
+                                    </h5>
+                                    <small><span
+                                            class="text-muted font-13"><?php echo get_phrase('requested_withdrawal_amount'); ?></span></small>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -149,12 +208,733 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('inquiy_list'); ?>
+                    <a href="<?php echo site_url('admin/inquiry'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                    <?php 
+                        $inquiry=$this->crud_model->get_inquiry()->result_array();
+                    ?>
+                    <table id="" class="table datatable table-striped dt-responsive nowrap" width="100%" data-page-length='5'>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><?php echo get_phrase('inquiry_name'); ?></th>
+                                <th><?php echo get_phrase('inquiry_date'); ?></th>
+                                <th><?php echo get_phrase('inquiry_course'); ?></th>
+                                <th><?php echo get_phrase('inquiry_source'); ?></th>
+                                <th><?php echo get_phrase('inquiry_branch'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('email'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('gender'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('mobile'); ?></th>
+                                <th style="display:none;"><?php echo get_phrase('alternate_mobile'); ?></th>
+                                <th style="display:none;"><strong><?php echo get_phrase('remark'); ?></strong><br></td>
+                                <th><?php echo get_phrase('inquiry_status'); ?></th>
+                                <th class="notexport"><?php echo get_phrase('actions'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($inquiry as $key => $br):?>
+                                <tr class="<?=($br['is_delete'] == 1)?'text-danger':''?>">
+                                    <td><?php echo ++$key; ?></td>
+                                    <td>
+                                        <a data-toggle="tooltip" data-title="<?php echo get_phrase('view_followup');?>" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><strong><?php echo ellipsis($br['en_name']); ?></strong><br></a>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo ellipsis($br['en_date']); ?></strong><br>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo ellipsis($br['title']); ?></strong><br>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo ellipsis($br['source_name']); ?></strong><br>
+                                        <strong><?php echo ellipsis($br['source_other']); ?></strong><br>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo ellipsis($br['branch_name']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_email']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_gender']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['mob_no']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['alt_mob']); ?></strong><br>
+                                    </td>
+                                    <td style="display:none;">
+                                        <strong><?php echo ellipsis($br['en_remark']); ?></strong><br>
+                                    </td>
+                                    <td>
+                                        <?php if ($br['en_status'] == 'closed'): ?>
+                                            <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
+                                        <?php elseif ($br['en_status'] == 'open'):?>
+                                            <span class="badge badge-info-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
+                                        <?php elseif ($br['en_status'] == 'completed'):?>
+                                            <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
+                                        <?php elseif ($br['en_status'] == 'hold'):?>
+                                            <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    
+                                    <td class="notexport">
+                                        <div class="dropright dropright">
+                                          <button type="button" class="btn btn-sm btn-outline-primary btn-rounded btn-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="mdi mdi-dots-vertical"></i>
+                                          </button>
+                                          <ul class="dropdown-menu">
+                                                <?php if($br['is_delete'] == 0 && $br['en_status'] != 'completed'): ?>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/inquiry_add_edit/'.$br['en_id']); ?>"><?php echo get_phrase('edit_this_inquiry');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/complete/'.$br['en_id']); ?>"><?php echo get_phrase('make_admission');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/followup/followup_add_edit/'.$br['en_id'])?>"><?php echo get_phrase('add_followup');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
+                                                    <?php if($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 3 || $this->session->userdata('role_id') == 4):?>
+                                                    <!--<li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>-->
+                                                    <!--<li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>-->
+                                                    <?php endif;?>
+                                                <?php elseif($br['is_delete'] == 1): ?>
+                                                  <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>
+                                                <?php elseif($br['en_status'] == 'completed'): ?>
+                                                    <li><a class="dropdown-item" href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo get_phrase('view_followup');?></a></li>
+                                                <?php endif; ?>
+                                          </ul>
+                                      </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('followup'); ?>
+                    <a href="<?php echo site_url('admin/inquiry/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            
+                            <th scope="col"><?php echo get_phrase('fullname'); ?></th>
+                            <th scope="col"><?php echo get_phrase('nextdate'); ?></th>
+                            <th scope="col"><?php echo get_phrase('status'); ?></th>
 
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php 
+                        $follow=$this->crud_model->get_followup()->result_array();
+                        foreach ($follow as $key => $br):
+                         $enquiry=$this->crud_model->get_inquirys($br['en_id'])->row_array();
+                        
+                           if($br['status']== 'OPEN' && $enquiry['en_status'] != 'completed'):
+                        $user=$this->user_model->get_user($br['user_id'])->row_array();
+                        $fullname=$this->crud_model->get_inquirys($br['en_id'])->row_array();
+                            
+                            
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><a href="<?=site_url('admin/followup/view_followup/'.$br['en_id'])?>"><?php echo ellipsis(strtoupper($fullname['en_name']),15); ?></a></td>
+                            <td><?php echo $br['next_date']; ?></td>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['status']); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php 
+                 
+                endif;
+                    endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('enrolment'); ?>
+                    <a href="<?php echo site_url('admin/users/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('user'); ?></th>
+                            <th scope="col"><?php echo get_phrase('course'); ?></th>
+                            <th scope="col"><?php echo get_phrase('instructor'); ?></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $enrol=$this->crud_model->get_enrols()->result_array();
+                        foreach ($enrol as $key => $br):
+                            $user=$this->user_model->get_user($br['user_id'])->row_array();
+                            $course=$this->crud_model->get_course($br['course_id'])->row_array();
+                            $instructor=$this->user_model->get_instructor($br['instructor_id'])->row_array();
+                        
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?></td>
+                            <td><?php echo ellipsis(strtoupper($course['title']),20); ?></td>
+
+                            <td><?php echo strtoupper($instructor['first_name'].' '.$instructor['last_name']); ?></td>
+                        </tr>
+                        
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('due_enrol'); ?>
+                    <a href="<?php echo site_url('admin/users/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('user'); ?></th>
+                            <th scope="col"><?php echo get_phrase('course'); ?></th>
+                            <th scope="col"><?php echo get_phrase('payment'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php 
+                        $enrol_history=$this->crud_model->enrol_history_by_date_range()->result_array();
+                        foreach ($enrol_history as $key=>$enrol):
+                                  $user_data = $this->db->get_where('users', array('id' => $enrol['user_id'],'process_mode'=>'offline'))->row_array();
+                                  $course_data = $this->db->get_where('course', array('id' => $enrol['course_id']))->row_array();
+                            if($enrol['is_training'] == 0 && !empty($user_data) && !empty($course_data)):
+                                  ?>
+                        <tr class="gradeU">
+                            <td><?php echo ++$key; ?></td>
+                            <td>
+                                <?php echo strtoupper($user_data['first_name'].' '.$user_data['last_name']); ?>
+                            </td>
+                            <td>
+                                <?php echo ellipsis(strtoupper($course_data['title']),20); ?>
+                            </td>
+                            <?php if($enrol['amount_due']>0 && $enrol['total_payment']>0):?>
+                            <td><span class="badge badge-danger"   style="white-space: break-spaces;"><?=get_phrase('payment_pending')?> : <?=$enrol['amount_due'] ?></td>
+                            <?php //elseif($enrol['amount_due'] == 0 && $enrol['total_payment']==$enrol['final_price']):?>
+                            <!--<td><span class="badge badge-info"><?php//echo get_phrase('payment_completed')?></span></td>-->
+                            <?php else:?>
+                            <td><span class="badge badge-danger"   style="white-space: break-spaces;"><?=get_phrase('payment_pending')?> : <?= ($enrol['final_price']-$enrol['total_payment'])?></span>
+                            </td>
+                            <?php endif;?>
+                        </tr>
+                        <?php endif; endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('exam_schedule'); ?>
+                    <a href="<?php echo site_url('admin/manage_schedule/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('user'); ?></th>
+                            <th scope="col"><?php echo get_phrase('course'); ?></th>
+                            <th scope="col"><?php echo get_phrase('exam_date'); ?></th>
+                            <th scope="col"><?php echo get_phrase('exam_status'); ?></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $exam_schedule=$this->crud_model->get_schedule()->result_array();
+                        foreach ($exam_schedule as $key => $br):
+                            $user_e=$this->user_model->get_user($br['user_id'])->row_array();
+                            $course_s=$this->crud_model->get_course($br['course_id'])->row_array();
+                            if($br['exam_status'] != 'complete'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo ellipsis(strtoupper($course_s['title']),20); ?></td>
+
+                            <td><?php echo $br['exam_date']; ?></td>
+                            <?php if($br['exam_status'] == 'canceled'): ?>
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php elseif($br['exam_status']== 'pending'): ?>
+                            <td>
+                                <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php elseif($br['exam_status']== 'schedule'): ?>
+                            <td>
+                                <span class="badge badge-secondary-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+
+                            <?php else: ?>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['exam_status']); ?>
+                                </span>
+                            </td>
+                            <?php endif; ?>
+                        </tr>
+                       <?php endif; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('assets'); ?>
+                    <a href="<?php echo site_url('admin/manage_assets/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('asset_name'); ?></th>
+                            <th scope="col"><?php echo get_phrase('price'); ?></th>
+                            <th scope="col"><?php echo get_phrase('stock'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $assets_d=$this->crud_model->get_assets()->result_array();
+                        foreach ($assets_d as $key => $br):
+                            
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['name']); ?></td>
+                            <td><?php echo $br['price']; ?></td>
+
+                            <td><?php echo $br['stock']; ?></td>
+                        </tr>
+                        
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('irregular_student'); ?>
+                    <a href="<?php echo site_url('admin/manage_attendance/'); ?>" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a>
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('user'); ?></th>
+                            <th scope="col"><?php echo get_phrase('entry_date'); ?></th>
+                            <th scope="col"><?php echo get_phrase('att_status'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $irr_student=$this->crud_model->get_attendance()->result_array();
+                        foreach ($irr_student as $key => $br):
+                            $user_e=$this->user_model->get_user($br['user_id'])->row_array();
+
+                            if($br['att_status'] == 'absent' ||$br['att_status']== 'pending'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo $br['entry_date']; ?></td>
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['att_status']); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
+                       <?php  
+                    endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('cirtified_student'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('student'); ?></th>
+                            <th scope="col"><?php echo get_phrase('course'); ?></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        // $ci_student=$this->certificate_model->get_certificate()->result_array();
+                        $ci_student=$this->crud_model->get_certificate()->result_array();
+                        foreach ($ci_student as $key => $br):
+                            $user_e=$this->user_model->get_user($br['student_id'])->row_array();
+                            $course_e=$this->user_model->get_course($br['course_id'])->row_array();
+                            
+                            
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($course_e['title']); ?></td>
+
+                        </tr>
+                    
+                <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('approve_payment'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('student'); ?></th>
+                            <th scope="col"><?php echo get_phrase('payment_type'); ?></th>
+                            <th scope="col"><?php echo get_phrase('payment_status'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $app_pay_stu=$this->crud_model->get_payment()->result_array();
+                        foreach ($app_pay_stu as $key => $br):
+                            $user_e=$this->user_model->get_user($br['user_id'])->row_array();
+                            
+                            
+                            if($br['payment_status']=='paid'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($br['payment_type']); ?></td>
+                            <td>
+                                <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['payment_status']); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php endif; ?>
+                      
+                        <?php
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('not_approve_payment'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('student'); ?></th>
+                            <th scope="col"><?php echo get_phrase('payment_type'); ?></th>
+                            <th scope="col"><?php echo get_phrase('payment_status'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $not_app_pay_stu=$this->crud_model->get_payment()->result_array();
+                        foreach ($not_app_pay_stu as $key => $br):
+                            
+                            
+                            $user_e=$this->user_model->get_user($br['user_id'])->row_array();
+                            if($br['payment_status']=='pending' || $br['payment_status']=='unpaid' || $br['payment_status']=='canceled'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($user_e['first_name'].' '.$user_e['last_name']); ?></td>
+                            <td><?php echo strtoupper($br['payment_type']); ?></td>
+                            <td>
+                                <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top">
+                                    <?php echo strtoupper($br['payment_status']); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php  endif;
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('source_by_user'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('source_name'); ?></th>
+                            <th scope="col"><?php echo get_phrase('enrol'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $source_by_user=$this->crud_model->get_source_by_user()->result_array();
+                        foreach ($source_by_user as $key => $br):
+                            
+                            
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['source_name']); ?></td>
+                            <td><?php echo strtoupper($br['enrol']); ?></td>
+                        </tr>
+                        
+               <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('branch_by_user'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('branch_name'); ?></th>
+                            <th scope="col"><?php echo get_phrase('enroll'); ?></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $branch_by_user=$this->crud_model->get_branch_by_user()->result_array();
+                        foreach ($branch_by_user as $key => $br):
+                            
+                            
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['branch_name']); ?></td>
+                            <td><?php echo strtoupper($br['enrol']); ?></td>
+                        </tr>
+                       
+                    <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('placement'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('type'); ?></th>
+                            <th scope="col"><?php echo get_phrase('student'); ?></th>
+                            <th scope="col"><?php echo get_phrase('placement_date'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $placement=$this->crud_model->get_placements_dash()->result_array();
+                        foreach ($placement as $key => $br):
+                            
+                            
+                            if($br['status']=='pending'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['type']); ?></td>
+                            <td><?php echo strtoupper($br['full_name']); ?></td>
+                            <td><?php echo strtoupper($br['placement_date']); ?></td>
+                        </tr>
+                        <?php
+                         
+                    endif; 
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title mb-3"><?php echo get_phrase('event'); ?>
+                    <!-- <a href="" class="alignToTitle"
+                        id="go-to-instructor-revenue"> <i class="mdi mdi-logout"></i> </a> -->
+                </h4>
+                <!-- Table -->
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><?php echo get_phrase('event_title'); ?></th>
+                            <th scope="col"><?php echo get_phrase('event_link'); ?></th>
+                            <th scope="col"><?php echo get_phrase('event_date_time'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $event=$this->crud_model->get_event_schedule()->result_array();
+                        foreach ($event as $key => $br):
+                            
+                            
+                            if($br['status']=='pending' || $br['status']=='schedule'):
+                        ?>
+                        <tr>
+                            <td><?php echo ++$key; ?></td>
+                            <td><?php echo strtoupper($br['event_title']); ?></td>
+                            <td><a href="<?php echo $br['event_link']; ?>"><?php echo get_phrase('event_link'); ?></a></td>
+                            <td><?php echo strtoupper($br['event_date']); ?><br><?php echo strtoupper($br['event_time']); ?></td>
+                        </tr>
+                        <?php endif; ?>
+                        
+                        <?php
+                    endforeach; ?>
+
+                    </tbody>
+                </table>
+                <!-- Table -->
+            </div>
+        </div>
+        <!-- Card -->
+    </div>
+</div>
 <script type="text/javascript">
-    $('#unpaid-instructor-revenue').mouseenter(function() {
-        $('#go-to-instructor-revenue').show();
-    });
-    $('#unpaid-instructor-revenue').mouseleave(function() {
-        $('#go-to-instructor-revenue').hide();
-    });
+$('#unpaid-instructor-revenue').mouseenter(function() {
+    $('#go-to-instructor-revenue').show();
+});
+$('#unpaid-instructor-revenue').mouseleave(function() {
+    $('#go-to-instructor-revenue').hide();
+});
 </script>

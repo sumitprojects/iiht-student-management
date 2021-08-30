@@ -10,8 +10,23 @@ $about_us_banner = $banners['about_us_banner'];
 		</div>
 	</div>
 </section>
-
-<div class="container margin_120_95">
+<?php $event_schedule = $this->crud_model->get_event_schedule($param1)->row_array(); ?>
+<div class="container text-center" style="margin:0 auto;">
+    <?php if(!empty($event_schedule['event_image'])): ?>
+        <figure>
+            <img src="<?php echo base_url('uploads/event/'.$event_schedule['event_image']); ?>" class="img-fluid" alt="">
+        </figure>
+    <?php endif; ?>
+    <?php if(!empty($event_schedule['event_description'])): ?>
+        <p>
+            <?php echo $event_schedule['event_description']; ?>
+        </p>
+    <?php endif; ?>
+    <?php if(!empty($event_schedule['event_presentor'])): ?>
+    <h2><?php echo get_phrase('event_presentor'); ?>: <?php echo $event_schedule['event_presentor']; ?></h2>
+    <?php endif; ?>
+</div>
+<div class="container mt-5">
     <div class="main_title_2">
         <span><em></em></span>
         <h2><?php echo get_phrase('event_registration'); ?></h2>

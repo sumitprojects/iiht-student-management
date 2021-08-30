@@ -15,16 +15,16 @@
           $total_number_of_categories = $this->db->get('category')->num_rows();
           $categories = $this->crud_model->get_categories()->result_array();
           foreach ($categories as $category): ?>
-          <li class="">
-            <div class="<?php if ($counter > $number_of_visible_categories): ?> hidden-categories hidden <?php endif; ?>">
-              <input type="radio" id="category-<?php echo $category['id'];?>" name="sub_category" class="categories custom-radio" value="<?php echo $category['slug']; ?>" onclick="filter(this)" <?php if($selected_category_id == $category['id']) echo 'checked'; ?>>
-              <label for="category-<?php echo $category['id'];?>"><?php echo $category['name']; ?></label>
-            </div>
-          </li>
+          <!--<li class="">-->
+          <!--  <div class="<?php if ($counter > $number_of_visible_categories): ?> hidden-categories hidden <?php endif; ?>">-->
+          <!--    <input type="radio" id="category-<?php echo $category['id'];?>" name="sub_category" class="categories custom-radio" value="<?php echo $category['slug']; ?>" onclick="filter(this)" <?php if($selected_category_id == $category['id']) echo 'checked'; ?>>-->
+          <!--    <label for="category-<?php echo $category['id'];?>"><?php echo $category['name']; ?></label>-->
+          <!--  </div>-->
+          <!--</li>-->
           <!-- <span class="parent-category <?php if ($counter > $number_of_visible_categories): ?> hidden-categories hidden <?php endif; ?>"><?php echo $category['name']; ?></span> -->
           <?php foreach ($this->crud_model->get_sub_categories($category['id']) as $sub_category):
             $counter++; ?>
-            <li class="ml-3">
+            <li class="">
               <div class="<?php if ($counter > $number_of_visible_categories): ?> hidden-categories hidden <?php endif; ?>">
                 <input type="radio" id="sub_category-<?php echo $sub_category['id'];?>" name="sub_category" class="categories custom-radio" value="<?php echo $sub_category['slug']; ?>" onclick="filter(this)" <?php if($selected_category_id == $sub_category['id']) echo 'checked'; ?>>
                 <label for="sub_category-<?php echo $sub_category['id'];?>"><?php echo $sub_category['name']; ?></label>
@@ -71,12 +71,12 @@
             <label for="beginner"><?php echo get_phrase('beginner'); ?></label>
           </div>
           <div class="">
-            <input type="radio" id="advanced" name="level" class="level custom-radio" value="advanced" onclick="filter(this)" <?php if($selected_level == 'advanced') echo 'checked'; ?>>
-            <label for="advanced"><?php echo get_phrase('advanced'); ?></label>
-          </div>
-          <div class="">
             <input type="radio" id="intermediate" name="level" class="level custom-radio" value="intermediate" onclick="filter(this)" <?php if($selected_level == 'intermediate') echo 'checked'; ?>>
             <label for="intermediate"><?php echo get_phrase('intermediate'); ?></label>
+          </div>
+          <div class="">
+            <input type="radio" id="advanced" name="level" class="level custom-radio" value="advanced" onclick="filter(this)" <?php if($selected_level == 'advanced') echo 'checked'; ?>>
+            <label for="advanced"><?php echo get_phrase('advanced'); ?></label>
           </div>
         </li>
       </ul>

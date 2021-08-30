@@ -48,15 +48,7 @@
                                         <strong><?php echo ellipsis($br['branch_name']); ?></strong><br>
                                     </td>
                                     <td>
-                                        <?php if ($br['en_status'] == 'closed'): ?>
-                                            <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
-                                        <?php elseif ($br['en_status'] == 'open'):?>
-                                            <span class="badge badge-info-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
-                                        <?php elseif ($br['en_status'] == 'completed'):?>
-                                            <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
-                                        <?php elseif ($br['en_status'] == 'hold'):?>
-                                            <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['en_status']); ?>"><?php echo get_phrase($br['en_status']); ?></span>
-                                        <?php endif; ?>
+                                            <span class="badge badge-warning-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase('pending'); ?>"><?php echo get_phrase('pending'); ?></span>
                                     </td>
                                     <td>
                                         <div class="dropright dropright">
@@ -67,6 +59,7 @@
                                                 <?php if($this->session->userdata('role_id') == 1 || $this->session->userdata('role_id') == 3 || $this->session->userdata('role_id') == 4):?>
                                                 <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry/'.$br['en_id'])?>"><?php echo get_phrase('add_admission');?></a></li>
                                                 <li><a class="dropdown-item" href="<?=site_url('admin/user_form/add_edit_from_inquiry_non/'.$br['en_id'])?>"><?php echo get_phrase('add_non_admission');?></a></li>
+                                                <li><a class="dropdown-item" href="<?=site_url('admin/inquiry/close/'.$br['en_id'])?>"><?php echo get_phrase('cancel_admission');?></a></li>
                                                 <?php endif;?>
                                                 <?php if($br['is_delete'] == 1): ?>
                                                   <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/inquiry/'.(($br['is_delete'] == 0)?'delete':'activate').'/'.$br['en_id']); ?>');"><?php echo get_phrase(($br['is_delete'] == 0)?'delete':'activate'); ?></a></li>

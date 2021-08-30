@@ -59,7 +59,7 @@
                                                 <?php if ($br['hod_is_delete'] == 0): ?>
                                                     <li><a class="dropdown-item" href="<?php echo site_url('admin/hod/hod_add_edit/'.$br['hod_id']); ?>"><?php echo get_phrase('edit_this_hod');?></a></li>
                                                 <?php endif; ?>
-                                              <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/hod/'.(($br['hod_is_delete'] == 1)?'delete':'activate').'/'.$br['dpid']); ?>');"><?php echo get_phrase(($br['hod_is_delete'] == 1)?'delete':'activate'); ?></a></li>
+                                              <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/hod/'.(($br['hod_is_delete'] == 1)?'delete':'activate').'/'.$br['hod_id']); ?>');"><?php echo get_phrase(($br['hod_is_delete'] == 1)?'delete':'activate'); ?></a></li>
                                           </ul>
                                       </div>
                                     </td>

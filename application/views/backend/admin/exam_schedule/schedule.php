@@ -26,6 +26,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student_name'); ?></th>
                                 <th><?php echo get_phrase('exam_date'); ?></th>
                                 <th><?php echo get_phrase('exam_status'); ?></th>
                                 <th><?php echo get_phrase('action'); ?></th>
@@ -35,6 +36,16 @@
                             <?php foreach ($schedule as $key => $br):?>
                             <tr>
                                 <td><?php echo ++$key; ?></td>
+                                <td>
+                                <?php $user = $this->user_model->get_user($br['user_id'])->row_array(); ?>
+                                <a href="<?=site_url('admin/users/view/'.$br['user_id'])?>">
+                                <?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?>
+                                <?php if($user['status'] != 1): ?>
+                                  <small><p><?php echo get_phrase('status'); ?>: <span class="badge badge-danger-lighten"><?php echo get_phrase('unverified'); ?></span></p></small>
+                                <?php endif; ?>
+                                </a>
+
+                                </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['exam_date']); ?></strong><br>
                                 </td>

@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th><?php echo get_phrase('student'); ?></th>
                                 <th><?php echo get_phrase('entry_date'); ?></th>
                                 <th><?php echo get_phrase('remark'); ?></th>
                                 <th><?php echo get_phrase('att_status'); ?></th>
@@ -36,24 +37,22 @@
                             <tr>
                                 <td><?php echo ++$key; ?></td>
                                 <td>
+                                 <?php
+                                 $enroll=$this->crud_model->get_enrol_data($br['en_id'])->row_array();
+                                ?>
+                                <strong><?php echo ellipsis($enroll['full_name']); ?></strong><br>
+                                        <?php echo ellipsis($enroll['course_name'])?>
+                                </td>
+                                <td>
                                     <strong><?php echo ellipsis($br['entry_date']); ?></strong><br>
                                 </td>
                                 <td>
                                     <strong><?php echo ellipsis($br['remark']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <strong><?php echo ellipsis($br['att_status']); ?></strong><br>
-                                </td>
-                                <td>
-                                    <?php if ($br['status'] == 0): ?>
-                                    <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top"
-                                        title=""
-                                        data-original-title="<?php echo get_phrase('disabled'); ?>"><?php echo get_phrase('disabled'); ?></span>
-                                    <?php elseif ($br['status'] == 1):?>
-                                    <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top"
-                                        title=""
-                                        data-original-title="<?php echo get_phrase('active'); ?>"><?php echo get_phrase('active'); ?></span>
-                                    <?php endif; ?>
+                                    <span class="badge badge-info-lighten">
+                                        <strong><?php echo strtoupper($br['att_status']); ?></strong><br>
+                                    </span>
                                 </td>
                                 <td>
                                     <div class="dropright dropright">
@@ -70,10 +69,11 @@
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_attendance/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a>
                                             </li>
-                                            <?php endif; ?>
+                                            <?php else: ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_attendance/activate/'.$br['id']); ?>');"><?php echo get_phrase('activate'); ?></a>
                                             </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>

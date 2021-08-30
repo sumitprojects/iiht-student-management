@@ -34,12 +34,17 @@
                           <tr>
                               <td><?php echo $key+1; ?></td>
                               <td>
+                                <a href="<?=site_url('admin/users/view/'.$user['id'])?>">
                                   <img src="<?php echo $this->user_model->get_user_image_url($user['id']);?>" alt="" height="50" width="50" class="img-fluid rounded-circle img-thumbnail">
+                                </a>
                               </td>
-                              <td><?php echo $user['first_name'].' '.$user['last_name']; ?>
+                              <td>
+                                <a href="<?=site_url('admin/users/view/'.$user['id'])?>">
+                                <?php echo $user['first_name'].' '.$user['last_name']; ?>
                                 <?php if($user['status'] != 1): ?>
                                   <small><p><?php echo get_phrase('status'); ?>: <span class="badge badge-danger-lighten"><?php echo get_phrase('unverified'); ?></span></p></small>
                                 <?php endif; ?>
+                                </a>
                               </td>
                               <td><?php echo $user['email']; ?></td>
                               <td>

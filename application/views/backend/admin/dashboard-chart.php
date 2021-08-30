@@ -36,7 +36,8 @@
                      t = new Chart(i, {
                          type: "line",
                          data: n,
-                         options: e
+                         options: e,
+                         
                      });
                      break;
                  case "Doughnut":
@@ -120,7 +121,7 @@
                  maintainAspectRatio: !1,
                  cutoutPercentage: 80,
                  legend: {
-                     display: !1
+                     display: 1
                  }
              }))
          }
@@ -135,6 +136,7 @@
              }), r.charts = r.initCharts()
          })
      }, o.ChartJs = new t, o.ChartJs.Constructor = t
+     
  }(window.jQuery),
  function(t) {
      "use strict";

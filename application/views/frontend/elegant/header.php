@@ -4,7 +4,7 @@
     </div><!-- /Preload -->
     <div id="logo">
         <a href="<?php echo site_url('home'); ?>"><img src="<?php echo base_url('uploads/system/'.get_frontend_settings('light_logo')); ?>"
-                height="50" data-retina="true" alt=""></a>
+                height="70" data-retina="true" alt=""></a>
     </div>
     <ul id="top_menu">
             <li><a href="<?php echo site_url('home/shopping_cart'); ?>"
@@ -30,6 +30,24 @@
         <ul>
             <li><span><a href="<?php echo site_url('home'); ?>"><?php echo get_phrase('home'); ?></a></span></li>
             <li>
+                <span><a href="<?php echo site_url('home/about_us'); ?>"><?php echo get_phrase('about_us'); ?></a></span>
+                <ul>
+                    <li>
+                        <a href="<?php echo site_url('home/directors'); ?>"><?php echo get_phrase('directors'); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo site_url('home/principal'); ?>"><?php echo get_phrase('principal'); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo site_url('home/academic_staff'); ?>"><?php echo get_phrase('academic_staff'); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo site_url('home/non_academic_staff'); ?>"><?php echo get_phrase('non-academic_staff'); ?></a>
+                    </li>
+                    
+                </ul>
+            </li>
+            <li>
                 <span><a href="javascript:void(0)"><?php echo get_phrase('courses'); ?></a></span>
                 <ul>
                     <?php
@@ -44,7 +62,8 @@
                     </li>
                 </ul>
             </li>
-
+            
+             <li><span><a href="<?php echo site_url('home/contact'); ?>"><?php echo get_phrase('contact_us'); ?></a></span></li>
             <?php if ($this->session->userdata('admin_login') == 1): ?>
             <li><span><a href="<?php echo site_url('admin'); ?>"><?php echo get_phrase('administrator'); ?></a></span>
             </li>

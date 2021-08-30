@@ -28,7 +28,7 @@ if(!empty($param2)){
                                 <th><?php echo get_phrase('next_date'); ?></th>
                                 <th><?php echo get_phrase('username'); ?></th>
                                 <th><?php echo get_phrase('status'); ?></th>
-                                <th><?php echo get_phrase('actions'); ?></th>
+                                <th class="notexport"><?php echo get_phrase('actions'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,7 +56,7 @@ if(!empty($param2)){
                                             <span class="badge badge-success-lighten" data-toggle="tooltip" data-placement="top" title="" data-original-title="<?php echo get_phrase($br['status']); ?>"><?php echo get_phrase($br['status']); ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td class="notexport">
                                         <?php if($br['is_delete'] == 1):?>
                                             <span class="badge badge-danger-lighten"><?=get_phrase('inquiry_deleted')?></span>
                                         <?php elseif($br['is_delete'] == 0 && !empty($enquiry_status) && $enquiry_status['en_status'] != 'completed'): ?>

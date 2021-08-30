@@ -48,7 +48,7 @@
                                           </button>
                                           <ul class="dropdown-menu">
                                                 <?php if ($br['status'] == 1): ?>
-                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/training_type_add_edit/'.$br['id']);?>"><?php echo get_phrase('edit_this_training_category');?></a></li>
+                                                    <li><a class="dropdown-item" href="<?php echo site_url('admin/training_type/training_type_add_edit/'.$br['id']);?>"><?php echo get_phrase('edit_this_training_category');?></a></li>
                                                 <?php endif; ?>
                                               <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/training_type/'.(($br['status'] == 1)?'delete':'activate').'/'.$br['id']); ?>');"><?php echo get_phrase(($br['status'] == 1)?'delete':'activate'); ?></a></li>
                                           </ul>

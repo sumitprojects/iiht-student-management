@@ -79,6 +79,14 @@
                                                 <textarea name="biography" id = "summernote-basic" class="form-control"><?php echo $user_data['biography']; ?></textarea>
                                             </div>
                                         </div>
+                                         <div class="form-group row mb-3" tabindex="">
+                                            <div class="offset-md-3 col-md-9" tabindex="">
+                                                <div class="custom-control custom-checkbox" tabindex="">
+                                                    <input type="checkbox" class="custom-control-input" tabindex="0" name="comp_knowledge" id="comp_knowledge" value="<?php echo $user_data['comp_knowledge']; ?>" <?php if($user_data['comp_knowledge'] == '1') echo 'checked'; ?>>
+                                                    <label class="custom-control-label" for="comp_knowledge">Computer knowledge</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="user_image"><?php echo get_phrase('user_image'); ?></label>
                                             <div class="col-md-9">
@@ -89,7 +97,7 @@
                                                   <div class="flex-grow-1 mt-1 pl-3">
                                                       <div class="input-group">
                                                           <div class="custom-file">
-                                                              <input type="file" class="custom-file-input" name = "user_image" id="user_image" onchange="changeTitleOfImageUploader(this)" accept="image/*">
+                                                              <input type="file" class="custom-file-input" name="user_image" id="user_image" onchange="changeTitleOfImageUploader(this)" accept="image/*">
                                                               <label class="custom-file-label ellipsis" for="user_image"><?php echo get_phrase('choose_user_image'); ?></label>
                                                           </div>
                                                       </div>
@@ -148,14 +156,14 @@
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="facebook_link"> <?php echo get_phrase('paypal_client_id'); ?></label>
                                             <div class="col-md-9">
-                                                <input type="text" id="paypal_client_id" name="paypal_client_id" class="form-control" value="<?php echo $paypal_keys[0]['production_client_id']; ?>">
+                                                <input type="text" id="paypal_client_id" name="paypal_client_id" class="form-control" value="<?php if(isset($paypal_keys[0]['production_secret_key'])) echo $paypal_keys[0]['production_client_id']; ?>">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="facebook_link"> <?php echo get_phrase('paypal_secret_key'); ?></label>
                                             <div class="col-md-9">
-                                                <input type="text" id="paypal_secret_key" name="paypal_secret_key" class="form-control" value="<?php echo $paypal_keys[0]['production_secret_key']; ?>">
+                                                <input type="text" id="paypal_secret_key" name="paypal_secret_key" class="form-control" value="<?php if(isset($paypal_keys[0]['production_secret_key'])) echo $paypal_keys[0]['production_secret_key']; ?>">
                                                 <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                             </div>
                                         </div>
@@ -176,6 +184,7 @@
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
+                            
                             <div class="tab-pane" id="finish">
                                 <div class="row">
                                     <div class="col-12">
@@ -192,13 +201,13 @@
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
-
+                        </div>
                             <ul class="list-inline mb-0 wizard">
                                 <li class="previous list-inline-item">
-                                    <a href="javascript:void(0)" class="btn btn-info">Previous</a>
+                                    <a href="javascript::" class="btn btn-info">Previous</a>
                                 </li>
                                 <li class="next list-inline-item float-right">
-                                    <a href="javascript:void(0)" class="btn btn-info">Next</a>
+                                    <a href="javascript::" class="btn btn-info">Next</a>
                                 </li>
                             </ul>
 

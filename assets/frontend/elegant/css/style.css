@@ -5852,3 +5852,32 @@ ul.bullets li:before {
     padding: 5px 0;
   }
 }
+.margin_24_10{
+    padding-top:80px;
+    padding-bottom:80px;
+}
+.margin_24_10 img{
+    width:800px; 
+    border-radius:25px;
+}
+.event_view a.big-cart-button-1 {
+    background: #fff;
+    border: 2px solid #662d91;
+    color: #662d91;
+    padding: 5px 20px;
+    font-weight: 500;
+    line-height: 1;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    border-radius: 30px;
+}
+.event_view a.big-cart-button-1:hover{
+    background-color:#662d91;
+    color:#fff;
+}

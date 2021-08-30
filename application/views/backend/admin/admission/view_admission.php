@@ -97,7 +97,7 @@ if(!empty(json_decode($user['address_detail']))){
                                                     for="last_name"><?=get_phrase('last_name')?></label>
                                                 <div class="col-md-9">
                                                     <p class="form-control">
-                                                        <?=$user['first_name']?>
+                                                        <?=$user['last_name']?>
                                                     </p>
                                                 </div>
                                             </div>
@@ -136,7 +136,7 @@ if(!empty(json_decode($user['address_detail']))){
 
                                             <div class="form-group row mb-3">
                                                 <label class="col-md-3 col-form-label"
-                                                    for="marital_status">marital_status</label>
+                                                    for="marital_status"><?=get_phrase('marital_status')?></label>
                                                 <div class="col-md-9">
                                                     <p class="form-control">
                                                         <?=$user['marital_status']?> </p>
@@ -245,7 +245,7 @@ if(!empty(json_decode($user['address_detail']))){
                                 </div> <!-- end tab pane -->
                                 <div class="tab-pane" id="enquiry">
                                     <div class="row justify-content-center">
-                                        <div class="col-xl-10">
+                                        <div class="col-md-12">
                                             <div class="table-responsive-sm mt-4">
                                                 <?php if (count($enquiry) > 0): ?>
                                                 <table id="inquiry-datatable"
@@ -364,7 +364,7 @@ if(!empty(json_decode($user['address_detail']))){
 
                                 <div class="tab-pane" id="admissions">
                                     <div class="row justify-content-center">
-                                        <div class="col-xl-10">
+                                        <div class="col-md-12">
                                             <div class="table-responsive my-4">
                                                 <?php if (count($admission) > 0): ?>
                                                 <table id="enrol_history"
@@ -408,9 +408,11 @@ if(!empty(json_decode($user['address_detail']))){
                                                                 <span
                                                                     class="badge badge-primary"><?=get_phrase('online')?></span>
                                                                 <?php else:?>
-                                                                <span
-                                                                    class="badge badge-primary"><?php echo $enrol['is_training'] == 1? get_phrase('Admission'):get_phrase('Non Admission'); ?></span>
-                                                                <?php endif;?>
+                  <?php if($enrol['is_training'] == '1'):?>
+                                                            <span class="badge badge-primary"><?=get_phrase('Non Admission')?></span>  
+                                                            <?php else:?>
+                                          <span class="badge badge-primary"><?php echo ($enrol['is_training'] == 0 ? get_phrase('Admission'):get_phrase('Non Admission')); ?></span>
+                                        <?php endif;?>                                                                <?php endif;?>
                                                             </td>
                                                             <td><?php echo date('D, d-M-Y', $enrol['date_added']); ?>
                                                             </td>
@@ -506,6 +508,8 @@ if(!empty(json_decode($user['address_detail']))){
                                                                         </li>
                                                                     </ul>
                                                                 </div>
+                                                                <?php elseif(!$br['returnable']): ?>
+                                                                    <span class="badge badge-primary">Non Retunable</span>
                                                                 <?php else: ?>
                                                                     <span class="badge badge-primary">Retuned</span>
                                                                 <?php endif; ?>

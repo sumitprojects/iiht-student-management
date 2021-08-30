@@ -27,13 +27,13 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="user_id"><?php echo get_phrase('student'); ?><span
                                     class="required">*</span></label>
-                            <select class="form-control select2" data-toggle="select2" name="user_id" id="user_id"
+                            <select class="form-control select2" data-toggle="select2" name="emails" id="email"
                                 multiple required>
                                 <option value=""><?php echo get_phrase('select_a_user'); ?></option>
                                 <?php foreach ($user_list as $user): ?>
-                                <option value="<?php echo $user['id']; ?>"
-                                    <?php echo !empty($sms)? (($sms['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].' '.$user['last_name']; ?></option>
+                                <option value="<?php echo $user['email']; ?>"
+                                    <?php echo !empty($email)? (($email['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
+                                    <?php echo $user['full_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

@@ -51,7 +51,7 @@
                                                 <?php if ($br['dp_is_delete'] == 0): ?>
                                                     <li><a class="dropdown-item" href="<?php echo site_url('admin/department/department_add_edit/'.$br['dpid']); ?>"><?php echo get_phrase('edit_this_department');?></a></li>
                                                 <?php endif; ?>
-                                              <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/department/'.(($br['dp_is_delete'] == 1)?'delete':'activate').'/'.$br['dpid']); ?>');"><?php echo get_phrase(($br['dp_is_delete'] == 1)?'delete':'activate'); ?></a></li>
+                                              <li><a class="dropdown-item" href="#" onclick="confirm_modal('<?php echo site_url('admin/department/'.(($br['dp_is_delete'] == 1)?'delete':'activate').'/'.$br['dpid']); ?>');"><?php echo get_phrase(($br['dp_is_delete'] == 1)?'activate':'delete'); ?></a></li>
                                           </ul>
                                       </div>
                                     </td>

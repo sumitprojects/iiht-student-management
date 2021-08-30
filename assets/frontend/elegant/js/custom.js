@@ -13,9 +13,10 @@ $('#chooseFile').bind('change', function () {
 
 // init owlCarousel
 $('.owl-carousel-div').owlCarousel({
-  center: true,
+  center: false,
   items: 2,
-  loop: true,
+  loop: false,
+  autoplay:true,
   margin: 0,
   responsive: {
     0: {
@@ -29,6 +30,27 @@ $('.owl-carousel-div').owlCarousel({
     },
     1400: {
       items: 4
+    }
+  }
+});
+
+$('.owl-carousel-event').owlCarousel({
+  center: true,
+  items: 1,
+  loop: true,
+  margin: 50,
+  responsive: {
+    0: {
+      items: 1
+    },
+    767: {
+      items: 2
+    },
+    1000: {
+      items: 2
+    },
+    1400: {
+      items: 2
     }
   }
 });

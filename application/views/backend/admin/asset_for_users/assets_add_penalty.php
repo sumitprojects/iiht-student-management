@@ -10,7 +10,7 @@ if(!empty($param2)){
         <div class="card">
             <div class="card-body">
                 <div class="col-lg-12">
-                <h4 class="mb-3 header-title">
+                    <h4 class="mb-3 header-title">
                         <?php echo get_phrase('add_penalty'); ?>
                         <a href="<?php echo site_url('admin/manage_asset_for_users'); ?>"
                             class="alignToTitle btn btn-outline-secondary btn-rounded btn-sm"> <i
@@ -19,6 +19,7 @@ if(!empty($param2)){
                     </h4>
                     <form class="required-form" action="<?php echo site_url('admin/manage_asset_for_penalty/add'); ?>"
                         method="post">
+                        <?php $asset = $this->user_model->get_asset($asset_for_users['asset_id'])->row_array();?>
                         <input type="hidden" class="form-control" id="id" name="id"
                             value="<?php echo $asset_for_users['id']; ?>" readonly>
 
@@ -32,7 +33,7 @@ if(!empty($param2)){
                                 value="<?php echo $asset_for_users['user_id']; ?>" readonly>
                         </div>
                         <div class="form-group">
-                            <?php $asset = $this->user_model->get_asset($asset_for_users['asset_id'])->row_array();?>
+
                             <label for="asset_name"><?php echo get_phrase('asset_name'); ?><span
                                     class="required">*</span></label>
                             <input type="text" class="form-control" value="<?php echo $asset['name']; ?>" readonly>
@@ -40,20 +41,26 @@ if(!empty($param2)){
                                 value="<?php echo $asset_for_users['asset_id']; ?>" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="price"><?php echo get_phrase('price'); ?><span
+                            <label for="asset_price"><?php echo get_phrase('asset_price'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control"  name="price" id="price">
+                            <input type="text" class="form-control" name="price" id="price"
+                                value="<?php echo $asset['price']; ?>" readonly>
                         </div>
+                        <!-- <div class="form-group">
+                            <label for="penalty"><?php echo get_phrase('penalty'); ?><span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control"  name="penalty" id="penalty" value="<?php echo $asset['penalty']; ?>">
+                        </div> -->
                         <div class="form-group">
                             <label for="date_of_penalty"><?php echo get_phrase('date_of_penalty'); ?><span
                                     class="required">*</span></label>
-                            <input type="date" class="form-control"  name="date_of_penalty" id="date_of_penalty">
+                            <input type="date" class="form-control" name="date_of_penalty" id="date_of_penalty">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="remark"><?php echo get_phrase('remark'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control"  name="remark" id="remark">
+                            <input type="text" class="form-control" name="remark" id="remark">
                         </div>
                         <button type="button" class="btn btn-primary"
                             onclick="checkRequiredFields()"><?php echo get_phrase("submit"); ?></button>

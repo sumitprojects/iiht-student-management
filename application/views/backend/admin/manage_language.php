@@ -41,21 +41,28 @@
 					?>
 						<div class="tab-pane show active" id="edit" style="padding: 30px">
 							<div class="row">
-								<?php foreach (openJSONFile($edit_profile) as $key => $value): ?>
-								<div class="col-xl-3 col-lg-6">
-									<div class="card">
-										<div class="card-header">
-											<?php echo $key; ?>
-										</div>
-										<div class="card-body">
-											<p>
-												<input type="text" class="form-control" name="updated_phrase" value="<?php echo $value; ?>" id = "phrase-<?php echo $key; ?>">
-											</p>
-											<button type="button" class="btn btn-icon btn-primary" style="float: right;" id = "btn-<?php echo $key; ?>" onclick="updatePhrase('<?php echo $key; ?>')"> <i class = "mdi mdi-check-circle"></i> </button>
-										</div>
-									</div>
-								</div>
-								<?php endforeach; ?>
+							    <div class="col-md-12">
+							        <div class="table-responsive-sm">
+							            <table class="table datatable table-bordered table-centered mb-0">
+								            <thead>
+								                <tr>
+								                    <td>Key</td>
+								                    <td>Value</td>
+								                    <td>Action</td>
+								                </tr>
+								            </thead>
+								            <tbody>
+							            	<?php foreach (openJSONFile($edit_profile) as $key => $value): ?>
+                                            <tr>								                
+								                <td><?php echo $key; ?></td>
+								                <td><input type="text" class="form-control" name="updated_phrase" value="<?php echo $value; ?>" id = "phrase-<?php echo $key; ?>"></td>
+								                <td><button type="button" class="btn btn-icon btn-primary" style="float: right;" id = "btn-<?php echo $key; ?>" onclick="updatePhrase('<?php echo $key; ?>')"> <i class = "mdi mdi-check-circle"></i> </button></td>
+								            </tr>
+								            <?php endforeach; ?>
+								            </tbody>
+								        </table>
+								    </div>
+							    </div>
 							</div>
 						</div>
 					<?php endif;?>

@@ -21,7 +21,7 @@
                 </h4>
                 <div class="table-responsive-sm mt-4">
                     <?php if (count($assets) > 0): ?>
-                    <table id="assetusers" data-filter="2,3,4,5" class="table table-striped dt-responsive nowrap" width="100%"
+                    <table id="assetusers" data-filter="2,3,4" class="table table-striped dt-responsive nowrap" width="100%"
                         data-page-length='25'>
                         <thead>
                             <tr>
@@ -74,10 +74,11 @@
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_assets/delete/'.$br['id']); ?>');"><?php echo get_phrase('delete'); ?></a>
                                             </li>
-                                            <?php endif; ?>
+                                            <?php else: ?>
                                             <li><a class="dropdown-item" href="#"
                                                     onclick="confirm_modal('<?php echo site_url('admin/manage_assets/activate/'.$br['id']); ?>');"><?php echo get_phrase('activate'); ?></a>
                                             </li>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>

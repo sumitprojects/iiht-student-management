@@ -10,7 +10,16 @@ $about_us_banner = $banners['about_us_banner'];
 		</div>
 	</div>
 </section>
-<!--/hero_in-->
-<div class="container margin_120_95">
-	<?php echo get_frontend_settings('about_us'); ?>
+<div class="container mb-5 mt-5 text-center">
+<p style="font-size:18px">
+    Academy’s vision is to give industry and the students an institute that helps fulfil their needs
+through the well-structured courses which aims to give the industry a place to find good talent
+and give the next generation good grounding in Gems &Jewellery Sector. The institute has the
+best faculty and infrastructure in the field to impart good training to its students.
+</p>
+<p style="font-size:18px">
+   The institute is backed by the KGK Group, which has years of global expertise in the field. The
+institute gains a lot from KGK’s knowledge of the global trade and helps design courses to meet
+the industry’s needs for decades to come.
+</p>
 </div>

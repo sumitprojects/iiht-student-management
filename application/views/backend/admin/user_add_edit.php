@@ -4,7 +4,6 @@ $permission = !empty($permission)?$permission:null;
 
 ?>
 
-
 <div class="row ">
     <div class="col-xl-12">
         <div class="card">
@@ -199,8 +198,8 @@ $permission = !empty($permission)?$permission:null;
                                                             <div class="custom-control custom-checkbox">
                                                                 <input type="checkbox" class="custom-control-input"
                                                                     id="<?= $p['name'].'_'.$key ?>" name="permissions[]"
-                                                                    value="<?= $p['id'] ?>"
-                                                                    <?=isset($user_permission) && in_array($p['id'],$user_permission)?'checked': ""?>>
+                                                                    value="<?= $p['name'] ?>"
+                                                                    <?=isset($user_permission) && in_array($p['name'],$user_permission)?'checked': ""?>>
                                                                 <label class="custom-control-label"
                                                                     for="<?= $p['name'].'_'.$key ?>"></label>
                                                             </div>

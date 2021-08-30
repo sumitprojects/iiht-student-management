@@ -44,7 +44,7 @@ $invoicetypes = array(
                                 $purchased_courses = array_column($purchased_courses,'course_id')?>
                                 <option value="<?php echo $user['id'] ?>"
                                     data-courses="<?=implode(',',$purchased_courses)?>">
-                                    <?php echo strtolower($user['first_name'].' '.$user['last_name']); ?></option>
+                                    <?php echo strtoupper($user['first_name'].' '.$user['last_name']); ?></option>
                                 <?php endif; endforeach; ?>
                             </select>
                         </div>
@@ -67,6 +67,21 @@ $invoicetypes = array(
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <div class="form-group mb-3">
+                            <label class="" for="batch_id"><?php echo get_phrase('batch'); ?><span
+                                    class="required">*</span></label>
+                            <select class="form-control select2" data-toggle="select2" name="batch_id" id="batch_id"
+                                required>
+                                <option value="" disabled selected>
+                                    <?php echo get_phrase('select_a_batch'); ?>
+                                </option>
+                                <?php foreach ($batch as $batches): ?>
+                                <option value="<?php echo $batches['id'] ?>">
+                                    <?php echo $batches['batch_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="admission_type"><?php echo get_phrase('admission_type'); ?><span
                                     class="required">*</span>
@@ -88,7 +103,7 @@ $invoicetypes = array(
                                     $instructors=$this->user_model->get_instructor()->result_array();
                                     
                                     foreach ($instructors as $inst): ?>
-                                <option value="<?php echo $inst['is_instructor']; ?>">
+                                <option value="<?php echo $inst['id']; ?>">
                                     <?php echo $inst['first_name'].' '.$inst['last_name']; ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -146,14 +161,13 @@ $invoicetypes = array(
 
                         </div>
 
-                        <div class="form-group mb-3">
-
+                        <div class="form-group mb-3 payment_div">
                             <label
-                                for="price"><?php echo get_phrase('course_price').' ('.currency_code_and_symbol().')'; ?></label>
+                                for="price"><?php echo get_phrase('course_worth').' ('.currency_code_and_symbol().')'; ?></label>
                             <input type="number" class="form-control" tabindex="0" id="price" readonly name="price"
                                 placeholder="<?php echo get_phrase('enter_course_course_price'); ?>" min="0">
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 payment_div">
                             <label class="payment_type"
                                 for="payment_type"><?php echo get_phrase('payment_type'); ?><span
                                     class="required">*</span></label>
@@ -171,7 +185,7 @@ $invoicetypes = array(
                             </select>
                         </div>
 
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 invoice_div">
                             <label class="invoice_type"
                                 for="invoice_type"><?php echo get_phrase('invoice_type'); ?><span
                                     class="required">*</span></label>
@@ -188,15 +202,34 @@ $invoicetypes = array(
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="wallet_name"><?php echo get_phrase('wallet_name'); ?><span
-                                    class="required">*</span></label>
-                            <input type="text" class="form-control" name="wallet_name" id="wallet_name">
+                        <div class="form-group">
+                            <label for="wallet_name"><?php echo get_phrase('wallet_name'); ?><span class="required">*</span>
+                            </label>
+                            <select class="form-control select2" data-toggle="select2" name="wallet_name" id="wallet_name"
+                                required>
+                                <option value="" disabled selected><?php echo get_phrase('select_a_wallet_name'); ?></option>
+                                <?php $wallet_nm = $this->crud_model->get_payment_gateway()->result_array();
+                                foreach ($wallet_nm as $wallet): 
+                                ?>
+                                <option value="<?php echo $wallet['id'] ?>">
+                                    <?php echo ($wallet['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="bank_name"><?php echo get_phrase('bank_name'); ?><span
-                                    class="required">*</span></label>
-                            <input type="text" class="form-control" name="bank_name" id="bank_name">
+                        
+                        <div class="form-group">
+                            <label for="bank_name"><?php echo get_phrase('bank_name'); ?><span class="required">*</span>
+                            </label>
+                            <select class="form-control select2" data-toggle="select2" name="bank_name" id="bank_name"
+                                required>
+                                <option value="" disabled selected><?php echo get_phrase('select_a_bank_name'); ?></option>
+                                <?php $bank_nm = $this->crud_model->get_bank_info()->result_array();
+                                foreach ($bank_nm as $bank): 
+                                ?>
+                                <option value="<?php echo $bank['id'] ?>">
+                                    <?php echo ($bank['bank_name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group mb-3">
                             <label class="cheque_number"><?php echo get_phrase('cheque_number'); ?><span
@@ -205,7 +238,7 @@ $invoicetypes = array(
                         </div>
 
                         <div class="form-group mb-3">
-                            <label class="amount"><?php echo get_phrase('amount'); ?><span
+                            <label class="amount"><?php echo get_phrase('course_price'); ?><span
                                     class="required">*</span></label>
                             <input type="number" class="form-control" id="amount" name="amount" required min="0">
                             <?php if(!empty($amount_due)):?><p class="text-danger"><?=get_phrase('amount_due')?>:
@@ -215,7 +248,7 @@ $invoicetypes = array(
                         <div class="form-group mb-3">
                             <label class=""><?php echo get_phrase('transaction_id'); ?></label>
                             <input type="text" class="form-control" name="transaction_id"
-                                placeholder="Please, Enter transaction number">
+                                value="<?php echo uniqid('TXN') ?>">
                             <!-- <input type="number" class="form-control"> -->
                         </div>
                         <div class="form-group mb-3">
@@ -248,7 +281,7 @@ jQuery(document).ready(function() {
         let course = (jQuery(this).select2('data')[0].element.dataset.courses);
         if (course.indexOf(',') > 0) {
             let course_list = course.split(',');
-            console.log(course_list);
+            //console.log(course_list);
             course_list.forEach(function(element) {
                 jQuery('#course_id option[value="' + element + '"]').attr('disabled', true);
             });
@@ -258,13 +291,16 @@ jQuery(document).ready(function() {
             jQuery('#course_id').select2();
         }
     });
+    
     jQuery('#amount').removeAttr('readonly');
     jQuery('#invoice_type').on('change', function() {
         if (jQuery(this).val() == 'full-payment') {
             jQuery('#amount').val(jQuery('[name="price"]').val());
             jQuery('#amount').attr('readonly', true);
+            jQuery('.amount_due').hide();
         } else {
             jQuery('#amount').removeAttr('readonly');
+            jQuery('.amount_due').show();
         }
     });
     jQuery('#amount').on('blur', function() {
@@ -304,16 +340,25 @@ $(function() {
     $('#hod').hide();
     $('#training_cat').hide();
     $('#training_type').hide();
+   
     $('#admission_type').on('change', function() {
-        if (this.value == "0") {
+        if(this.value == "0") {
             $('#hod').show();
             $('#training_cat').hide();
             $('#training_type').hide();
+            jQuery('#invoice_type').show();
+            jQuery('#payment_type').show();
+            $('#training_cat,.payment_div,.invoice_div').show();
         } else {
+            jQuery('#invoice_type').val('full-payment');
+            jQuery('#invoice_type').trigger('change');
+            jQuery('#payment_type').val('cash');
+            jQuery('#payment_type').trigger('change');
+            jQuery('#invoice_type,.payment_div,.invoice_div').hide();
+            jQuery('#payment_type').hide();
             $('#hod').show();
             $('#training_cat').show();
             $('#training_type').show();
-
         }
     });
 });

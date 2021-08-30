@@ -28,8 +28,8 @@ $cart_items = $this->session->userdata('cart_items');
 	<div class="container margin_60_35">
 		<div class="row">
 			<div class="col-lg-8">
-
 				<section id="description">
+				    <?php if(!empty(json_decode($course_details['outcomes']))):?>
 					<h2><?php echo get_phrase('description'); ?></h2>
 					<p class="course-description"><?php echo $course_details['description']; ?></p>
 					<h5><?php echo get_phrase('what_will_you_learn'); ?></h5>
@@ -44,18 +44,21 @@ $cart_items = $this->session->userdata('cart_items');
 
 					</ul>
 					<hr>
+					<?php endif; ?>
+					<?php if(!empty(json_decode($course_details['requirements']))):?>
 					<h5 class="mb-3"><?php echo get_phrase('requirements'); ?></h5>
 					<div class="row">
+						<div class="col-lg-6">
+									<ul class="bullets">
 						<?php foreach (json_decode($course_details['requirements']) as $requirement): ?>
 							<?php if ($requirement != ""): ?>
-								<div class="col-lg-6">
-									<ul class="bullets">
 										<li><?php echo $requirement; ?></li>
-									</ul>
-								</div>
 							<?php endif; ?>
 						<?php endforeach; ?>
+									</ul>
+						</div>
 					</div>
+					<?php endif; ?>
 					<!-- /row -->
 				</section>
 				<!-- /section -->
@@ -107,25 +110,25 @@ $cart_items = $this->session->userdata('cart_items');
 					<h2><?php echo get_phrase('about_instructor'); ?></h2>
 					<div class="row">
 						<div class="col-lg-4 instructor-image">
-							<figure><img src="<?php echo $this->user_model->get_user_image_url($instructor_details['id']); ?>" alt="<?php echo get_phrase('instructor'); ?>" class="rounded-circle instructor-image"></figure>
+							<a href="<?php echo site_url('home/instructor_page/'.$course_details['user_id']); ?>"><figure><img src="<?php echo $this->user_model->get_user_image_url($instructor_details['id']); ?>" alt="<?php echo get_phrase('instructor'); ?>" class="rounded-circle instructor-image"></figure></a>
 						</div>
 						<div class="col-lg-8 instructor-summary">
 							<div class="">
-								<strong><?php echo get_phrase('name'); ?> : <?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></strong>
+								<a href="<?php echo site_url('home/instructor_page/'.$course_details['user_id']); ?>"><strong><?php echo get_phrase('name'); ?> : <?php echo $instructor_details['first_name'].' '.$instructor_details['last_name']; ?></strong></a>
 							</div>
 							<div class="">
 								<strong><?php echo get_phrase('reviews'); ?> : </strong> <?php echo $this->crud_model->get_instructor_wise_course_ratings($instructor_details['id'], 'course')->num_rows().' '.get_phrase('reviews'); ?>
 							</div>
-							<div class="">
-								<strong><?php echo get_phrase('student'); ?> : </strong>
+							<!--<div class="">
+								<strong><?php //echo get_phrase('student'); ?> : </strong>
 								<?php
-								$course_ids = $this->crud_model->get_instructor_wise_courses($instructor_details['id'], 'simple_array');
-								$this->db->select('user_id');
-								$this->db->distinct();
-								$this->db->where_in('course_id', $course_ids);
-								echo $this->db->get('enrol')->num_rows().' '.get_phrase('students');
+								// $course_ids = $this->crud_model->get_instructor_wise_courses($instructor_details['id'], 'simple_array');
+								// $this->db->select('user_id');
+								// $this->db->distinct();
+								// $this->db->where_in('course_id', $course_ids);
+								//echo $this->db->get('enrol')->num_rows().' '.get_phrase('students');
 								?>
-							</div>
+							</div>-->
 							<div class="">
 								<strong><?php echo get_phrase('courses'); ?> : </strong>
 								<?php echo $this->crud_model->get_instructor_wise_courses($instructor_details['id'])->num_rows().' '.get_phrase('courses'); ?>
@@ -287,12 +290,13 @@ $cart_items = $this->session->userdata('cart_items');
 				<ul>
 					<li><i class="far fa-file-video"></i>
 						<?php
-						echo $this->crud_model->get_total_duration_of_lesson_by_course_id($course_details['id']).' '.get_phrase('on_demand_videos');
+						//echo $this->crud_model->get_total_duration_of_lesson_by_course_id($course_details['id']).' '.get_phrase('on_demand_videos');
 						?>
+						<?php echo get_phrase('study_materials'); ?>
 					</li>
-					<li><i class="far fa-file"></i><?php echo $this->crud_model->get_lessons('course', $course_details['id'])->num_rows().' '.get_phrase('lessons'); ?></li>
 					<li><i class="far fa-compass"></i><?php echo get_phrase('full_lifetime_access'); ?></li>
-					<li><i class="fas fa-mobile-alt"></i><?php echo get_phrase('access_on_mobile_and_tv'); ?></li>
+					<li><i class="far fa-file"></i><?php echo $this->crud_model->get_lessons('course', $course_details['id'])->num_rows().' '.get_phrase('lessons'); ?></li>
+					<!--<li><i class="fas fa-mobile-alt"></i><?php echo get_phrase('access_on_mobile_and_tv'); ?></li>-->
 				</ul>
 			</div>
 

@@ -33,7 +33,7 @@ if(!empty($param2)){
                                 <?php foreach ($user_list as $user): ?>
                                 <option value="<?php echo $user['id']; ?>"
                                     <?php echo !empty($leave)? (($leave['user_id'] == $user['id'])? 'selected':'') : ''; ?>>
-                                    <?php echo $user['first_name'].' '.$user['last_name']; ?></option>
+                                    <?php echo ($user['first_name'].' '.$user['last_name']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -58,19 +58,28 @@ if(!empty($param2)){
                         <div class="form-group">
                             <label for="reason"><?php echo get_phrase('reason'); ?><span
                                     class="required">*</span></label>
-                            <input type="text" class="form-control" id="reason" name="reason"
-                                value="<?php echo !empty($leave)?$leave['reason']:''?>" required>
+                                    <select class="form-control select2" data-toggle="select2" name="reason_id" id="reason_id"
+                                required>
+                                    <option value="" disabled selected><?php echo get_phrase('select_a_leave_reason'); ?></option>
+                                <?php $leave_reson = $this->crud_model->get_leave_reason()->result_array();
+                                foreach ($leave_reson as $leave_res): 
+                                ?>
+                                <option value="<?php echo $leave_res['id'] ?>" <?php echo !empty($leave)? (($leave['reason_id'] == $leave_res['id'])? 'selected':'') : ''; ?>>
+                                    <?php echo ($leave_res['reasons']); ?></option>
+                                    
+                                <?php endforeach; ?>
+                                </select>
                         </div>
                         <div class="form-group">
                             <label for="leave status"><?php echo get_phrase('leave status'); ?><span
                                     class="required">*</span></label>
                             <select name="att_status" id="att_status" class="form-control">
-                                <option value="pending" selected>pending</option>
-                                <option value="approve"
-                                    <?php if($leave['att_status']=='approve'){ echo "selected"; }?>>approve
+                                <option value="pending" selected>Pending</option>
+                                <option value="approved"
+                                    <?php if($leave['att_status']=='approved'){ echo "selected"; }?>>Approved
                                 </option>
-                                <option value="reject"
-                                    <?php if($leave['att_status']=='reject'){ echo "selected"; }?>>reject</option>
+                                <option value="rejected"
+                                    <?php if($leave['att_status']=='rejected'){ echo "selected"; }?>>Rejected</option>
                               
                             </select>
                         </div>

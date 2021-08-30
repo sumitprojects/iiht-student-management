@@ -258,7 +258,7 @@
                                                     name="education_detail" data-init-plugin="select2" tabindex="0"
                                                     id="education_detail">
                                                     <?php foreach($edu_list as $key=>$edu):?>
-                                                    <option value="<?=$edu['ename']?>">
+                                                    <option value="<?=$edu['ename']?>" <?=$user_data['education_detail'] == $edu['ename']? 'selected':''?>>
                                                         <?php echo $edu['ename'] ?></option>
                                                     <?php endforeach;?>
                                                 </select>
@@ -393,7 +393,7 @@ jQuery(document).ready(function() {
         jQuery('#source_other').attr('disabled','true');
     }
     jQuery('#source_id').on('change', function() {
-        console.log($(this).val());
+        //console.log($(this).val());
         if (jQuery('#source_id').val() == '2' || jQuery('#source_id').val() == '18') {
             jQuery('#source_other').removeAttr('disabled');
             jQuery('#source_other').attr('required');
@@ -403,13 +403,13 @@ jQuery(document).ready(function() {
     });
 
     <?php if(!empty($user_data)):?>
-    jQuery('#branch_id').val(<?=$user_data['branch_id']?>);
+    jQuery('#branch_id').val('<?=$user_data['branch_id']?>');
     jQuery('#branch_id').trigger('change');
-    jQuery('#marital_status').val(<?=$user_data['marital_status']?>);
+    jQuery('#marital_status').val('<?=$user_data['marital_status']?>');
     jQuery('#marital_status').trigger('change');
-    jQuery('#education_detail').val(<?=$user_data['education_detail']?>);
+    jQuery('#education_detail').val("<?=$user_data['education_detail']?>");
     jQuery('#education_detail').trigger('change');
-    jQuery('#source_id').val(<?=$user_data['source_id']?>);
+    jQuery('#source_id').val('<?=$user_data['source_id']?>');
     jQuery('#source_id').trigger('change');
     <?php endif;?>
 });

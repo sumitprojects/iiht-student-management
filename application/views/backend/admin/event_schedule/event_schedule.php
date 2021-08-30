@@ -27,9 +27,10 @@
                             <tr>
                                 <th>#</th>
                                 <th><?php echo get_phrase('event_title'); ?></th>
+                                <th><?php echo get_phrase('event_date'); ?></th>
                                 <th><?php echo get_phrase('event_presentor'); ?></th>
                                 <th><?php echo get_phrase('event_link'); ?></th>
-                                <th><?php echo get_phrase('event_date'); ?></th>
+                                
                                 <th><?php echo get_phrase('status'); ?></th>
                                 <th><?php echo get_phrase('actions'); ?></th>
                             </tr>
@@ -42,16 +43,24 @@
                                     <strong><?php echo ellipsis($br['event_title']); ?></strong><br>
                                 </td>
                                 <td>
-                                    <?php $user = $this->user_model->get_user($br['event_presentor'])->row_array();
-                                    ?>
-                                    <strong><?php echo ellipsis($user['first_name'].' '.$user['last_name']); ?></strong><br>
+                                    <strong><?php echo ellipsis($br['event_date']); ?></strong><br>
                                 </td>
+                                <?php if($br['event_presentor']): ?>
+                                <td>
+                                    <?php 
+                                        $pres  = ($br['event_presentor']);
+                                    ?>
+                                    <strong><?php echo $pres; ?></strong><br>
+                                </td>
+                                <?php else: ?>
+                               <td>
+                                    <strong>N-A</strong><br>
+                                </td>
+                                <?php  endif;?>
                                 <td>
                                     <strong><?php echo ellipsis($br['event_link']); ?></strong><br>
                                 </td>
-                                <td>
-                                    <strong><?php echo ellipsis($br['event_date']); ?></strong><br>
-                                </td>
+                                
                                 <td>
                                     <?php if ($br['status'] == 'pending'): ?>
                                     <span class="badge badge-danger-lighten" data-toggle="tooltip" data-placement="top"

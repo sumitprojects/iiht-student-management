@@ -25,3 +25,21 @@
 <link rel="stylesheet" href="<?php echo base_url().'assets/global/toastr/toastr.css' ?>">
 <!-- YOUR CUSTOM CSS -->
 <link href="<?php echo base_url('assets/frontend/elegant/css/custom.css'); ?>" rel="stylesheet">
+<style>
+    #list_sidebar .box_list figure a img {
+        object-fit: fill;
+        width: 100%;
+    }
+    #top-courses.owl-carousel .owl-item img {
+        height: 300px !important;
+        object-fit: cover !important;
+    }
+    #top-courses.owl-carousel-div .owl-item{
+        opacity:1 !important;
+    }
+    .animated .block-reveal{
+        height: 200px;
+        object-fit: cover;
+}
+    }
+</style>
